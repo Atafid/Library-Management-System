@@ -36,7 +36,7 @@
                </Button>
             </children>
          </GridPane>
-      
+
          <Button fx:id="goToSignUp" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="301.0" layoutY="291.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="22.0" prefWidth="62.0" styleClass="link" stylesheets="@login.css" text="S'inscrire" textAlignment="CENTER" textFill="#4b8ba6">
             <font>
                <Font name="Times New Roman Bold" size="11.0" />
@@ -50,6 +50,11 @@
          <Label layoutX="227.0" layoutY="293.0" prefHeight="18.0" prefWidth="74.0" text="Pas de compte ?">
             <font>
                <Font name="Times New Roman" size="11.0" />
+            </font>
+         </Label>
+         <Label fx:id="errorLabel" layoutX="125.0" layoutY="96.0" text="Label" textFill="#df1e1e">
+            <font>
+               <Font size="13.0" />
             </font>
          </Label>
       </children>

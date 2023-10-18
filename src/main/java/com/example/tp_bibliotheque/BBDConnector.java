@@ -7,7 +7,7 @@ import java.sql.*;
 import java.sql.Date;
 
 public class BBDConnector {
-    private Connection con;
+    protected Connection con;
 
     public BBDConnector() {
         try {
@@ -79,80 +79,5 @@ public class BBDConnector {
         stmt.executeBatch();
 
         con.commit();
-    }
-
-    public void addUser(String mail, String name, String password, String passwordSalt) throws SQLException {
-        String querry = "INSERT INTO User VALUES(?,?,?,?)";
-        PreparedStatement stmt = con.prepareStatement(querry);
-
-        stmt.setString(1, mail);
-        stmt.setString(2, name);
-        stmt.setString(3, password);
-        stmt.setString(4, passwordSalt);
-
-        stmt.addBatch();
-        stmt.executeBatch();
-        con.commit();
-    }
-
-    public User getUser(String mail) throws SQLException {
-        String querry = "SELECT * FROM User WHERE mail=?";
-        PreparedStatement dispStmt = con.prepareStatement(querry);
-        dispStmt.setString(1,mail);
-
-        ResultSet rs = dispStmt.executeQuery();
-
-        while(rs.next()) {
-            User user = new User(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4));
-            return(user);
-        }
-
-        return(null);
-    }
-
-    public Book getBook(int id) throws SQLException {
-        String querry = "SELECT * FROM Books WHERE id=?";
-        PreparedStatement dispStmt = con.prepareStatement(querry);
-        dispStmt.setInt(1,id);
-
-        ResultSet rs = dispStmt.executeQuery();
-
-        while(rs.next()) {
-            Book book = new Book(rs.getInt(1), Book.cleanAttribute(rs.getString(2)), Book.cleanAttribute(rs.getString(12)),
-                    Book.cleanAttribute(rs.getString(5)));
-            return(book);
-        }
-
-        return(null);
-    }
-
-    public void addEmprunt(Book book, User user, Date beginDate, Date endDate) throws SQLException {
-        String querry = "INSERT INTO Emprunt VALUES(?,?,?,?,?)";
-        PreparedStatement stmt = con.prepareStatement(querry);
-
-        stmt.setInt(1, book.getId());
-        stmt.setString(2, user.getMail());
-        stmt.setDate(3, beginDate);
-        stmt.setDate(4, endDate);
-        stmt.setBoolean(5, false);
-
-        stmt.addBatch();
-        stmt.executeBatch();
-        con.commit();
-    }
-
-    public Emprunt getCurrentEmpruntFromBook(Book book) throws SQLException {
-        String querry = "SELECT * FROM Emprunt WHERE bookID=? AND isFinished=false";
-        PreparedStatement dispStmt = con.prepareStatement(querry);
-        dispStmt.setInt(1,book.getId());
-
-        ResultSet rs = dispStmt.executeQuery();
-
-        while(rs.next()) {
-            Emprunt emprunt = new Emprunt(rs.getInt(1), rs.getString(2), rs.getDate(3), rs.getDate(4), rs.getBoolean(5));
-            return(emprunt);
-        }
-
-        return(null);
     }
 }

@@ -3,6 +3,7 @@ package com.example.tp_bibliotheque;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
@@ -15,6 +16,7 @@ public class LoginController {
     @FXML private TextField usernameText;
     @FXML private PasswordField passText;
     @FXML private Button goToSignUp;
+    @FXML private Label errorLabel;
 
     @FXML
     public void initialize() {
@@ -25,14 +27,17 @@ public class LoginController {
                 throw new RuntimeException(e);
             }
         });
+
+        errorLabel.setVisible(false);
     }
 
     @FXML
     protected void onLoginClick(ActionEvent event) throws SQLException, IOException {
-        User user = MainApplication.bddConn.getUser(usernameText.getText());
+        User user = User.getUser(usernameText.getText());
 
         if(user == null) {
-            System.out.println("No user with such mail");
+            errorLabel.setText("No user with such mail");
+            errorLabel.setVisible(true);
             return;
         }
 
@@ -44,7 +49,8 @@ public class LoginController {
             MainApplication.loadHome(event);
             //MainApplication.switchScene(event, "home-view.fxml", homeController);
         } else {
-            System.out.println("Wrong password");
+            errorLabel.setText("Wrong password");
+            errorLabel.setVisible(true);
         }
 
     }

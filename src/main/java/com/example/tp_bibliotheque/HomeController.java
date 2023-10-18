@@ -7,7 +7,6 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -23,16 +22,15 @@ public class HomeController {
         user = _user;
         //MainApplication.bddConn.fillBDD();
     }
-
     public void initialize() throws SQLException {
         label.setText("Bienvenue "+user.getName()+" !");
 
         for(int i=0;i<fstGrid.getColumnCount();i++) {
-            dispBook(MainApplication.bddConn.getBook(i), fstGrid, i);
+            dispBook(Book.getBook(i), fstGrid, i);
         }
 
         for(int i=0;i<sndGrid.getColumnCount();i++) {
-            dispBook(MainApplication.bddConn.getBook(fstGrid.getColumnCount()+i), sndGrid, i);
+            dispBook(Book.getBook(fstGrid.getColumnCount()+i), sndGrid, i);
         }
     }
 

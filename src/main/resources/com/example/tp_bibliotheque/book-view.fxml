@@ -11,15 +11,20 @@
          <font>
             <Font name="System Bold" size="12.0" />
          </font></Label>
-      <ImageView fx:id="coverView" fitHeight="150.0" fitWidth="109.0" layoutX="31.0" layoutY="84.0" pickOnBounds="true" preserveRatio="true" styleClass="coverImage" />
-      <Label layoutX="161.0" layoutY="84.0" prefHeight="18.0" prefWidth="91.0" text="Description :">
+      <ImageView fx:id="coverView" fitHeight="259.0" fitWidth="180.0" layoutX="15.0" layoutY="84.0" pickOnBounds="true" preserveRatio="true" styleClass="coverImage" />
+      <Label layoutX="213.0" layoutY="84.0" prefHeight="18.0" prefWidth="91.0" text="Description :">
          <font>
             <Font size="15.0" />
          </font>
       </Label>
-      <TextFlow fx:id="descriptionLabel" layoutX="161.0" layoutY="118.0" prefHeight="200.0" prefWidth="396.0" />
+      <TextFlow fx:id="descriptionLabel" layoutX="213.0" layoutY="114.0" prefHeight="200.0" prefWidth="676.0" />
       <Button fx:id="homeButton" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#onHomeClick" text="Home" />
       <Button fx:id="empruntButton" layoutX="65.0" layoutY="392.0" mnemonicParsing="false" onAction="#onClickEmprunt" text="Borrow" />
       <Label fx:id="empruntLabel" layoutX="65.0" layoutY="395.0" prefHeight="18.0" prefWidth="217.0" text="Book borrowed until :" />
+      <Button fx:id="returnButton" layoutX="65.0" layoutY="428.0" mnemonicParsing="false" onAction="#onClickReturn" text="Return Book" />
+      <Label layoutX="213.0" layoutY="325.0" text="Publish Date :" />
+      <Label layoutX="213.0" layoutY="52.0" text="Genres : " />
+      <TextFlow fx:id="genreText" layoutX="259.0" layoutY="47.0" prefHeight="26.0" prefWidth="629.0" />
+      <TextFlow fx:id="publishDateText" layoutX="304.0" layoutY="320.0" prefHeight="26.0" prefWidth="200.0" />
    </children>
 </AnchorPane>

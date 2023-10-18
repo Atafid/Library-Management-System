@@ -3,6 +3,7 @@ package com.example.tp_bibliotheque;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
@@ -14,6 +15,7 @@ public class SignUpController {
     @FXML private PasswordField passSignUp;
     @FXML private PasswordField confirmPassSignUp;
     @FXML private Button goToLogin;
+    @FXML private Label errorLabel;
 
     @FXML
     public void initialize() {
@@ -24,6 +26,8 @@ public class SignUpController {
                 throw new RuntimeException(e);
             }
         });
+
+        errorLabel.setVisible(false);
     }
 
     @FXML
@@ -34,17 +38,20 @@ public class SignUpController {
         String confirmPassword = confirmPassSignUp.getText();
 
         if(mail.isEmpty() || name.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
-            System.out.println("Remplir tous les champs");
+            errorLabel.setText("Fill every fields");
+            errorLabel.setVisible(true);
             return;
         }
 
         if(!LoginPage.isValidMail(mail)) {
-            System.out.println("Mail invalide");
+            errorLabel.setText("Invalid Mail");
+            errorLabel.setVisible(true);
             return;
         }
 
         if(!password.equals(confirmPassword)) {
-            System.out.println("Mots de passe différents");
+            errorLabel.setText("Different passwords");
+            errorLabel.setVisible(true);
             return;
         }
 
@@ -52,11 +59,11 @@ public class SignUpController {
         String hashPassword = LoginPage.hashFunction(password, userSalt, MainApplication.pepper, MainApplication.hashIncrementation);
 
         try {
-            MainApplication.bddConn.addUser(mail, name, hashPassword, userSalt);
+            User.addUser(mail, name, hashPassword, userSalt);
             MainApplication.switchScene(event, "login-view.fxml");
-            System.out.println("Inscription réussie");
         } catch(Exception e) {
-            System.out.println("Compte déjà existant");
+            errorLabel.setText("Account already exists");
+            errorLabel.setVisible(true);
         }
 
         return;
