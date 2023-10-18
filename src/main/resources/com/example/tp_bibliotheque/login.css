@@ -1,0 +1,35 @@
+.anchorPane {
+    -fx-background-color: white;
+}
+
+.link {
+    -fx-background-color: transparent;
+    -fx-text-fill: blue;
+}
+
+.link:hover {
+    -fx-text-fill: darkblue;
+    -fx-underline: true;
+    -fx-cursor: hand;
+}
+
+.boutton {
+    -fx-background-color: skyblue;
+    -fx-border-radius: 100px;
+    -fx-background-radius: 100px;
+}
+
+.boutton:hover {
+    -fx-background-color: blue;
+    -fx-cursor: hand;
+}
+
+.textBox {
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
+    -fx-border-color: black;
+}
+
+.textBox:focused {
+    -fx-border-color: skyblue;
+}
