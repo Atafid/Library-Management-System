@@ -1,14 +1,10 @@
-.coverImage {
-    -fx-background-color: white;
-}
-
-.credit_button {
+.book_button {
     -fx-font-size: 8px;
     -fx-background-color: transparent;
     -fx-text-fill: blue;
 }
 
-.credit_button:hover {
+.book_button:hover {
     -fx-text-fill: darkblue;
     -fx-underline: true;
     -fx-cursor: hand;

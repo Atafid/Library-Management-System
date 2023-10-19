@@ -7,27 +7,27 @@ import java.sql.SQLException;
 
 public class Emprunt {
     private int id;
-    private int bookID;
+    private String editionISBN;
     private String userMail;
     private Date beginDate;
     private Date hypEndDate;
     private Date realEndDate;
     private boolean isFinished;
 
-    public Emprunt(int _id, int _bookID, String _userMail, Date _beginDate, Date _endDate, boolean _isFinished) {
+    public Emprunt(int _id, String _editionISBN, String _userMail, Date _beginDate, Date _endDate, boolean _isFinished) {
         id = _id;
-        bookID = _bookID;
+        editionISBN = _editionISBN;
         userMail = _userMail;
         beginDate = _beginDate;
         hypEndDate = _endDate;
         isFinished = _isFinished;
     }
 
-    public static void addEmprunt(Book book, User user, Date beginDate, Date endDate) throws SQLException {
+    public static void addEmprunt(Edition edition, User user, Date beginDate, Date endDate) throws SQLException {
         String querry = "INSERT INTO Emprunt VALUES(0,?,?,?,?,NULL,?)";
         PreparedStatement stmt = MainApplication.bddConn.con.prepareStatement(querry);
 
-        stmt.setInt(1, book.getId());
+        stmt.setString(1, edition.getIsbn());
         stmt.setString(2, user.getMail());
         stmt.setDate(3, beginDate);
         stmt.setDate(4, endDate);
@@ -37,15 +37,15 @@ public class Emprunt {
         stmt.executeBatch();
         MainApplication.bddConn.con.commit();
     }
-    public static Emprunt getCurrentEmpruntFromBook(Book book) throws SQLException {
-        String querry = "SELECT * FROM Emprunt WHERE bookID=? AND isFinished=false";
+    public static Emprunt getCurrentEmpruntFromEdition(Edition edition) throws SQLException {
+        String querry = "SELECT * FROM Emprunt WHERE editionISBN=? AND isFinished=false";
         PreparedStatement dispStmt = MainApplication.bddConn.con.prepareStatement(querry);
-        dispStmt.setInt(1,book.getId());
+        dispStmt.setString(1,edition.getIsbn());
 
         ResultSet rs = dispStmt.executeQuery();
 
         while(rs.next()) {
-            Emprunt emprunt = new Emprunt(rs.getInt(1), rs.getInt(2), rs.getString(3), rs.getDate(4), rs.getDate(5), rs.getBoolean(6));
+            Emprunt emprunt = new Emprunt(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getDate(4), rs.getDate(5), rs.getBoolean(6));
             return(emprunt);
         }
 

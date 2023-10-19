@@ -3,7 +3,7 @@ package com.example.tp_bibliotheque;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Arrays;
+import java.util.Vector;
 
 public class Book {
     private int id;
@@ -11,15 +11,13 @@ public class Book {
     private String coverImg;
     private String[] genres;
     private String description;
-    private String publishDate;
 
-    public Book(int _id, String _title, String _coverImg, String _genres, String _description, String _publishDate) {
+    public Book(int _id, String _title, String _description, String _genres, String _coverImg) {
         id = _id;
         title = _title;
         coverImg = _coverImg;
         genres = cleanGenres(_genres);
         description = _description;
-        publishDate = _publishDate;
     }
 
     public static Book getBook(int id) throws SQLException {
@@ -30,30 +28,24 @@ public class Book {
         ResultSet rs = dispStmt.executeQuery();
 
         while(rs.next()) {
-            Book book = new Book(rs.getInt(1), Book.cleanAttribute(rs.getString(2)), Book.cleanAttribute(rs.getString(12)),
-                    Book.cleanAttribute(rs.getString(8)), Book.cleanAttribute(rs.getString(5)), Book.cleanAttribute(rs.getString(11)));
+            Book book = new Book(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4),
+                    rs.getString(5));
             return(book);
         }
 
         return(null);
     }
 
-    public static String cleanAttribute(String str) {
-        return(str.substring(1, str.length()-1));
-    }
-    public static String cleanAttribute(String str, int debIdx, int endIdx) {
-        return(str.substring(debIdx, endIdx));
-    }
     public static String[] cleanGenres(String genresTable) {
         //clean [] char
-        genresTable = cleanAttribute(genresTable);
+        genresTable = BDDConnector.cleanAttribute(genresTable);
 
         String[] genresRaw = genresTable.split(",");
         //fst genre has no space before it
-        genresRaw[0] = cleanAttribute(genresRaw[0]);
+        genresRaw[0] = BDDConnector.cleanAttribute(genresRaw[0]);
         for(int i=1;i<genresRaw.length;i++) {
             //begin at 2 bc genres have a space before '
-            genresRaw[i] = cleanAttribute(genresRaw[i], 2, genresRaw[i].length()-1);
+            genresRaw[i] = BDDConnector.cleanAttribute(genresRaw[i], 2, genresRaw[i].length()-1);
         }
 
         return(genresRaw);
@@ -68,8 +60,38 @@ public class Book {
     }
     public String[] getGenres() { return genres; }
     public String getDescription() { return description; }
-    public String getPublishDate() { return publishDate; }
-    public Boolean getBorrowedStatus() throws SQLException {
-        return(Emprunt.getCurrentEmpruntFromBook(this) != null);
+    public Vector<HasWritten> getCredits() throws SQLException {
+        Vector<HasWritten> res = new Vector<HasWritten>();
+
+        String quer = "SELECT a.id, a.name, a.last_name, a.birth, e.role FROM Authors a JOIN aEcrit e ON a.id = e.authorID WHERE e.bookID=?";
+        PreparedStatement dispStmt = MainApplication.bddConn.con.prepareStatement(quer);
+        dispStmt.setInt(1,this.getId());
+
+        ResultSet rs = dispStmt.executeQuery();
+
+        while(rs.next()) {
+            Author newAuthor = new Author(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getDate(4));
+            HasWritten newHasWritten = new HasWritten(this, newAuthor, rs.getString(5));
+
+            res.add(newHasWritten);
+        }
+
+        return(res);
+    }
+    public Vector<Edition> getEditions() throws SQLException {
+        Vector<Edition> res = new Vector<Edition>();
+
+        String quer = "SELECT * FROM Edition e JOIN Books b ON b.id = e.bookID WHERE e.bookID=?";
+        PreparedStatement dispStmt = MainApplication.bddConn.con.prepareStatement(quer);
+        dispStmt.setInt(1,this.getId());
+
+        ResultSet rs = dispStmt.executeQuery();
+
+        while(rs.next()) {
+            Edition newEdition = new Edition(rs.getString(1), rs.getString(3), rs.getDate(4), rs.getInt(5));
+            res.add(newEdition);
+        }
+
+        return(res);
     }
 }

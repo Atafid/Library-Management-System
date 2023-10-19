@@ -26,11 +26,11 @@ public class HomeController {
         label.setText("Bienvenue "+user.getName()+" !");
 
         for(int i=0;i<fstGrid.getColumnCount();i++) {
-            dispBook(Book.getBook(i), fstGrid, i);
+            dispBook(Book.getBook(i+1), fstGrid, i);
         }
 
         for(int i=0;i<sndGrid.getColumnCount();i++) {
-            dispBook(Book.getBook(fstGrid.getColumnCount()+i), sndGrid, i);
+            dispBook(Book.getBook(fstGrid.getColumnCount()+i+1), sndGrid, i);
         }
     }
 

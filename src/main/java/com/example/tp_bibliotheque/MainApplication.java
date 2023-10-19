@@ -10,12 +10,13 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Objects;
 
 public class MainApplication extends Application {
     protected static String pepper;
     protected static int hashIncrementation;
-    protected static BBDConnector bddConn;
+    protected static BDDConnector bddConn;
     protected static Parent homeRoot;
 
     @Override
@@ -30,7 +31,7 @@ public class MainApplication extends Application {
         pepper = "azerty";
         hashIncrementation = 5;
 
-        bddConn = new BBDConnector();
+        bddConn = new BDDConnector();
     }
 
     @FXML
