@@ -12,6 +12,7 @@ import java.io.IOException;
 public class SignUpController {
     @FXML private TextField mailSignUp;
     @FXML private TextField nameSignUp;
+    @FXML private TextField lastNameSignUp;
     @FXML private PasswordField passSignUp;
     @FXML private PasswordField confirmPassSignUp;
     @FXML private Button goToLogin;
@@ -34,6 +35,7 @@ public class SignUpController {
     protected void onSignUp(ActionEvent event) {
         String mail = mailSignUp.getText();
         String name = nameSignUp.getText();
+        String lastName = lastNameSignUp.getText();
         String password = passSignUp.getText();
         String confirmPassword = confirmPassSignUp.getText();
 
@@ -59,7 +61,7 @@ public class SignUpController {
         String hashPassword = LoginPage.hashFunction(password, userSalt, MainApplication.pepper, MainApplication.hashIncrementation);
 
         try {
-            User.addUser(mail, name, hashPassword, userSalt);
+            User.addUser(mail, name, lastName, hashPassword, userSalt,"1");
             MainApplication.switchScene(event, "login-view.fxml");
         } catch(Exception e) {
             errorLabel.setText("Account already exists");

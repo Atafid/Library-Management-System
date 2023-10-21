@@ -23,7 +23,7 @@ public class AuthorViewController {
     }
 
     public void initialize() {
-        authorName.setText(author.getName()+" "+author.getLast_name());
+        authorName.setText(author.getName()+" "+author.getLastName());
 
         for(int i=0;i<books.size();i++) {
             Book b = books.get(i);

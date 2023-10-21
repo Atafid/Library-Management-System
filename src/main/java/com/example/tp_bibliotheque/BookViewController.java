@@ -9,12 +9,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
-import org.controlsfx.control.spreadsheet.Grid;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Calendar;
-import java.sql.Date;
 import java.util.Vector;
 
 public class BookViewController {
@@ -51,7 +48,7 @@ public class BookViewController {
             HasWritten h = creditsVector.get(i);
 
             Button creditButton = new Button();
-            creditButton.setText(h.getAuthor().getName() + " " + h.getAuthor().getLast_name() + " " + h.getRole()+", ");
+            creditButton.setText(h.getAuthor().getName() + " " + h.getAuthor().getLastName() + " " + h.getRole()+", ");
             creditButton.getStyleClass().add("credit_button");
 
             AuthorViewController authorController = new AuthorViewController(h.getAuthor());
@@ -68,53 +65,12 @@ public class BookViewController {
         Vector<Edition> editionVector = book.getEditions();
         for(int i=0;i<editionVector.size();i++) {
             Edition e = editionVector.get(i);
+            e.updateButtons();
 
-            Label editionLabel = new Label();
-            editionLabel.setText(e.getEditorName()+", "+e.getPublishDate().toString());
-
-            Button borrowButton = new Button();
-            borrowButton.setText("Borrow");
-            Label borrowedLabel = new Label();
-            borrowedLabel.setText("Book borrowed until :");
-            Button returnButton = new Button();
-            returnButton.setText("Return");
-
-            Emprunt currentEmprunt = e.getBorrowedStatus();
-            if(currentEmprunt != null) {
-                borrowButton.setVisible(false);
-
-                borrowedLabel.setText(borrowedLabel.getText()+currentEmprunt.getHypEndDate()+" by "+currentEmprunt.getUserMail());
-
-                if(!currentEmprunt.getUserMail().equals(HomeController.user.getMail())) {
-                    returnButton.setVisible(false);
-                }
-            }
-
-            else {
-                borrowedLabel.setVisible(false);
-                returnButton.setVisible(false);
-            }
-
-            borrowButton.setOnAction(event -> {
-                try {
-                    onClickEmprunt(e,borrowButton,borrowedLabel,returnButton);
-                } catch (SQLException ex) {
-                    throw new RuntimeException(ex);
-                }
-            });
-
-            returnButton.setOnAction(event -> {
-                try {
-                    onClickReturn(currentEmprunt.getId(),borrowButton,borrowedLabel,returnButton);
-                } catch (SQLException ex) {
-                    throw new RuntimeException(ex);
-                }
-            });
-
-            editionGrid.add(editionLabel, 0, i);
-            editionGrid.add(borrowButton, 1, i);
-            editionGrid.add(borrowedLabel, 1, i);
-            editionGrid.add(returnButton, 2, i);
+            editionGrid.add(e.editionLabel, 0, i);
+            editionGrid.add(e.borrowButton, 1, i);
+            editionGrid.add(e.borrowedLabel, 1, i);
+            editionGrid.add(e.returnButton, 2, i);
         }
 
         Image cover = new Image(book.getCoverImg());
@@ -125,41 +81,5 @@ public class BookViewController {
     private void onHomeClick(ActionEvent e) throws IOException {
         MainApplication.loadHome(e);
         //MainApplication.switchScene(e, "home-view.fxml", MainApplication.homeController);
-    }
-    @FXML
-    private void onClickEmprunt(Edition e, Button borrowButton, Label borrowedLabel, Button returnButton) throws SQLException {
-        long millis = System.currentTimeMillis();
-        Date currentDate = new Date(millis);
-
-        long dayMillis = (long) (8.64*Math.pow(10,7));
-        Date endDate = new Date(millis+10*dayMillis);
-
-        Emprunt.addEmprunt(e, HomeController.user, currentDate, endDate);
-
-        borrowButton.setVisible(false);
-
-        borrowedLabel.setVisible(true);
-        borrowedLabel.setText(borrowedLabel.getText()+endDate+" by "+HomeController.user.getMail());
-
-        returnButton.setVisible(true);
-        returnButton.setOnAction(event -> {
-            try {
-                onClickReturn(Emprunt.getCurrentEmpruntFromEdition(e).getId(),borrowButton,borrowedLabel,returnButton);
-            } catch (SQLException ex) {
-                throw new RuntimeException(ex);
-            }
-        });
-    }
-    @FXML
-    private void onClickReturn(int empruntId, Button borrowButton, Label borrowedLabel, Button returnButton) throws SQLException {
-        long millis = System.currentTimeMillis();
-        Date currentDate = new Date(millis);
-
-        Emprunt.finishEmprunt(empruntId, currentDate);
-
-        borrowButton.setVisible(true);
-
-        borrowedLabel.setVisible(false);
-        returnButton.setVisible(false);
     }
 }

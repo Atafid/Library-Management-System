@@ -13,6 +13,7 @@ import java.sql.SQLException;
 
 public class HomeController {
     @FXML private Label label;
+    @FXML private Button adminButton;
     @FXML private Button signOutButton;
     @FXML private GridPane fstGrid;
     @FXML private GridPane sndGrid;
@@ -24,6 +25,8 @@ public class HomeController {
     }
     public void initialize() throws SQLException {
         label.setText("Bienvenue "+user.getName()+" !");
+
+        adminButton.setVisible(user.categorie.equals(Categorie.Bibliothécaire));
 
         for(int i=0;i<fstGrid.getColumnCount();i++) {
             dispBook(Book.getBook(i+1), fstGrid, i);
@@ -38,6 +41,17 @@ public class HomeController {
     private void onSignOut(ActionEvent e) throws IOException {
         MainApplication.homeRoot = null;
         MainApplication.switchScene(e, "login-view.fxml");
+    }
+    @FXML
+    private void onUserClick(ActionEvent e) throws IOException {
+        UserViewController userViewController = new UserViewController(user);
+        MainApplication.switchScene(e, "user-view.fxml", userViewController);
+    }
+
+    @FXML
+    private void onAdminClick(ActionEvent e) throws IOException {
+        AdminViewController adminViewController = new AdminViewController(user);
+        MainApplication.switchScene(e, "admin-view.fxml", adminViewController);
     }
 
     private void dispBook(Book book, GridPane parent, int column) {

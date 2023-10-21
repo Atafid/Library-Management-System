@@ -40,5 +40,7 @@
       <Label layoutX="70.0" layoutY="101.0" text="First Grid : " />
       <Label layoutX="76.0" layoutY="309.0" text="Second Grid : " />
       <Button fx:id="signOutButton" layoutX="750.0" layoutY="41.0" mnemonicParsing="false" onAction="#onSignOut" text="Sign Out" />
+      <Button fx:id="userButton" layoutX="668.0" layoutY="41.0" mnemonicParsing="false" onAction="#onUserClick" text="User" />
+      <Button fx:id="adminButton" layoutX="580.0" layoutY="41.0" mnemonicParsing="false" onAction="#onAdminClick" text="Admin" />
    </children>
 </AnchorPane>

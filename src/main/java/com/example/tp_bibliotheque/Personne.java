@@ -11,7 +11,7 @@ public abstract class Personne {
 
     public String getName() { return name; }
 
-    public String getLast_name() {
+    public String getLastName() {
         return last_name;
     }
 }
