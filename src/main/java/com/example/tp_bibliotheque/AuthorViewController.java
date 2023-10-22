@@ -44,10 +44,10 @@ public class AuthorViewController {
         }
     }
 
-
     @FXML
     private void onHomeClick(ActionEvent e) throws IOException {
         MainApplication.loadHome(e);
+        System.gc();
         //MainApplication.switchScene(e, "home-view.fxml", MainApplication.homeController);
     }
 }

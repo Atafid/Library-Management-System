@@ -4,13 +4,15 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
+import javafx.scene.control.Slider;
+import javafx.scene.control.TextArea;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
 import java.io.IOException;
+import java.sql.Date;
 import java.sql.SQLException;
 import java.util.Vector;
 
@@ -22,6 +24,9 @@ public class BookViewController {
     @FXML private GridPane editionGrid;
     @FXML private ImageView coverView;
     @FXML private Button homeButton;
+    @FXML private Slider noteBar;
+    @FXML private TextArea commentArea;
+    @FXML private GridPane commentGrid;
 
     private Book book;
 
@@ -32,6 +37,7 @@ public class BookViewController {
     public void initialize() throws SQLException {
         titleLabel.setText(book.getTitle());
 
+        //GENRES
         String[] bookGenres = book.getGenres();
         Text genres = new Text(bookGenres[0]);
         for(int i=1; i<bookGenres.length; i++) {
@@ -39,9 +45,11 @@ public class BookViewController {
         }
         genreText.getChildren().add(genres);
 
+        //DESCRIPTION
         Text description = new Text(book.getDescription());
         descriptionLabel.getChildren().add(description);
 
+        //CREDITS
         String creditsString = "";
         Vector<HasWritten> creditsVector = book.getCredits();
         for(int i=0;i<creditsVector.size();i++) {
@@ -62,6 +70,7 @@ public class BookViewController {
             creditsGrid.add(creditButton, i, 0);
         }
 
+        //EDITIONS
         Vector<Edition> editionVector = book.getEditions();
         for(int i=0;i<editionVector.size();i++) {
             Edition e = editionVector.get(i);
@@ -73,13 +82,43 @@ public class BookViewController {
             editionGrid.add(e.returnButton, 2, i);
         }
 
-        Image cover = new Image(book.getCoverImg());
-        coverView.setImage(cover);
+        //COMMENTS
+        updateCommentSection();
+
+        coverView.setImage(book.getCoverImg());
+    }
+
+    private void updateCommentSection() throws SQLException {
+        commentGrid.getChildren().clear();
+
+        Vector<Comment> commentsVector = Comment.getComment(book.getId());
+        for(int i=0;i<commentsVector.size();i++){
+            Comment c = commentsVector.get(i);
+
+            Label noteLabel = new Label();
+            noteLabel.setText(String.valueOf(c.getNote())+" "+User.getUserFromId(c.getUserId()).getMail());
+
+            Text contentText = new Text(c.getContent());
+            TextFlow contentFlow = new TextFlow();
+            contentFlow.getChildren().add(contentText);
+
+            commentGrid.add(noteLabel, 0, i);
+            commentGrid.add(contentFlow, 1, i);
+        }
     }
 
     @FXML
     private void onHomeClick(ActionEvent e) throws IOException {
         MainApplication.loadHome(e);
+        System.gc();
         //MainApplication.switchScene(e, "home-view.fxml", MainApplication.homeController);
+    }
+    @FXML
+    private void onSendClick() throws SQLException {
+        Comment.addComment(HomeController.user.getId(), book.getId(), new Date(System.currentTimeMillis()), (int) noteBar.getValue(), commentArea.getText());
+        updateCommentSection();
+
+        noteBar.setValue(1.0);
+        commentArea.clear();
     }
 }

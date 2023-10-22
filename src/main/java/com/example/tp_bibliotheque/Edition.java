@@ -5,8 +5,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 
 import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Vector;
 
@@ -56,7 +54,7 @@ public class Edition {
     }
     public static Emprunt getUserEmprunt(Vector<Emprunt> emprunts) throws SQLException {
         for(Emprunt e:emprunts) {
-            if(e.getUserMail().equals(HomeController.user.getMail())) {
+            if(e.getUserId() == HomeController.user.getId()) {
                 return(e);
             }
         }
@@ -73,7 +71,7 @@ public class Edition {
         if(currentEmprunt != null) {
             borrowButton.setVisible(false);
 
-            borrowedLabel.setText("Book borrowed until : "+currentEmprunt.getHypEndDate()+" by "+currentEmprunt.getUserMail());
+            borrowedLabel.setText("Book borrowed until : "+currentEmprunt.getStringHypEndDate()+" by "+currentEmprunt.getUserMail());
             borrowedLabel.setVisible(true);
 
             returnButton.setVisible(currentEmprunt.getUserMail().equals(HomeController.user.getMail()));
@@ -120,7 +118,7 @@ public class Edition {
         long dayMillis = (long) (8.64*Math.pow(10,7));
         Date endDate = new Date(millis+HomeController.user.getBorrowDays()*dayMillis);
 
-        Emprunt.addEmprunt(this, HomeController.user, currentDate, endDate);
+        Emprunt.addEmprunt(this.getIsbn(), HomeController.user.getId(), currentDate, endDate);
 
         HomeController.user.setBorrowCount(HomeController.user.getBorrowCount()+1);
         availableQty -= 1;

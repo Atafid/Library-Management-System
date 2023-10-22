@@ -28,8 +28,8 @@ public class UserViewController {
         nameLabel.setText(user.getName());
         lastNameLabel.setText(user.getLastName());
 
-        Vector<Emprunt> currentEmprunt = Emprunt.getCurrentEmpruntFromUser(user.getMail());
-        Vector<Emprunt> finishedEmprunt = Emprunt.getFinishedEmpruntFromUser(user.getMail());
+        Vector<Emprunt> currentEmprunt = Emprunt.getCurrentEmpruntFromUser(user.getId());
+        Vector<Emprunt> finishedEmprunt = Emprunt.getFinishedEmpruntFromUser(user.getId());
 
         for(int i=0;i<currentEmprunt.size();i++) {
             Emprunt e = currentEmprunt.get(i);
@@ -40,7 +40,11 @@ public class UserViewController {
             empruntButton.getStyleClass().add("emprunt_button");
 
             Label empruntLabel = new Label();
-            empruntLabel.setText(", until : "+e.getHypEndDate());
+            empruntLabel.setText(", until : "+e.getStringHypEndDate());
+
+            if(e.checkLateStatus()) {
+                empruntLabel.setText(empruntLabel.getText()+" LATE!");
+            }
 
             BookViewController bookController = new BookViewController(empruntBook);
             empruntButton.setOnAction(event -> {
@@ -64,7 +68,7 @@ public class UserViewController {
             empruntButton.getStyleClass().add("emprunt_button");
 
             Label empruntLabel = new Label();
-            empruntLabel.setText(", finished since : "+e.getRealEndDate());
+            empruntLabel.setText(", finished since : "+e.getStringRealEndDate());
 
             BookViewController bookController = new BookViewController(empruntBook);
             empruntButton.setOnAction(event -> {
@@ -83,6 +87,7 @@ public class UserViewController {
     @FXML
     private void onHomeClick(ActionEvent e) throws IOException {
         MainApplication.loadHome(e);
+        System.gc();
         //MainApplication.switchScene(e, "home-view.fxml", MainApplication.homeController);
     }
 }

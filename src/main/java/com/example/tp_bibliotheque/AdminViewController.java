@@ -30,7 +30,11 @@ public class AdminViewController {
             userButton.getStyleClass().add("user_button");
 
             Label empruntLabel = new Label();
-            empruntLabel.setText(Emprunt.getCurrentEmpruntFromUser(u.getMail()).size()+" current borrows");
+            empruntLabel.setText(Emprunt.getCurrentEmpruntFromUser(u.getId()).size()+" current borrows");
+
+            if(u.countLateBorrow()>0) {
+                empruntLabel.setText(empruntLabel.getText()+" "+u.countLateBorrow()+" Late");
+            }
 
             UserViewController userController = new UserViewController(u);
             userButton.setOnAction(event -> {
@@ -71,6 +75,7 @@ public class AdminViewController {
     @FXML
     private void onHomeClick(ActionEvent e) throws IOException {
         MainApplication.loadHome(e);
+        System.gc();
         //MainApplication.switchScene(e, "home-view.fxml", MainApplication.homeController);
     }
 }

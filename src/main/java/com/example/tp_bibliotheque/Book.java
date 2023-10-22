@@ -1,5 +1,7 @@
 package com.example.tp_bibliotheque;
 
+import javafx.scene.image.Image;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -8,14 +10,16 @@ import java.util.Vector;
 public class Book {
     private int id;
     private String title;
-    private String coverImg;
+    private String coverImgUrl;
+    private Image coverImg;
     private String[] genres;
     private String description;
 
     public Book(int _id, String _title, String _description, String _genres, String _coverImg) {
         id = _id;
         title = _title;
-        coverImg = _coverImg;
+        coverImgUrl = _coverImg;
+        coverImg = new Image(coverImgUrl);
         genres = cleanGenres(_genres);
         description = _description;
     }
@@ -34,6 +38,19 @@ public class Book {
         }
 
         return(null);
+    }
+    public static Vector<Book> getPage(int pageNumber) {
+        Vector<Book> res = new Vector<Book>();
+
+        for(int i=(pageNumber-1)*10+1;i<(pageNumber-1)*10+11;i++){
+            try {
+                res.add(Book.getBook(i));
+            } catch(SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return(res);
     }
 
     public static String[] cleanGenres(String genresTable) {
@@ -55,9 +72,10 @@ public class Book {
     public String getTitle() {
         return title;
     }
-    public String getCoverImg() {
-        return coverImg;
+    public String getCoverImgUrl() {
+        return coverImgUrl;
     }
+    public Image getCoverImg() { return coverImg; }
     public String[] getGenres() { return genres; }
     public String getDescription() { return description; }
     public Vector<HasWritten> getCredits() throws SQLException {
@@ -93,5 +111,25 @@ public class Book {
         }
 
         return(res);
+    }
+    public double getAverageNote() throws SQLException {
+        double res = 0.;
+        int count = 0;
+
+        String quer = "SELECT note FROM Comment WHERE bookID=?";
+        PreparedStatement dispStmt = MainApplication.bddConn.con.prepareStatement(quer);
+        dispStmt.setInt(1,this.getId());
+
+        ResultSet rs = dispStmt.executeQuery();
+
+        while(rs.next()) {
+            res += rs.getInt(1);
+            count++;
+        }
+
+        if(count==0) {
+            return(-1);
+        }
+        return(res/count);
     }
 }

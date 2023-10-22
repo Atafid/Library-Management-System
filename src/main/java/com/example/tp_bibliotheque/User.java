@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.Vector;
 
 public class User extends Personne {
+    private final int id;
     private final String mail;
     private final String hashPassword;
     private final String passwordSalt;
@@ -13,15 +14,16 @@ public class User extends Personne {
     private int borrowCount;
     public Categorie categorie;
 
-    public User(String _mail, String _name, String _last_name, String _hashPassword, String _passwordSalt, String catString) {
+    public User(int _id, String _mail, String _name, String _last_name, String _hashPassword, String _passwordSalt, String catString) {
         super(_name, _last_name);
 
+        id = _id;
         mail = _mail;
         hashPassword = _hashPassword;
         passwordSalt = _passwordSalt;
 
         try {
-            borrowCount = Emprunt.getCurrentEmpruntFromUser(mail).size();
+            borrowCount = Emprunt.getCurrentEmpruntFromUser(id).size();
         } catch(SQLException e) {
             System.out.println(e);
         }
@@ -54,13 +56,27 @@ public class User extends Personne {
         ResultSet rs = dispStmt.executeQuery();
 
         while(rs.next()) {
-            User user = new User(rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5),rs.getString(6),rs.getString(7));
+            User user = new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5),rs.getString(6),rs.getString(7));
             res.add(user);
         }
 
         return(res);
     }
-    public static User getUser(String mail) throws SQLException {
+    public static User getUserFromId(int id) throws SQLException {
+        String querry = "SELECT * FROM User WHERE id=?";
+        PreparedStatement dispStmt = MainApplication.bddConn.con.prepareStatement(querry);
+        dispStmt.setInt(1,id);
+
+        ResultSet rs = dispStmt.executeQuery();
+
+        while(rs.next()) {
+            User user = new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5),rs.getString(6),rs.getString(7));
+            return(user);
+        }
+
+        return(null);
+    }
+    public static User getUserFromMail(String mail) throws SQLException {
         String querry = "SELECT * FROM User WHERE mail=?";
         PreparedStatement dispStmt = MainApplication.bddConn.con.prepareStatement(querry);
         dispStmt.setString(1,mail);
@@ -68,13 +84,14 @@ public class User extends Personne {
         ResultSet rs = dispStmt.executeQuery();
 
         while(rs.next()) {
-            User user = new User(rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5),rs.getString(6),rs.getString(7));
+            User user = new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5),rs.getString(6),rs.getString(7));
             return(user);
         }
 
         return(null);
     }
 
+    public int getId() { return(id); }
     public String getMail() { return(mail); }
     public String getHashPassword() {
         return(hashPassword);
@@ -110,5 +127,18 @@ public class User extends Personne {
 
         stmt.executeUpdate();
         MainApplication.bddConn.con.commit();
+    }
+
+    public int countLateBorrow() throws SQLException {
+        Vector<Emprunt> currentEmprunts = Emprunt.getCurrentEmpruntFromUser(id);
+        int res = 0;
+
+        for(Emprunt e:currentEmprunts) {
+            if(e.checkLateStatus()) {
+                res++;
+            }
+        }
+
+        return(res);
     }
 }

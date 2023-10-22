@@ -12,6 +12,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Objects;
+import java.util.Vector;
 
 public class MainApplication extends Application {
     protected static String pepper;
@@ -21,22 +22,22 @@ public class MainApplication extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
+        pepper = "azerty";
+        hashIncrementation = 5;
+
+        bddConn = new BDDConnector();
+
         FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("login-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
 
         stage.setTitle("Login");
         stage.setScene(scene);
         stage.show();
-
-        pepper = "azerty";
-        hashIncrementation = 5;
-
-        bddConn = new BDDConnector();
     }
 
     @FXML
-    public static void initHome(User user) throws IOException {
-        HomeController homeController = new HomeController(user);
+    public static void initHome(User user, Vector<Book> fstPage, Vector<Book> sndPage) throws IOException {
+        HomeController homeController = new HomeController(user, fstPage, sndPage);
 
         FXMLLoader loader = new FXMLLoader(MainApplication.class.getResource("home-view.fxml"));
         loader.setController(homeController);

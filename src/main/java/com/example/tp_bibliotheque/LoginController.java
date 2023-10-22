@@ -10,6 +10,7 @@ import javafx.scene.control.TextField;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Objects;
+import java.util.Vector;
 
 public class LoginController {
 
@@ -17,6 +18,14 @@ public class LoginController {
     @FXML private PasswordField passText;
     @FXML private Button goToSignUp;
     @FXML private Label errorLabel;
+
+    Vector<Book> fstPageHome;
+    Vector<Book> sndPageHome;
+
+    public LoginController() {
+        fstPageHome = Book.getPage(1);
+        sndPageHome = Book.getPage(2);
+    }
 
     @FXML
     public void initialize() {
@@ -33,7 +42,7 @@ public class LoginController {
 
     @FXML
     protected void onLoginClick(ActionEvent event) throws SQLException, IOException {
-        User user = User.getUser(usernameText.getText());
+        User user = User.getUserFromMail(usernameText.getText());
 
         if(user == null) {
             errorLabel.setText("No user with such mail");
@@ -44,10 +53,8 @@ public class LoginController {
         String hashInputPassword = LoginPage.hashFunction(passText.getText(), user.getPasswordSalt(), MainApplication.pepper, MainApplication.hashIncrementation);
 
         if (Objects.equals(user.getHashPassword(), hashInputPassword)) {
-            MainApplication.initHome(user);
-
+            MainApplication.initHome(user, fstPageHome, sndPageHome);
             MainApplication.loadHome(event);
-            //MainApplication.switchScene(event, "home-view.fxml", homeController);
         } else {
             errorLabel.setText("Wrong password");
             errorLabel.setVisible(true);

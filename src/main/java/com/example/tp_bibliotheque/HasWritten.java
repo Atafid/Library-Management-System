@@ -12,11 +12,9 @@ public class HasWritten {
     }
 
     public Book getBook() { return book; }
-
     public Author getAuthor() {
         return author;
     }
-
     public String getRole() {
         return role;
     }
