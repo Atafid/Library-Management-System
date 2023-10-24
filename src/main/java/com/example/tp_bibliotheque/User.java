@@ -23,7 +23,7 @@ public class User extends Personne {
         passwordSalt = _passwordSalt;
 
         try {
-            borrowCount = Emprunt.getCurrentEmpruntFromUser(id).size();
+            borrowCount = Emprunt.getCurrentEmpruntsFromUser(id).size();
         } catch(SQLException e) {
             System.out.println(e);
         }
@@ -130,7 +130,7 @@ public class User extends Personne {
     }
 
     public int countLateBorrow() throws SQLException {
-        Vector<Emprunt> currentEmprunts = Emprunt.getCurrentEmpruntFromUser(id);
+        Vector<Emprunt> currentEmprunts = Emprunt.getCurrentEmpruntsFromUser(id);
         int res = 0;
 
         for(Emprunt e:currentEmprunts) {

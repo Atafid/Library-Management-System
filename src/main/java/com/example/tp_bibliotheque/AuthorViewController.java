@@ -4,6 +4,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 
 import java.io.IOException;
@@ -11,6 +12,7 @@ import java.sql.SQLException;
 import java.util.Vector;
 
 public class AuthorViewController {
+    @FXML private AnchorPane root;
     @FXML private Label authorName;
     @FXML private GridPane booksGrid;
 
@@ -23,6 +25,8 @@ public class AuthorViewController {
     }
 
     public void initialize() {
+        root.getChildren().add(MainApplication.header.getHead());
+
         authorName.setText(author.getName()+" "+author.getLastName());
 
         for(int i=0;i<books.size();i++) {
@@ -42,12 +46,5 @@ public class AuthorViewController {
             });
             booksGrid.add(bookButton, 0, i);
         }
-    }
-
-    @FXML
-    private void onHomeClick(ActionEvent e) throws IOException {
-        MainApplication.loadHome(e);
-        System.gc();
-        //MainApplication.switchScene(e, "home-view.fxml", MainApplication.homeController);
     }
 }

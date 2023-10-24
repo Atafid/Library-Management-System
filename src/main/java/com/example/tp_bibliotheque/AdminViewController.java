@@ -1,10 +1,10 @@
 package com.example.tp_bibliotheque;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 
 import java.io.IOException;
@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.util.Vector;
 
 public class AdminViewController {
+    @FXML private AnchorPane root;
     @FXML private GridPane userGrid;
     private User admin;
 
@@ -20,6 +21,8 @@ public class AdminViewController {
     }
 
     public void initialize() throws SQLException {
+        root.getChildren().add(MainApplication.header.getHead());
+
         Vector<User> users = User.getAllUsers();
 
         for(int i=0;i<users.size();i++) {
@@ -30,7 +33,7 @@ public class AdminViewController {
             userButton.getStyleClass().add("user_button");
 
             Label empruntLabel = new Label();
-            empruntLabel.setText(Emprunt.getCurrentEmpruntFromUser(u.getId()).size()+" current borrows");
+            empruntLabel.setText(Emprunt.getCurrentEmpruntsFromUser(u.getId()).size()+" current borrows");
 
             if(u.countLateBorrow()>0) {
                 empruntLabel.setText(empruntLabel.getText()+" "+u.countLateBorrow()+" Late");
@@ -72,10 +75,4 @@ public class AdminViewController {
         }
     }
 
-    @FXML
-    private void onHomeClick(ActionEvent e) throws IOException {
-        MainApplication.loadHome(e);
-        System.gc();
-        //MainApplication.switchScene(e, "home-view.fxml", MainApplication.homeController);
-    }
 }

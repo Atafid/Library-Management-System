@@ -52,6 +52,27 @@ public class Book {
 
         return(res);
     }
+    public static Vector<Book> getBookFromSearch(String search) throws SQLException {
+        Vector<Book> res = new Vector<Book>();
+
+        String quer = "SELECT DISTINCT b.id FROM Books b JOIN aEcrit h ON h.bookID=b.id JOIN Authors a ON h.authorID = a.id" +
+                " WHERE b.title LIKE ? OR b.description LIKE ? OR a.name LIKE ? OR a.last_name LIKE ? LIMIT 10";
+        PreparedStatement stmt = MainApplication.bddConn.con.prepareStatement(quer);
+
+        search = "%"+search+"%";
+        stmt.setString(1,search);
+        stmt.setString(2,search);
+        stmt.setString(3,search);
+        stmt.setString(4,search);
+
+        ResultSet rs = stmt.executeQuery();
+
+        while(rs.next()) {
+            res.add(getBook(rs.getInt(1)));
+        }
+
+        return(res);
+    }
 
     public static String[] cleanGenres(String genresTable) {
         //clean [] char

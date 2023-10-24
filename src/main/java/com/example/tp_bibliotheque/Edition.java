@@ -50,21 +50,12 @@ public class Edition {
     public Date getPublishDate() { return publishDate; }
     public int getQuantity() { return quantity; }
     public Vector<Emprunt> getEmprunts() throws SQLException {
-        return(Emprunt.getCurrentEmpruntFromEdition(isbn));
-    }
-    public static Emprunt getUserEmprunt(Vector<Emprunt> emprunts) throws SQLException {
-        for(Emprunt e:emprunts) {
-            if(e.getUserId() == HomeController.user.getId()) {
-                return(e);
-            }
-        }
-
-        return(null);
+        return(Emprunt.getCurrentEmpruntsFromEdition(isbn));
     }
 
     public void updateButtons() throws SQLException {
-        Vector<Emprunt> currentEmprunts = getEmprunts();
-        Emprunt currentEmprunt = getUserEmprunt(currentEmprunts);
+        User user = MainApplication.header.getUser();
+        Emprunt currentEmprunt = Emprunt.getCurrentEmprunt(isbn, user.getId());
 
         editionLabel.setText(editorName+", "+publishDate.toString()+", qty : "+availableQty);
 
@@ -74,11 +65,11 @@ public class Edition {
             borrowedLabel.setText("Book borrowed until : "+currentEmprunt.getStringHypEndDate()+" by "+currentEmprunt.getUserMail());
             borrowedLabel.setVisible(true);
 
-            returnButton.setVisible(currentEmprunt.getUserMail().equals(HomeController.user.getMail()));
+            returnButton.setVisible(currentEmprunt.getUserMail().equals(user.getMail()));
         }
 
         else {
-            if(currentEmprunts.size() < quantity && HomeController.user.getBorrowCount()<HomeController.user.getMaxBorrowCount()) {
+            if(getEmprunts().size() < quantity && user.getBorrowCount()<user.getMaxBorrowCount()) {
                 borrowButton.setVisible(true);
                 borrowedLabel.setVisible(false);
                 returnButton.setVisible(false);
@@ -112,15 +103,17 @@ public class Edition {
     }
     @FXML
     private void onClickEmprunt() throws SQLException {
+        User user = MainApplication.header.getUser();
+
         long millis = System.currentTimeMillis();
         Date currentDate = new Date(millis);
 
         long dayMillis = (long) (8.64*Math.pow(10,7));
-        Date endDate = new Date(millis+HomeController.user.getBorrowDays()*dayMillis);
+        Date endDate = new Date(millis+user.getBorrowDays()*dayMillis);
 
-        Emprunt.addEmprunt(this.getIsbn(), HomeController.user.getId(), currentDate, endDate);
+        Emprunt.addEmprunt(this.getIsbn(), user.getId(), currentDate, endDate);
 
-        HomeController.user.setBorrowCount(HomeController.user.getBorrowCount()+1);
+        user.setBorrowCount(user.getBorrowCount()+1);
         availableQty -= 1;
 
         updateButtons();
@@ -132,7 +125,7 @@ public class Edition {
 
         Emprunt.finishEmprunt(empruntId, currentDate);
 
-        HomeController.user.setBorrowCount(HomeController.user.getBorrowCount()-1);
+        MainApplication.header.getUser().setBorrowCount(MainApplication.header.getUser().getBorrowCount()-1);
         availableQty += 1;
 
         updateButtons();

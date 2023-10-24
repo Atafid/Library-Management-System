@@ -10,7 +10,6 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Objects;
 import java.util.Vector;
 
@@ -18,7 +17,9 @@ public class MainApplication extends Application {
     protected static String pepper;
     protected static int hashIncrementation;
     protected static BDDConnector bddConn;
-    protected static Parent homeRoot;
+    protected static Header header;
+    public static Vector<Book> fstPageHome;
+    public static Vector<Book> sndPageHome;
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -26,6 +27,9 @@ public class MainApplication extends Application {
         hashIncrementation = 5;
 
         bddConn = new BDDConnector();
+
+        fstPageHome = Book.getPage(1);
+        sndPageHome = Book.getPage(2);
 
         FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("login-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
@@ -36,26 +40,12 @@ public class MainApplication extends Application {
     }
 
     @FXML
-    public static void initHome(User user, Vector<Book> fstPage, Vector<Book> sndPage) throws IOException {
-        HomeController homeController = new HomeController(user, fstPage, sndPage);
-
-        FXMLLoader loader = new FXMLLoader(MainApplication.class.getResource("home-view.fxml"));
-        loader.setController(homeController);
-        homeRoot = loader.load();
-    }
-
-    @FXML
-    public static void loadHome(ActionEvent e) {
-        Stage stage = (Stage) ((Node)e.getSource()).getScene().getWindow();
-        stage.getScene().setRoot(homeRoot);
-    }
-
-    @FXML
     public static void switchScene(ActionEvent e, String url) throws IOException {
         Stage stage = (Stage) ((Node)e.getSource()).getScene().getWindow();
 
         Parent newRoot = FXMLLoader.load(Objects.requireNonNull(MainApplication.class.getResource(url)));
         stage.getScene().setRoot(newRoot);
+        System.gc();
     }
 
     @FXML
@@ -66,6 +56,7 @@ public class MainApplication extends Application {
         loader.setController(controller);
 
         stage.getScene().setRoot(loader.load());
+        System.gc();
     }
 
     public static void main(String[] args) {

@@ -19,14 +19,6 @@ public class LoginController {
     @FXML private Button goToSignUp;
     @FXML private Label errorLabel;
 
-    Vector<Book> fstPageHome;
-    Vector<Book> sndPageHome;
-
-    public LoginController() {
-        fstPageHome = Book.getPage(1);
-        sndPageHome = Book.getPage(2);
-    }
-
     @FXML
     public void initialize() {
         goToSignUp.setOnAction(event -> {
@@ -53,8 +45,9 @@ public class LoginController {
         String hashInputPassword = LoginPage.hashFunction(passText.getText(), user.getPasswordSalt(), MainApplication.pepper, MainApplication.hashIncrementation);
 
         if (Objects.equals(user.getHashPassword(), hashInputPassword)) {
-            MainApplication.initHome(user, fstPageHome, sndPageHome);
-            MainApplication.loadHome(event);
+            MainApplication.header = new Header(user);
+            HomeController homeController = new HomeController(MainApplication.fstPageHome, MainApplication.sndPageHome);
+            MainApplication.switchScene(event, "home-view.fxml", homeController);
         } else {
             errorLabel.setText("Wrong password");
             errorLabel.setVisible(true);

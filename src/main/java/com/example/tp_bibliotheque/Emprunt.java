@@ -47,7 +47,22 @@ public class Emprunt {
         stmt.executeBatch();
         MainApplication.bddConn.con.commit();
     }
-    public static Vector<Emprunt> getCurrentEmpruntFromEdition(String editionISBN) throws SQLException {
+    public static Emprunt getCurrentEmprunt(String isbn, int userId) throws SQLException {
+        String querry = "SELECT * FROM Emprunt WHERE userId=? AND editionISBN=? AND isFinished=true";
+        PreparedStatement dispStmt = MainApplication.bddConn.con.prepareStatement(querry);
+        dispStmt.setInt(1, userId);
+        dispStmt.setString(2,isbn);
+
+        ResultSet rs = dispStmt.executeQuery();
+
+        while(rs.next()) {
+            Emprunt emprunt = new Emprunt(rs.getInt(1), rs.getString(2), rs.getInt(3), rs.getDate(4), rs.getDate(5), rs.getDate(6), rs.getBoolean(7));
+            return(emprunt);
+        }
+
+        return(null);
+    }
+    public static Vector<Emprunt> getCurrentEmpruntsFromEdition(String editionISBN) throws SQLException {
         Vector<Emprunt> res = new Vector<Emprunt>();
 
         String querry = "SELECT * FROM Emprunt WHERE editionISBN=? AND isFinished=false";
@@ -63,7 +78,7 @@ public class Emprunt {
 
         return(res);
     }
-    public static Vector<Emprunt> getCurrentEmpruntFromUser(int userId) throws SQLException {
+    public static Vector<Emprunt> getCurrentEmpruntsFromUser(int userId) throws SQLException {
         Vector<Emprunt> res = new Vector<Emprunt>();
 
         String querry = "SELECT * FROM Emprunt WHERE userId=? AND isFinished=false";
@@ -79,7 +94,7 @@ public class Emprunt {
 
         return(res);
     }
-    public static Vector<Emprunt> getFinishedEmpruntFromUser(int userId) throws SQLException {
+    public static Vector<Emprunt> getFinishedEmpruntsFromUser(int userId) throws SQLException {
         Vector<Emprunt> res = new Vector<Emprunt>();
 
         String querry = "SELECT * FROM Emprunt WHERE userId=? AND isFinished=true";

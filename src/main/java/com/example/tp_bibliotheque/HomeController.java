@@ -8,23 +8,21 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 
 import java.io.IOException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Vector;
 
 public class HomeController {
-    @FXML private Label label;
-    @FXML private Button adminButton;
-    @FXML private Button signOutButton;
+    @FXML private AnchorPane root;
     @FXML private GridPane bookGrid;
     @FXML private Button previousButton;
     @FXML private Button nextButton;
     @FXML private Label pageLabel;
-    @FXML private TextField searchArea;
-
-    protected static User user;
 
     private Vector<Book> previousPage;
     private Vector<Book> currentPage;
@@ -33,10 +31,8 @@ public class HomeController {
     private Boolean dispNextPage;
     private Boolean dispPrevPage;
 
-    public HomeController(User _user, Vector<Book> fstPage, Vector<Book> sndPage) {
-        user = _user;
+    public HomeController(Vector<Book> fstPage, Vector<Book> sndPage) {
         //MainApplication.bddConn.fillBDD();
-
         currentPage = fstPage;
         nextPage = sndPage;
         previousPage = new Vector<Book>();
@@ -45,9 +41,7 @@ public class HomeController {
         dispPrevPage = true;
     }
     public void initialize() throws SQLException {
-        label.setText("Bienvenue "+user.getName()+" !");
-
-        adminButton.setVisible(user.categorie.equals(Categorie.Bibliothécaire));
+        root.getChildren().add(MainApplication.header.getHead());
 
         for(int i=0;i<5;i++) {
             dispBook(currentPage.get(i), bookGrid, i, 0);
@@ -62,8 +56,8 @@ public class HomeController {
         ImageView imageView = new ImageView(book.getCoverImg());
 
         imageView.getStyleClass().add("cover_image");
-        imageView.setFitHeight(100);
-        imageView.setFitWidth(100);
+        imageView.setFitHeight(150);
+        imageView.setFitWidth(93);
 
         Button titleButton = new Button();
         titleButton.setText(book.getTitle());
@@ -75,6 +69,7 @@ public class HomeController {
         } catch(SQLException e) {
             e.printStackTrace();
         }
+        titleButton.wrapTextProperty().setValue(true);
         titleButton.getStyleClass().add("book_title");
 
         BookViewController bookController = new BookViewController(book);
@@ -89,23 +84,45 @@ public class HomeController {
         parent.add(imageView, column, row);
         parent.add(titleButton, column, row+1);
     }
+    private Vector<Book> copyPage(Vector<Book> original) {
+        Vector<Book> res = new Vector<Book>();
+        for(Book b:original) {
+            res.add(b);
+        }
+
+        return(res);
+    }
 
     @FXML
-    private void onSignOut(ActionEvent e) throws IOException {
-        MainApplication.homeRoot = null;
-        MainApplication.switchScene(e, "login-view.fxml");
-    }
-    @FXML
-    private void onUserClick(ActionEvent e) throws IOException {
-        UserViewController userViewController = new UserViewController(user);
-        MainApplication.switchScene(e, "user-view.fxml", userViewController);
-    }
-    @FXML
-    private void onAdminClick(ActionEvent e) throws IOException {
-        AdminViewController adminViewController = new AdminViewController(user);
-        MainApplication.switchScene(e, "admin-view.fxml", adminViewController);
-    }
+    protected void onSearch(String research) throws SQLException {
+        if(research.isEmpty()) {
+            bookGrid.getChildren().clear();
+            System.gc();
 
+            for (int i = 0; i < 5; i++) {
+                dispBook(currentPage.get(i), bookGrid, i, 0);
+                dispBook(currentPage.get(5 + i), bookGrid, i, 2);
+            }
+
+            nextButton.setVisible(true);
+            previousButton.setVisible(true);
+            pageLabel.setVisible(true);
+        }
+        else {
+            Vector<Book> searchedBooks = Book.getBookFromSearch(research);
+
+            bookGrid.getChildren().clear();
+
+            for (int i = 0; i < searchedBooks.size()/2; i++) {
+                dispBook(searchedBooks.get(i), bookGrid, i, 0);
+                dispBook(searchedBooks.get(searchedBooks.size()/2 + i), bookGrid, i, 2);
+            }
+
+            nextButton.setVisible(false);
+            previousButton.setVisible(false);
+            pageLabel.setVisible(false);
+        }
+    }
 
     @FXML
     private void onNextClick() throws InterruptedException {
@@ -127,8 +144,8 @@ public class HomeController {
             pageLabel.setText(String.valueOf(pageCount));
             previousButton.setVisible(true);
 
-            previousPage = currentPage;
-            currentPage = nextPage;
+            previousPage = copyPage(currentPage);
+            currentPage = copyPage(nextPage);
 
             // Utiliser un Service pour charger les prochains livres en arrière-plan
             Service<Void> backgroundService = new Service<Void>() {
@@ -166,10 +183,12 @@ public class HomeController {
             pageCount--;
             pageLabel.setText(String.valueOf(pageCount));
 
-            nextPage = currentPage;
-            currentPage = previousPage;
+            nextPage = copyPage(currentPage);
+            currentPage = copyPage(previousPage);
             if (pageCount == 1) {
                 previousButton.setVisible(false);
+                previousPage.clear();
+                dispPrevPage = true;
             } else {
                 // Utiliser un Service pour charger les prochains livres en arrière-plan
                 Service<Void> backgroundService = new Service<Void>() {

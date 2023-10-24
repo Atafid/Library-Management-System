@@ -7,6 +7,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
@@ -17,13 +18,13 @@ import java.sql.SQLException;
 import java.util.Vector;
 
 public class BookViewController {
+    @FXML private AnchorPane root;
     @FXML private Label titleLabel;
     @FXML private TextFlow genreText;
     @FXML private TextFlow descriptionLabel;
     @FXML private GridPane creditsGrid;
     @FXML private GridPane editionGrid;
     @FXML private ImageView coverView;
-    @FXML private Button homeButton;
     @FXML private Slider noteBar;
     @FXML private TextArea commentArea;
     @FXML private GridPane commentGrid;
@@ -35,6 +36,8 @@ public class BookViewController {
         book = _book;
     }
     public void initialize() throws SQLException {
+        root.getChildren().add(MainApplication.header.getHead());
+
         titleLabel.setText(book.getTitle());
 
         //GENRES
@@ -108,14 +111,8 @@ public class BookViewController {
     }
 
     @FXML
-    private void onHomeClick(ActionEvent e) throws IOException {
-        MainApplication.loadHome(e);
-        System.gc();
-        //MainApplication.switchScene(e, "home-view.fxml", MainApplication.homeController);
-    }
-    @FXML
     private void onSendClick() throws SQLException {
-        Comment.addComment(HomeController.user.getId(), book.getId(), new Date(System.currentTimeMillis()), (int) noteBar.getValue(), commentArea.getText());
+        Comment.addComment(MainApplication.header.getUser().getId(), book.getId(), new Date(System.currentTimeMillis()), (int) noteBar.getValue(), commentArea.getText());
         updateCommentSection();
 
         noteBar.setValue(1.0);

@@ -1,9 +1,9 @@
 package com.example.tp_bibliotheque;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 
 import java.io.IOException;
@@ -11,7 +11,7 @@ import java.sql.SQLException;
 import java.util.Vector;
 
 public class UserViewController {
-    @FXML private Button homeButton;
+    @FXML private AnchorPane root;
     @FXML private Label mailLabel;
     @FXML private Label nameLabel;
     @FXML private Label lastNameLabel;
@@ -24,12 +24,14 @@ public class UserViewController {
     }
 
     public void initialize() throws SQLException {
+        root.getChildren().add(MainApplication.header.getHead());
+
         mailLabel.setText(user.getMail());
         nameLabel.setText(user.getName());
         lastNameLabel.setText(user.getLastName());
 
-        Vector<Emprunt> currentEmprunt = Emprunt.getCurrentEmpruntFromUser(user.getId());
-        Vector<Emprunt> finishedEmprunt = Emprunt.getFinishedEmpruntFromUser(user.getId());
+        Vector<Emprunt> currentEmprunt = Emprunt.getCurrentEmpruntsFromUser(user.getId());
+        Vector<Emprunt> finishedEmprunt = Emprunt.getFinishedEmpruntsFromUser(user.getId());
 
         for(int i=0;i<currentEmprunt.size();i++) {
             Emprunt e = currentEmprunt.get(i);
@@ -82,12 +84,5 @@ public class UserViewController {
             empruntGrid.add(empruntButton, 0, currentEmprunt.size()+i);
             empruntGrid.add(empruntLabel, 1, currentEmprunt.size()+i);
         }
-    }
-
-    @FXML
-    private void onHomeClick(ActionEvent e) throws IOException {
-        MainApplication.loadHome(e);
-        System.gc();
-        //MainApplication.switchScene(e, "home-view.fxml", MainApplication.homeController);
     }
 }
