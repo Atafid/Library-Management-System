@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="555.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Rectangle fill="WHITE" height="492.0" layoutX="25.0" layoutY="90.0" stroke="TRANSPARENT" strokeType="INSIDE" width="850.0" />
+      <GridPane fx:id="bookGrid" alignment="CENTER" layoutX="75.0" layoutY="110.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="403.0" prefWidth="751.0" styleClass="test" AnchorPane.leftAnchor="75.0" AnchorPane.rightAnchor="74.0">
+        <columnConstraints>
+          <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints maxHeight="169.0" minHeight="10.0" prefHeight="142.6" valignment="CENTER" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="71.79999999999998" minHeight="0.0" prefHeight="43.0" valignment="CENTER" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="193.8" minHeight="10.0" prefHeight="160.39999999999998" valignment="CENTER" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="59.80000000000001" minHeight="5.399999999999977" prefHeight="42.0" valignment="CENTER" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <ButtonBar prefHeight="40.0" prefWidth="200.0" GridPane.rowIndex="1" />
+         </children>
+      </GridPane>
+      <Button fx:id="nextButton" layoutX="808.0" layoutY="509.0" mnemonicParsing="false" onAction="#onNextClick" styleClass="arrow_button" text="&gt;">
+         <font>
+            <Font size="20.0" />
+         </font></Button>
+      <Button fx:id="previousButton" layoutX="756.0" layoutY="509.0" mnemonicParsing="false" onAction="#onPreviousClick" styleClass="arrow_button" text="&lt;">
+         <font>
+            <Font size="20.0" />
+         </font></Button>
+      <Label fx:id="pageLabel" layoutX="794.0" layoutY="516.0" text="1">
+         <font>
+            <Font name="System Bold" size="21.0" />
+         </font></Label>
+      <ButtonBar prefHeight="40.0" prefWidth="200.0" />
+   </children>
+   <stylesheets>
+      <URL value="@../css/home.css" />
+      <URL value="@../css/style.css" />
+   </stylesheets>
+</AnchorPane>

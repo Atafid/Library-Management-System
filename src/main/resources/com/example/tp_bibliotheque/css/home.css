@@ -1,0 +1,32 @@
+.cover_image {
+    -fx-alignment: center;
+}
+
+.cover_image:hover {
+    -fx-max-width: 150px;
+    -fx-max-height: 300px;
+}
+
+.book_title {
+    -fx-background-color: transparent;
+    -fx-text-fill: black;
+    -fx-font-size: 10px;
+    -fx-text-alignment: center;
+}
+
+.book_title:hover {
+    -fx-underline: true;
+    -fx-cursor: hand;
+}
+
+.arrow_button {
+    -fx-background-color: transparent;
+    -fx-text-fill: black;
+    -fx-font-size: 20px;
+    -fx-text-alignment: center;
+}
+
+.arrow_button:hover {
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
+}

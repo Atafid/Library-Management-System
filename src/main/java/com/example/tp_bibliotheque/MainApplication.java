@@ -1,5 +1,6 @@
 package com.example.tp_bibliotheque;
 
+import com.example.tp_bibliotheque.Objects.Book;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -14,10 +15,10 @@ import java.util.Objects;
 import java.util.Vector;
 
 public class MainApplication extends Application {
-    protected static String pepper;
-    protected static int hashIncrementation;
-    protected static BDDConnector bddConn;
-    protected static Header header;
+    public static String pepper;
+    public static int hashIncrementation;
+    public static BDDConnector bddConn;
+    public static Header header;
     public static Vector<Book> fstPageHome;
     public static Vector<Book> sndPageHome;
 
@@ -31,10 +32,10 @@ public class MainApplication extends Application {
         fstPageHome = Book.getPage(1);
         sndPageHome = Book.getPage(2);
 
-        FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("login-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("fxml/login-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
 
-        stage.setTitle("Login");
+        stage.setTitle("Bibliothèque");
         stage.setScene(scene);
         stage.show();
     }

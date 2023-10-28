@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="555.0" prefWidth="900.0" spacing="20.0" style="-fx-background-color: lightskyblue;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.tp_bibliotheque.Controllers.LoginController">
+   <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="383.0" prefWidth="586.0" styleClass="anchorPane" stylesheets="@../css/login.css">
+      <children>
+         <GridPane alignment="CENTER" layoutX="62.0" layoutY="104.0" maxWidth="-Infinity" prefHeight="190.0" prefWidth="462.0">
+            <columnConstraints>
+               <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="463.80001525878913" minWidth="10.0" prefWidth="458.80001525878913" />
+               <ColumnConstraints />
+            </columnConstraints>
+            <rowConstraints>
+               <RowConstraints maxHeight="79.99998474121094" minHeight="10.0" prefHeight="65.59998474121095" vgrow="SOMETIMES" />
+               <RowConstraints maxHeight="107.00000000000001" minHeight="0.0" prefHeight="64.80001525878905" vgrow="SOMETIMES" />
+               <RowConstraints maxHeight="68.6" minHeight="0.0" prefHeight="61.0" valignment="CENTER" vgrow="SOMETIMES" />
+            </rowConstraints>
+            <children>
+               <TextField fx:id="usernameText" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="34.0" prefWidth="343.0" promptText="Email" styleClass="textBox" stylesheets="@../css/login.css">
+                  <font>
+                     <Font size="15.0" />
+                  </font></TextField>
+               <PasswordField fx:id="passText" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="34.0" prefWidth="343.0" promptText="Mot de passe" styleClass="textBox" stylesheets="@../css/login.css" GridPane.rowIndex="1">
+                  <font>
+                     <Font size="15.0" />
+                  </font></PasswordField>         <Button contentDisplay="CENTER" onAction="#onLoginClick" prefHeight="38.0" prefWidth="158.0" styleClass="boutton" stylesheets="@../css/login.css" text="Se connecter" textAlignment="CENTER" textFill="WHITE" GridPane.rowIndex="2">
+                  <font>
+                     <Font name="Segoe UI Bold" size="18.0" />
+                  </font>
+                  <GridPane.margin>
+                     <Insets />
+                  </GridPane.margin>
+               </Button>
+            </children>
+         </GridPane>
+
+         <Button fx:id="goToSignUp" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="301.0" layoutY="291.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="22.0" prefWidth="62.0" styleClass="link" stylesheets="@../css/login.css" text="S'inscrire" textAlignment="CENTER" textFill="#4b8ba6">
+            <font>
+               <Font name="Times New Roman Bold" size="11.0" />
+            </font>
+         </Button>
+         <Label layoutX="208.0" layoutY="55.0" prefHeight="38.0" prefWidth="169.0" text="Se Connecter">
+            <font>
+               <Font name="System Bold" size="26.0" />
+            </font>
+         </Label>
+         <Label layoutX="227.0" layoutY="293.0" prefHeight="18.0" prefWidth="74.0" text="Pas de compte ?">
+            <font>
+               <Font name="Times New Roman" size="11.0" />
+            </font>
+         </Label>
+         <Label fx:id="errorLabel" layoutX="125.0" layoutY="96.0" text="Label" textFill="#df1e1e">
+            <font>
+               <Font size="13.0" />
+            </font>
+         </Label>
+      </children>
+   </AnchorPane>
+</VBox>

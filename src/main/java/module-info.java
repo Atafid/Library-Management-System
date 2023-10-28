@@ -10,4 +10,8 @@ module com.example.tp_bibliotheque {
 
     opens com.example.tp_bibliotheque to javafx.fxml;
     exports com.example.tp_bibliotheque;
+    exports com.example.tp_bibliotheque.Controllers;
+    opens com.example.tp_bibliotheque.Controllers to javafx.fxml;
+    exports com.example.tp_bibliotheque.Objects;
+    opens com.example.tp_bibliotheque.Objects to javafx.fxml;
 }
