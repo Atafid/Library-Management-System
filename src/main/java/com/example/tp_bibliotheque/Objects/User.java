@@ -1,13 +1,20 @@
 package com.example.tp_bibliotheque.Objects;
 
+import com.example.tp_bibliotheque.Controllers.UserViewController;
 import com.example.tp_bibliotheque.MainApplication;
+import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
+import javafx.scene.layout.GridPane;
 
+import java.io.IOException;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Vector;
 
-public class User extends Personne {
+public class User extends Personne implements PageObject {
     private final int id;
     private final String mail;
     private final String hashPassword;
@@ -49,8 +56,8 @@ public class User extends Personne {
         MainApplication.bddConn.con.commit();
     }
 
-    public static Vector<User> getAllUsers() throws SQLException {
-        Vector<User> res = new Vector<User>();
+    public static Vector<PageObject> getAllUsers() throws SQLException {
+        Vector<PageObject> res = new Vector<PageObject>();
 
         String querry = "SELECT * FROM User";
         PreparedStatement dispStmt = MainApplication.bddConn.con.prepareStatement(querry);
@@ -158,5 +165,60 @@ public class User extends Personne {
         }
 
         return(res);
+    }
+
+    @Override
+    public void fillGrid(GridPane grid, int rowIdx) {
+        Button userButton = new Button();
+        userButton.setText(mail);
+        userButton.getStyleClass().add("user_button");
+
+        Label empruntLabel = new Label();
+        try {
+            empruntLabel.setText(Emprunt.getCurrentEmpruntsFromUser(id).size()+" current borrows");
+
+            if(countLateBorrow()>0) {
+                empruntLabel.setText(empruntLabel.getText()+" "+countLateBorrow()+" Late");
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        UserViewController userController = new UserViewController(this);
+        userButton.setOnAction(event -> {
+            try {
+                MainApplication.switchScene(event, "fxml/user-view.fxml", userController);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        if(!categorie.equals(Categorie.Bibliothécaire)) {
+            ChoiceBox<Categorie> userCB = new ChoiceBox<Categorie>();
+            userCB.getItems().addAll(Categorie.Cat1, Categorie.Cat2, Categorie.Cat3, Categorie.Forbidden);
+            userCB.setValue(categorie);
+
+            userCB.setOnAction((event) -> {
+                try {
+                    setCategorie(userCB.getSelectionModel().getSelectedItem());
+                    CatChange.addCatChange(id, MainApplication.header.getUser().getId(), new Date(System.currentTimeMillis()), categorie, userCB.getSelectionModel().getSelectedItem());
+                    Notification.addNotification(id, "C", new Date(System.currentTimeMillis()), CatChange.getIdFromBDD(id, MainApplication.header.getUser().getId(), new Date(System.currentTimeMillis()), categorie, userCB.getSelectionModel().getSelectedItem()));
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+
+            grid.add(userCB, 2,rowIdx);
+        }
+
+        else {
+            Label bibliothecaireLabel = new Label("Bibilothécaire");
+
+            grid.add(bibliothecaireLabel, 2, rowIdx);
+        }
+
+        grid.add(userButton, 0, rowIdx);
+        grid.add(empruntLabel, 1, rowIdx);
     }
 }

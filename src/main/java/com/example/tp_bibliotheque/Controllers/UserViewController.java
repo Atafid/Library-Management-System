@@ -1,9 +1,7 @@
 package com.example.tp_bibliotheque.Controllers;
 
-import com.example.tp_bibliotheque.Objects.Book;
-import com.example.tp_bibliotheque.Objects.Emprunt;
+import com.example.tp_bibliotheque.Objects.*;
 import com.example.tp_bibliotheque.MainApplication;
-import com.example.tp_bibliotheque.Objects.User;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -20,6 +18,10 @@ public class UserViewController {
     @FXML private Label nameLabel;
     @FXML private Label lastNameLabel;
     @FXML private GridPane empruntGrid;
+    @FXML private Button prevButton;
+    @FXML private Button nextButton;
+    @FXML private Label pageLabel;
+    private Page empruntsPage;
 
     User user;
 
@@ -34,59 +36,7 @@ public class UserViewController {
         nameLabel.setText(user.getName());
         lastNameLabel.setText(user.getLastName());
 
-        Vector<Emprunt> currentEmprunt = Emprunt.getCurrentEmpruntsFromUser(user.getId());
-        Vector<Emprunt> finishedEmprunt = Emprunt.getFinishedEmpruntsFromUser(user.getId());
+        empruntsPage = new Page(prevButton, nextButton, Emprunt.getAllEmpruntsFromUser(user.getId()), empruntGrid, pageLabel);
 
-        for(int i=0;i<currentEmprunt.size();i++) {
-            Emprunt e = currentEmprunt.get(i);
-            Book empruntBook = e.getBook();
-
-            Button empruntButton = new Button();
-            empruntButton.setText(empruntBook.getTitle()+" "+e.getEditionISBN());
-            empruntButton.getStyleClass().add("emprunt_button");
-
-            Label empruntLabel = new Label();
-            empruntLabel.setText(", until : "+e.getStringHypEndDate());
-
-            if(e.checkLateStatus()) {
-                empruntLabel.setText(empruntLabel.getText()+" LATE!");
-            }
-
-            BookViewController bookController = new BookViewController(empruntBook);
-            empruntButton.setOnAction(event -> {
-                try {
-                    MainApplication.switchScene(event, "fxml/book-view.fxml", bookController);
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
-            });
-
-            empruntGrid.add(empruntButton, 0, i);
-            empruntGrid.add(empruntLabel, 1, i);
-        }
-
-        for(int i=0;i<finishedEmprunt.size();i++) {
-            Emprunt e = finishedEmprunt.get(i);
-            Book empruntBook = e.getBook();
-
-            Button empruntButton = new Button();
-            empruntButton.setText(empruntBook.getTitle()+" "+e.getEditionISBN());
-            empruntButton.getStyleClass().add("emprunt_button");
-
-            Label empruntLabel = new Label();
-            empruntLabel.setText(", finished since : "+e.getStringRealEndDate());
-
-            BookViewController bookController = new BookViewController(empruntBook);
-            empruntButton.setOnAction(event -> {
-                try {
-                    MainApplication.switchScene(event, "fxml/book-view.fxml", bookController);
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
-            });
-
-            empruntGrid.add(empruntButton, 0, currentEmprunt.size()+i);
-            empruntGrid.add(empruntLabel, 1, currentEmprunt.size()+i);
-        }
     }
 }

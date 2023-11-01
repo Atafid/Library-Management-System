@@ -1,15 +1,19 @@
 package com.example.tp_bibliotheque.Objects;
 
 import com.example.tp_bibliotheque.BDDConnector;
+import com.example.tp_bibliotheque.Controllers.BookViewController;
 import com.example.tp_bibliotheque.MainApplication;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
+import javafx.scene.layout.GridPane;
 
+import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Vector;
 
-public class Book {
+public class Book implements PageObject {
     private int id;
     private String title;
     private String coverImgUrl;
@@ -168,5 +172,22 @@ public class Book {
             return(-1);
         }
         return(res/count);
+    }
+
+    @Override
+    public void fillGrid(GridPane grid, int rowIdx) {
+        Button bookButton = new Button();
+        bookButton.setText(title);
+        bookButton.getStyleClass().add("book_button");
+
+        BookViewController bookController = new BookViewController(this);
+        bookButton.setOnAction(event -> {
+            try {
+                MainApplication.switchScene(event, "fxml/book-view.fxml", bookController);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        grid.add(bookButton, 0, rowIdx);
     }
 }

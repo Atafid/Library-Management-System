@@ -1,6 +1,8 @@
 package com.example.tp_bibliotheque.Objects;
 
 import com.example.tp_bibliotheque.MainApplication;
+import javafx.scene.control.Label;
+import javafx.scene.layout.GridPane;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -15,7 +17,7 @@ enum NotifType {
 
     public String toString(int _infoId) throws SQLException {
         if (this.equals(NotifType.LateBook)) {
-            return ("You are late for the book : "+Book.getBookFromEmprunt(_infoId));
+            return ("You are late for the book : "+Book.getBookFromEmprunt(_infoId).getTitle());
         } else if (this.equals(NotifType.CatChange)) {
             return ("Your categorie changed from "+
                     com.example.tp_bibliotheque.Objects.CatChange.getCatChange(_infoId).getPrevCat().getName()+" to "+
@@ -27,7 +29,7 @@ enum NotifType {
     }
 }
 
-public class Notification {
+public class Notification implements PageObject {
     private int id;
     private int userId;
     private NotifType type;
@@ -84,10 +86,10 @@ public class Notification {
 
         return(res);
     }
-    public static Vector<Notification> getNotifications(int _userId) throws SQLException {
-        Vector<Notification> res = new Vector<Notification>();
+    public static Vector<PageObject> getNotifications(int _userId) throws SQLException {
+        Vector<PageObject> res = new Vector<PageObject>();
 
-        String querry = "SELECT * FROM Notifications WHERE userId=?";
+        String querry = "SELECT * FROM Notifications WHERE userId=? ORDER BY date DESC";
         PreparedStatement stmt = MainApplication.bddConn.con.prepareStatement(querry);
 
         stmt.setInt(1, _userId);
@@ -124,6 +126,18 @@ public class Notification {
         return(date);
     }
     public String getString() throws SQLException {
-        return(this.type.toString(infoId));
+        return(this.type.toString(infoId)+", "+this.date);
+    }
+
+    @Override
+    public void fillGrid(GridPane grid, int rowIdx) {
+        Label notifLabel = new Label();
+        try {
+            notifLabel.setText(this.getString());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        grid.add(notifLabel, 0, rowIdx);
     }
 }

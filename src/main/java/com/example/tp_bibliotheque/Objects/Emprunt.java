@@ -1,14 +1,19 @@
 package com.example.tp_bibliotheque.Objects;
 
+import com.example.tp_bibliotheque.Controllers.BookViewController;
 import com.example.tp_bibliotheque.MainApplication;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.layout.GridPane;
 
+import java.io.IOException;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Vector;
 
-public class Emprunt {
+public class Emprunt implements PageObject {
     private int id;
     private String editionISBN;
     private int userId;
@@ -80,6 +85,22 @@ public class Emprunt {
 
         return(res);
     }
+    public static Vector<PageObject> getAllEmpruntsFromUser(int userId) throws SQLException {
+        Vector<PageObject> res = new Vector<PageObject>();
+
+        String querry = "SELECT * FROM Emprunt WHERE userId=? ORDER BY isFinished ASC";
+        PreparedStatement dispStmt = MainApplication.bddConn.con.prepareStatement(querry);
+        dispStmt.setInt(1, userId);
+
+        ResultSet rs = dispStmt.executeQuery();
+
+        while(rs.next()) {
+            Emprunt emprunt = new Emprunt(rs.getInt(1), rs.getString(2), rs.getInt(3), rs.getDate(4), rs.getDate(5), rs.getDate(6), rs.getBoolean(7));
+            res.add(emprunt);
+        }
+
+        return(res);
+    }
     public static Vector<Emprunt> getCurrentEmpruntsFromUser(int userId) throws SQLException {
         Vector<Emprunt> res = new Vector<Emprunt>();
 
@@ -91,22 +112,6 @@ public class Emprunt {
 
         while(rs.next()) {
             Emprunt emprunt = new Emprunt(rs.getInt(1), rs.getString(2), rs.getInt(3), rs.getDate(4), rs.getDate(5), rs.getBoolean(6));
-            res.add(emprunt);
-        }
-
-        return(res);
-    }
-    public static Vector<Emprunt> getFinishedEmpruntsFromUser(int userId) throws SQLException {
-        Vector<Emprunt> res = new Vector<Emprunt>();
-
-        String querry = "SELECT * FROM Emprunt WHERE userId=? AND isFinished=true";
-        PreparedStatement dispStmt = MainApplication.bddConn.con.prepareStatement(querry);
-        dispStmt.setInt(1, userId);
-
-        ResultSet rs = dispStmt.executeQuery();
-
-        while(rs.next()) {
-            Emprunt emprunt = new Emprunt(rs.getInt(1), rs.getString(2), rs.getInt(3), rs.getDate(4), rs.getDate(5), rs.getDate(6), rs.getBoolean(7));
             res.add(emprunt);
         }
 
@@ -173,5 +178,68 @@ public class Emprunt {
 
     public void setEndDate(Date date) {
         realEndDate = date;
+    }
+
+    @Override
+    public void fillGrid(GridPane grid, int rowIdx) {
+        if(!isFinished) {
+            Book empruntBook = null;
+            try {
+                empruntBook = this.getBook();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+
+            Button empruntButton = new Button();
+            empruntButton.setText(empruntBook.getTitle()+" "+editionISBN);
+            empruntButton.getStyleClass().add("emprunt_button");
+
+            Label empruntLabel = new Label();
+            empruntLabel.setText(", until : "+getStringHypEndDate());
+
+            if(checkLateStatus()) {
+                empruntLabel.setText(empruntLabel.getText()+" LATE!");
+            }
+
+            BookViewController bookController = new BookViewController(empruntBook);
+            empruntButton.setOnAction(event -> {
+                try {
+                    MainApplication.switchScene(event, "fxml/book-view.fxml", bookController);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            });
+
+            grid.add(empruntButton, 0, rowIdx);
+            grid.add(empruntLabel, 1, rowIdx);
+        }
+
+        else {
+            Book empruntBook = null;
+            try {
+                empruntBook = getBook();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+
+            Button empruntButton = new Button();
+            empruntButton.setText(empruntBook.getTitle()+" "+editionISBN);
+            empruntButton.getStyleClass().add("emprunt_button");
+
+            Label empruntLabel = new Label();
+            empruntLabel.setText(", finished since : "+getStringRealEndDate());
+
+            BookViewController bookController = new BookViewController(empruntBook);
+            empruntButton.setOnAction(event -> {
+                try {
+                    MainApplication.switchScene(event, "fxml/book-view.fxml", bookController);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            });
+
+            grid.add(empruntButton, 0, rowIdx);
+            grid.add(empruntLabel, 1, rowIdx);
+        }
     }
 }

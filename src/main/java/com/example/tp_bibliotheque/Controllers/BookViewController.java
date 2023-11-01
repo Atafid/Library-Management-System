@@ -29,6 +29,10 @@ public class BookViewController {
     @FXML private Slider noteBar;
     @FXML private TextArea commentArea;
     @FXML private GridPane commentGrid;
+    @FXML private Button prevButton;
+    @FXML private Button nextButton;
+    @FXML private Label pageLabel;
+    private Page commentPage;
 
     private Book book;
 
@@ -87,29 +91,20 @@ public class BookViewController {
         }
 
         //COMMENTS
-        updateCommentSection();
+        try {
+            commentPage = new Page(prevButton, nextButton, Comment.getComment(book.getId()), commentGrid, pageLabel);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 
         coverView.setImage(book.getCoverImg());
     }
 
     private void updateCommentSection() throws SQLException {
-        commentGrid.getChildren().clear();
-
-        Vector<Comment> commentsVector = Comment.getComment(book.getId());
-        for(int i=0;i<commentsVector.size();i++){
-            Comment c = commentsVector.get(i);
-
-            Label noteLabel = new Label();
-            noteLabel.setText(String.valueOf(c.getNote())+" "+ User.getUserFromId(c.getUserId()).getMail()+" "+c.getDate());
-
-            Text contentText = new Text(c.getContent());
-            TextFlow contentFlow = new TextFlow();
-            contentFlow.getChildren().add(contentText);
-
-            commentGrid.add(noteLabel, 0, i);
-            commentGrid.add(contentFlow, 1, i);
-        }
+        commentPage.setObjects(Comment.getComment(book.getId()));
+        commentPage.updateFXML();
     }
+
 
     @FXML
     private void onSendClick() throws SQLException {

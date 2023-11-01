@@ -18,8 +18,8 @@ public class Author extends Personne {
         birth_date = _birth;
     }
 
-    public Vector<Book> getBooks() throws SQLException {
-        Vector<Book> res = new Vector<Book>();
+    public Vector<PageObject> getBooks() throws SQLException {
+        Vector<PageObject> res = new Vector<PageObject>();
 
         String quer = "SELECT * FROM Books b JOIN aEcrit e ON b.id = e.bookID WHERE e.authorID=?";
         PreparedStatement dispStmt = MainApplication.bddConn.con.prepareStatement(quer);

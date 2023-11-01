@@ -13,6 +13,7 @@ import javafx.scene.layout.GridPane;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.util.Vector;
 
 public class HomeController {
@@ -62,7 +63,8 @@ public class HomeController {
         try {
             double avgNote = book.getAverageNote();
             if(avgNote>-1) {
-                titleButton.setText(titleButton.getText()+", "+String.valueOf(avgNote));
+                DecimalFormat df = new DecimalFormat("#0.0");
+                titleButton.setText(titleButton.getText()+", "+df.format(avgNote));
             }
         } catch(SQLException e) {
             e.printStackTrace();

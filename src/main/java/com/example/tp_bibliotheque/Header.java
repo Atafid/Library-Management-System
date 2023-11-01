@@ -139,6 +139,7 @@ public class Header {
             try {
                 onNotifClick(event);
                 notifMenu.setText("Notifs : 0");
+                notifMenu.getItems().remove(0,notifMenu.getItems().size()-2);
                 searchBar.setText("");
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -202,6 +203,14 @@ public class Header {
     }
     @FXML
     private void onNotifClick(ActionEvent e) throws IOException {
+        try {
+            for(Notification n:Notification.getUnreadNotification(user.getId())) {
+                Notification.readNotification(n.getId());
+            }
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        }
+
         NotifViewController notifController = new NotifViewController(user);
         MainApplication.switchScene(e.copyFor(notifBar, null), "fxml/notif-view.fxml", notifController);
     }
