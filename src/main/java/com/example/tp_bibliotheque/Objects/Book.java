@@ -79,8 +79,22 @@ public class Book implements PageObject {
 
         return(res);
     }
+    public static Book getBookFromEdition(String isbn) throws SQLException {
+        String quer = "SELECT bookId FROM Edition WHERE isbn=?";
+        PreparedStatement stmt = MainApplication.bddConn.con.prepareStatement(quer);
+
+        stmt.setString(1,isbn);
+
+        ResultSet rs = stmt.executeQuery();
+
+        while(rs.next()) {
+            return(getBook(rs.getInt(1)));
+        }
+
+        return(null);
+    }
     public static Book getBookFromEmprunt(int empruntId) throws SQLException {
-        String quer = "SELECT ed.bookId FROM Edition ed JOIN Emprunt e ON ed.isbn = e.editionISBN WHERE e.id=?";
+        String quer = "SELECT bookId FROM Edition ed JOIN Emprunt e ON ed.isbn = e.editionISBN WHERE e.id=?";
         PreparedStatement stmt = MainApplication.bddConn.con.prepareStatement(quer);
 
         stmt.setInt(1,empruntId);
@@ -147,7 +161,7 @@ public class Book implements PageObject {
         ResultSet rs = dispStmt.executeQuery();
 
         while(rs.next()) {
-            Edition newEdition = new Edition(rs.getString(1), rs.getString(3), rs.getDate(4), rs.getInt(5));
+            Edition newEdition = new Edition(rs.getString(1), rs.getInt(2), rs.getString(3), rs.getDate(4), rs.getInt(5));
             res.add(newEdition);
         }
 

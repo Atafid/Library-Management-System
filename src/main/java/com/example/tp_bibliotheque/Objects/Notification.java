@@ -13,7 +13,8 @@ import java.util.Vector;
 enum NotifType {
     LateBook,
     CatChange,
-    adminNotif;
+    adminNotif,
+    ReservationArrived;
 
     public String toString(int _infoId) throws SQLException {
         if (this.equals(NotifType.LateBook)) {
@@ -24,6 +25,8 @@ enum NotifType {
                     com.example.tp_bibliotheque.Objects.CatChange.getCatChange(_infoId).getNewCat().getName());
         } else if (this.equals(NotifType.adminNotif)) {
             return ("The user "+User.getUserFromId(_infoId).getMail()+"has a book late");
+        } else if (this.equals(NotifType.ReservationArrived)) {
+            return ("Your reservation arrived for the book : "+Book.getBook(_infoId).getTitle());
         }
         return null;
     }
@@ -113,6 +116,8 @@ public class Notification implements PageObject {
                 return(NotifType.CatChange);
             case "A":
                 return(NotifType.adminNotif);
+            case "R":
+                return(NotifType.ReservationArrived);
             default:
                 return(NotifType.LateBook);
         }

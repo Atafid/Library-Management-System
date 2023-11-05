@@ -1,6 +1,7 @@
 package com.example.tp_bibliotheque;
 
 import com.example.tp_bibliotheque.Objects.Book;
+import com.example.tp_bibliotheque.Objects.User;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -11,6 +12,8 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.Objects;
 import java.util.Vector;
 

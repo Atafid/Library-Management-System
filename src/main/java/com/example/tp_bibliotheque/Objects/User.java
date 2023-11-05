@@ -16,8 +16,8 @@ import java.util.Vector;
 
 public class User extends Personne implements PageObject {
     private final int id;
-    private final String mail;
-    private final String hashPassword;
+    private String mail;
+    private String hashPassword;
     private final String passwordSalt;
 
     private int borrowCount;
@@ -132,6 +132,30 @@ public class User extends Personne implements PageObject {
         return categorie.getMaxDaysBorrow();
     }
 
+    public void setMail(String newMail) throws SQLException {
+        String querry = "UPDATE User SET mail=? WHERE mail=?";
+        PreparedStatement stmt = MainApplication.bddConn.con.prepareStatement(querry);
+
+        stmt.setString(1, newMail);
+        stmt.setString(2, mail);
+
+        stmt.executeUpdate();
+        MainApplication.bddConn.con.commit();
+
+        mail = newMail;
+    }
+    public void setPassword(String newPassword) throws SQLException {
+        String querry = "UPDATE User SET password=? WHERE mail=?";
+        PreparedStatement stmt = MainApplication.bddConn.con.prepareStatement(querry);
+
+        stmt.setString(1, newPassword);
+        stmt.setString(2, mail);
+
+        stmt.executeUpdate();
+        MainApplication.bddConn.con.commit();
+
+        hashPassword = newPassword;
+    }
     public void setBorrowCount(int i) { borrowCount=i; }
     public void setCategorie(Categorie cat) throws SQLException {
         String querry = "UPDATE User SET categorie=? WHERE mail=?";

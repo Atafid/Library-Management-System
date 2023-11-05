@@ -88,6 +88,8 @@ public class BookViewController {
             editionGrid.add(e.borrowButton, 1, i);
             editionGrid.add(e.borrowedLabel, 1, i);
             editionGrid.add(e.returnButton, 2, i);
+            editionGrid.add(e.reserveButton, 2, i);
+            editionGrid.add(e.reserveLabel, 2, i);
         }
 
         //COMMENTS

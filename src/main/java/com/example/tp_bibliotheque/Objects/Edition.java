@@ -14,15 +14,19 @@ public class Edition {
     @FXML public Button borrowButton;
     @FXML public Label borrowedLabel;
     @FXML public Button returnButton;
+    @FXML public Button reserveButton;
+    @FXML public Label reserveLabel;
 
     private String isbn;
+    private int bookId;
     private String editorName;
     private Date publishDate;
     private int quantity;
     private int availableQty;
 
-    public Edition(String _isbn, String _editorName, Date _publishDate, int _qty) {
+    public Edition(String _isbn, int _bookId, String _editorName, Date _publishDate, int _qty) {
         isbn = _isbn;
+        bookId = _bookId;
         editorName = _editorName;
         publishDate = _publishDate;
         quantity = _qty;
@@ -40,16 +44,19 @@ public class Edition {
         borrowButton.setText("Borrow");
 
         borrowedLabel = new Label();
-        borrowedLabel.setText("Book borrowed until :");
+        borrowedLabel.setText("Book borrowed until : ");
 
         returnButton = new Button();
         returnButton.setText("Return");
+
+        reserveButton = new Button();
+        reserveButton.setText("Reserve");
+
+        reserveLabel = new Label();
+        reserveLabel.setText("Book reserved, you are : ");
     }
 
     public String getIsbn() { return isbn; }
-    public String getEditorName() { return editorName; }
-    public Date getPublishDate() { return publishDate; }
-    public int getQuantity() { return quantity; }
     public Vector<Emprunt> getEmprunts() throws SQLException {
         return(Emprunt.getCurrentEmpruntsFromEdition(isbn));
     }
@@ -60,6 +67,7 @@ public class Edition {
 
         editionLabel.setText(editorName+", "+publishDate.toString()+", qty : "+availableQty);
 
+        //EMPRUNT EN COURS
         if(currentEmprunt != null) {
             borrowButton.setVisible(false);
 
@@ -67,22 +75,83 @@ public class Edition {
             borrowedLabel.setVisible(true);
 
             returnButton.setVisible(true);
+
+            reserveButton.setVisible(false);
+            reserveLabel.setVisible(false);
         }
 
+        //PAS D'EMPRUNTS EN COURS
         else {
-            if(getEmprunts().size() < quantity && user.getBorrowCount()<user.getMaxBorrowCount()) {
-                borrowButton.setVisible(true);
-                borrowedLabel.setVisible(false);
-                returnButton.setVisible(false);
-            }
+            Reservation currentReservation = Reservation.getCurrentReservation(isbn, user.getId());
 
-            else {
+            //LIVRE DEJA RESERVE
+            if(currentReservation != null) {
                 borrowButton.setVisible(false);
 
-                borrowedLabel.setText("Impossible to borrow for now");
+                borrowedLabel.setText("Book already borrowed");
                 borrowedLabel.setVisible(true);
 
                 returnButton.setVisible(false);
+                reserveButton.setVisible(false);
+
+                reserveLabel.setVisible(true);
+                reserveLabel.setText(reserveLabel.getText()+currentReservation.getPlace());
+            }
+
+            //LIVRE NON RESERVE
+            else {
+                //L'UTILISATEUR PEUT ENCORE EMPRUNTE
+                if(user.getBorrowCount()<user.getMaxBorrowCount()) {
+                    //IL RESTE DES LIVRES
+                    if(getEmprunts().size() < quantity) {
+                        borrowButton.setVisible(true);
+                        borrowedLabel.setVisible(false);
+                        returnButton.setVisible(false);
+                        reserveButton.setVisible(false);
+                        reserveLabel.setVisible(false);
+                    }
+
+                    //PLUS DE LIVRES DISPONIBLES
+                    else {
+                        //RESERVATIONS PLEINES
+                        if(Reservation.getNumberReservation(isbn)>=5) {
+                            borrowButton.setVisible(false);
+
+                            borrowedLabel.setText("Book already borrowed and too many reservations");
+                            borrowedLabel.setVisible(true);
+
+                            returnButton.setVisible(false);
+                            reserveButton.setVisible(false);
+                            reserveLabel.setVisible(false);
+                        }
+
+                        //RESERVATIONS POSSIBLE
+                        else {
+                            borrowButton.setVisible(false);
+
+                            borrowedLabel.setText("Book already borrowed");
+                            borrowedLabel.setVisible(true);
+
+                            returnButton.setVisible(false);
+                            reserveButton.setVisible(true);
+                            reserveLabel.setVisible(false);
+                        }
+                    }
+                }
+
+                //L'UTILISATEUR NE PEUT PLUS EMPRUNTE
+                else {
+                    borrowButton.setVisible(false);
+
+                    borrowedLabel.setText("You have borrowed too much books");
+                    borrowedLabel.setVisible(true);
+
+                    returnButton.setVisible(false);
+
+                    reserveButton.setVisible(false);
+                    reserveLabel.setVisible(false);
+                }
+
             }
         }
 
@@ -97,6 +166,14 @@ public class Edition {
         returnButton.setOnAction(event -> {
             try {
                 onClickReturn(currentEmprunt.getId());
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+
+        reserveButton.setOnAction(event -> {
+            try {
+                onClickReserve();
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);
             }
@@ -126,8 +203,31 @@ public class Edition {
 
         Emprunt.finishEmprunt(empruntId, currentDate);
 
-        MainApplication.header.getUser().setBorrowCount(MainApplication.header.getUser().getBorrowCount()-1);
-        availableQty += 1;
+        if(Reservation.getNumberReservation(isbn)==0) {
+            MainApplication.header.getUser().setBorrowCount(MainApplication.header.getUser().getBorrowCount()-1);
+            availableQty += 1;
+        }
+
+        else {
+            User user = Reservation.getFirstUser(isbn);
+            Reservation.updatePlaces(isbn);
+
+            long dayMillis = (long) (8.64*Math.pow(10,7));
+            Date endDate = new Date(millis+user.getBorrowDays()*dayMillis);
+
+            Emprunt.addEmprunt(this.getIsbn(), user.getId(), currentDate, endDate);
+            Notification.addNotification(user.getId(), "R", currentDate, bookId);
+        }
+
+        updateButtons();
+    }
+    @FXML
+    private void onClickReserve() throws SQLException {
+        int numReservation = Reservation.getNumberReservation(isbn);
+        Reservation.addReservation(isbn, MainApplication.header.getUser().getId(), new Date(System.currentTimeMillis()), numReservation+1);
+
+        User user = MainApplication.header.getUser();
+        user.setBorrowCount(user.getBorrowCount()+1);
 
         updateButtons();
     }
