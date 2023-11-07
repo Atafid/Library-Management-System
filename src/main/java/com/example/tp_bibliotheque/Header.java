@@ -23,23 +23,45 @@ import java.sql.Date;
 import java.sql.SQLException;
 import java.util.Vector;
 
-public class Header {
-    @FXML private HBox head;
-    @FXML private Button homeButton;
-    @FXML private TextField searchBar;
-    @FXML private MenuBar userMenuBar;
-    @FXML private MenuBar notifBar;
-    @FXML private Button adminButton;
-    private User user;
+//CLASSE REPRESENTANT LE HEADER DE L'APPLICATION
 
+public class Header {
+    //*****************ATTRIBUTS*****************//
+
+    //HBox : conteneur du Header
+    @FXML private HBox head;
+
+    //Button : boutton vers la page d'accueil
+    @FXML private Button homeButton;
+
+    //TextField : barre de recherche
+    @FXML private TextField searchBar;
+
+    //MenuBar : menu de l'utilisateur
+    @FXML private MenuBar userMenuBar;
+
+    //MenuBar : menu des notifications
+    @FXML private MenuBar notifBar;
+
+    //Button : boutton de l'administrateur
+    @FXML private Button adminButton;
+
+    //Utilisateur actuellement connecté
+    private final User user;
+
+
+    //*****************METHODES*****************//
+
+    //Constructeur de classe
     public Header(User _user) {
         user = _user;
 
+        //Initialisation de la HBox avec son style css
         head = new HBox();
         head.setEffect(new DropShadow(10, Color.BLACK));
         head.getStyleClass().add("header");
 
-        //HOME
+        //ACCUEIL
         homeButton = new Button();
         ImageView homeView = new ImageView(new Image(getClass().getResourceAsStream("img/logo.png")));
         homeView.setFitHeight(50);
@@ -55,7 +77,7 @@ public class Header {
             }
         });
 
-        //SEARCH
+        //RECHERCHE
         ImageView searchView = new ImageView(new Image(getClass().getResourceAsStream("img/loupe.png")));
         searchView.setFitWidth(20);
         searchView.setFitHeight(20);
@@ -72,7 +94,7 @@ public class Header {
             }
         });
 
-        //USER
+        //MENU UTILISATEUR
         userMenuBar = new MenuBar();
         Menu userMenu = new Menu();
         ImageView userView = new ImageView(new Image(getClass().getResourceAsStream("img/account.png")));
@@ -99,6 +121,7 @@ public class Header {
         Menu notifMenu = new Menu();
         notifMenu.getStyleClass().add("menu");
         try {
+            //Mise à jour des emprunts en retard et ajout des notifications en fonction
             Vector<Emprunt> emprunts = Emprunt.getCurrentEmpruntsFromUser(user.getId());
             Date currentDate = new Date(System.currentTimeMillis());
             for(Emprunt e:emprunts) {
@@ -110,6 +133,7 @@ public class Header {
                 }
             }
 
+            //Notifications non lues de l'utilisateur
             Vector<Notification> notifs = Notification.getUnreadNotification(user.getId());
             int unreadNotif = notifs.size();
 
@@ -149,7 +173,7 @@ public class Header {
         notifBar.getMenus().add(notifMenu);
 
 
-        //ADMIN
+        //ADMINISTRATEUR
         adminButton = new Button();
         ImageView adminView = new ImageView(new Image(getClass().getResourceAsStream("img/key.png")));
         adminView.setFitHeight(50);
@@ -166,7 +190,7 @@ public class Header {
             }
         });
 
-        //SIGN OUT
+        //DECONNEXION
         signOutButton.setOnAction(event -> {
             try {
                 onSignOut(event);
@@ -178,29 +202,35 @@ public class Header {
         head.getChildren().addAll(homeButton, searchView, searchBar, new Region(), adminButton, notifBar, userMenuBar);
     }
 
-    public HBox getHead() { return head; }
-    public User getUser() { return user; }
-
+    //Méthode appelée lors d'une recherche de livres
     @FXML private void onSearch(ActionEvent e) throws IOException, SQLException {
         HomeController homeController = new HomeController(MainApplication.fstPageHome, MainApplication.sndPageHome);
         MainApplication.switchScene(e, "fxml/home-view.fxml", homeController);
         homeController.onSearch(searchBar.getText());
     }
+
+    //Méthode appelée lors du retour à l'écran d'accueil
     @FXML
     private void onHomeClick(ActionEvent e) throws IOException {
         HomeController homeController = new HomeController(MainApplication.fstPageHome, MainApplication.sndPageHome);
         MainApplication.switchScene(e, "fxml/home-view.fxml", homeController);
     }
+
+    //Méthode appelée lors de la déconnexion de l'utilisateur
     @FXML
     private void onSignOut(ActionEvent e) throws IOException {
         MainApplication.header = null;
         MainApplication.switchScene(e.copyFor(userMenuBar, null), "fxml/login-view.fxml");
     }
+
+    //Méthode appelée lors de l'accès au compte de l'utilisateur
     @FXML
     private void onUserClick(ActionEvent e) throws IOException {
         UserViewController userViewController = new UserViewController(user);
         MainApplication.switchScene(e.copyFor(userMenuBar, null), "fxml/user-view.fxml", userViewController);
     }
+
+    //Méthode appelée lors l'accès aux notifications de l'utilisateur
     @FXML
     private void onNotifClick(ActionEvent e) throws IOException {
         try {
@@ -214,9 +244,15 @@ public class Header {
         NotifViewController notifController = new NotifViewController(user);
         MainApplication.switchScene(e.copyFor(notifBar, null), "fxml/notif-view.fxml", notifController);
     }
+
+    //Méthode appelée lors de l'accès à la partie administrateur
     @FXML
     private void onAdminClick(ActionEvent e) throws IOException {
         AdminViewController adminViewController = new AdminViewController(user);
         MainApplication.switchScene(e, "fxml/admin-view.fxml", adminViewController);
     }
+
+    //GETTERS DE CLASSE
+    public HBox getHead() { return head; }
+    public User getUser() { return user; }
 }

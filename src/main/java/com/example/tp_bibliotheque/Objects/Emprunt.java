@@ -13,15 +13,36 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Vector;
 
-public class Emprunt implements PageObject {
-    private int id;
-    private String editionISBN;
-    private int userId;
-    private Date beginDate;
-    private Date hypEndDate;
-    private Date realEndDate;
-    private boolean isFinished;
+//CLASSE REPRESENTANT UN EMPRUNT -> PageObject
 
+public class Emprunt implements PageObject {
+    //*****************ATTRIBUTS*****************//
+
+    //ID de l'emprunt dans la BDD
+    private final int id;
+
+    //ISBN de l'édition relative à l'emprunt
+    private final String editionISBN;
+
+    //ID de l'utilisateur relatif à l'emprunt, dans la BDD
+    private final int userId;
+
+    //Date du début de l'emprunt
+    private final Date beginDate;
+
+    //Date de fin de l'emprunt hypothétique
+    private final Date hypEndDate;
+
+    //Date de fin réelle de l'emprunt
+    private Date realEndDate;
+
+    //Statut de finition de l'emprunt
+    private final boolean isFinished;
+
+
+    //*****************METHODES*****************//
+
+    //Constructeur de classe
     public Emprunt(int _id, String _editionISBN, int _userId, Date _beginDate, Date _endDate, boolean _isFinished) {
         id = _id;
         editionISBN = _editionISBN;
@@ -30,6 +51,8 @@ public class Emprunt implements PageObject {
         hypEndDate = _endDate;
         isFinished = _isFinished;
     }
+
+    //Constructeur de classe surchargé, pour construire un emprunt dont la date de fin réelle est connue
     public Emprunt(int _id, String _editionISBN, int _userId, Date _beginDate, Date _endDate, Date _realEndDate, boolean _isFinished) {
         id = _id;
         editionISBN = _editionISBN;
@@ -40,7 +63,9 @@ public class Emprunt implements PageObject {
         isFinished = _isFinished;
     }
 
+    //Méthode static permettant d'ajouter un emprunt à la BDD
     public static void addEmprunt(String editionIsbn, int userId, Date beginDate, Date endDate) throws SQLException {
+        //Requête SQL ajoutant l'emprunt à la BDD
         String querry = "INSERT INTO Emprunt VALUES(0,?,?,?,?,NULL,?)";
         PreparedStatement stmt = MainApplication.bddConn.con.prepareStatement(querry);
 
@@ -54,7 +79,10 @@ public class Emprunt implements PageObject {
         stmt.executeBatch();
         MainApplication.bddConn.con.commit();
     }
+
+    //Méthode static permettant de récupérer l'emprunt en cours d'un utilisateur et d'une édition donnée, renvoie null si pas d'emprunt en cours
     public static Emprunt getCurrentEmprunt(String isbn, int userId) throws SQLException {
+        //Requête SQL récupérant l'emprunt
         String querry = "SELECT * FROM Emprunt WHERE userId=? AND editionISBN=? AND isFinished=false";
         PreparedStatement dispStmt = MainApplication.bddConn.con.prepareStatement(querry);
         dispStmt.setInt(1, userId);
@@ -69,9 +97,12 @@ public class Emprunt implements PageObject {
 
         return(null);
     }
+
+    //Méthode static permettant de récupérer tous les emprunts en cours d'une édition donnée
     public static Vector<Emprunt> getCurrentEmpruntsFromEdition(String editionISBN) throws SQLException {
         Vector<Emprunt> res = new Vector<Emprunt>();
 
+        //Requête SQL récupérant les emprunts
         String querry = "SELECT * FROM Emprunt WHERE editionISBN=? AND isFinished=false";
         PreparedStatement dispStmt = MainApplication.bddConn.con.prepareStatement(querry);
         dispStmt.setString(1, editionISBN);
@@ -85,9 +116,12 @@ public class Emprunt implements PageObject {
 
         return(res);
     }
+
+    //Méthode static permettant de récupérer tous les emprunts, finis ou non, d'un utilisateur
     public static Vector<PageObject> getAllEmpruntsFromUser(int userId) throws SQLException {
         Vector<PageObject> res = new Vector<PageObject>();
 
+        //Requête SQL récupérant les emprunts
         String querry = "SELECT * FROM Emprunt WHERE userId=? ORDER BY isFinished ASC";
         PreparedStatement dispStmt = MainApplication.bddConn.con.prepareStatement(querry);
         dispStmt.setInt(1, userId);
@@ -101,9 +135,12 @@ public class Emprunt implements PageObject {
 
         return(res);
     }
+
+    //Méthode static permettant de récupérer tous les emprunts en cours d'un utilisateur
     public static Vector<Emprunt> getCurrentEmpruntsFromUser(int userId) throws SQLException {
         Vector<Emprunt> res = new Vector<Emprunt>();
 
+        //Requête SQL récupérant les emprunts
         String querry = "SELECT * FROM Emprunt WHERE userId=? AND isFinished=false";
         PreparedStatement dispStmt = MainApplication.bddConn.con.prepareStatement(querry);
         dispStmt.setInt(1, userId);
@@ -117,7 +154,10 @@ public class Emprunt implements PageObject {
 
         return(res);
     }
+
+    //Méthode permettant de marqué un emprunt comme terminé
     public static void finishEmprunt(int id, Date date) throws SQLException {
+        //Requête SQL terminant l'emprunt
         String querry = "UPDATE Emprunt SET isFinished=true, realEnddate=? WHERE id=?";
         PreparedStatement stmt = MainApplication.bddConn.con.prepareStatement(querry);
 
@@ -128,20 +168,9 @@ public class Emprunt implements PageObject {
         MainApplication.bddConn.con.commit();
     }
 
-    public int getId() { return(id); }
-    public String getEditionISBN() { return(editionISBN); }
-    public int getUserId() { return(userId); }
-    public String getUserMail() throws SQLException {
-        return(User.getUserFromId(userId).getMail());
-    }
-    public String getStringHypEndDate() {
-        return(hypEndDate.toString());
-    }
-    public Date getHypEndDate() { return(hypEndDate); }
-    public String getStringRealEndDate() {
-        return(realEndDate.toString());
-    }
+    //Méthode permettant de récupérer la variable du livre relatif à l'emprunt considéré
     public Book getBook() throws SQLException {
+        //Requête SQL récupérant les informations du livre
         String querry = "SELECT * FROM Books b JOIN Edition e ON e.bookID=b.id WHERE e.isbn=?";
         PreparedStatement dispStmt = MainApplication.bddConn.con.prepareStatement(querry);
         dispStmt.setString(1, editionISBN);
@@ -156,12 +185,17 @@ public class Emprunt implements PageObject {
 
         return(null);
     }
+
+    //Méthode vérifiant si l'emprunt est en retard
     public Boolean checkLateStatus() {
         return(new Date(System.currentTimeMillis()).after(hypEndDate) && !isFinished);
     }
+
+    //Méthode vérifiant si le retard de l'emprunt a été notifié
     public Boolean isNotified() throws SQLException {
         Vector<Notification> res = new Vector<Notification>();
 
+        //Requête SQL récupérant les notification relatives à l'emprunt
         String querry = "SELECT * FROM Notifications WHERE infoId=? AND type='L'";
         PreparedStatement stmt = MainApplication.bddConn.con.prepareStatement(querry);
 
@@ -169,20 +203,39 @@ public class Emprunt implements PageObject {
 
         ResultSet rs = stmt.executeQuery();
 
+        //Notifications relatives à l'emprunt non vides -> retard notifié
         while(rs.next()) {
             return(true);
         }
 
+        //Notifications relatives à l'emprunt vides -> retard non notifié
         return(false);
     }
 
+    //GETTERS DE CLASSE
+    public int getId() { return(id); }
+    public String getUserMail() throws SQLException {
+        return(User.getUserFromId(userId).getMail());
+    }
+    public String getStringHypEndDate() {
+        return(hypEndDate.toString());
+    }
+    public Date getHypEndDate() { return(hypEndDate); }
+    public String getStringRealEndDate() {
+        return(realEndDate.toString());
+    }
+
+    //SETTERS DE CLASSE
     public void setEndDate(Date date) {
         realEndDate = date;
     }
 
+    //Méthode implémentant la méthode fillGrid du contrat PageObject pour remplir la grille d'une page d'emprunts
     @Override
     public void fillGrid(GridPane grid, int rowIdx) {
+        //EMPRUNT EN COURS
         if(!isFinished) {
+            //Récupération du livre relatif à l'emprunt
             Book empruntBook = null;
             try {
                 empruntBook = this.getBook();
@@ -190,10 +243,22 @@ public class Emprunt implements PageObject {
                 throw new RuntimeException(e);
             }
 
+            //Boutton permettant d'accéder à la view du livre
             Button empruntButton = new Button();
             empruntButton.setText(empruntBook.getTitle()+" "+editionISBN);
             empruntButton.getStyleClass().add("emprunt_button");
 
+            BookViewController bookController = new BookViewController(empruntBook);
+            empruntButton.setOnAction(event -> {
+                try {
+                    MainApplication.switchScene(event, "fxml/book-view.fxml", bookController);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            });
+
+
+            //Label du statut de l'emprunt
             Label empruntLabel = new Label();
             empruntLabel.setText(", until : "+getStringHypEndDate());
 
@@ -201,20 +266,40 @@ public class Emprunt implements PageObject {
                 empruntLabel.setText(empruntLabel.getText()+" LATE!");
             }
 
-            BookViewController bookController = new BookViewController(empruntBook);
-            empruntButton.setOnAction(event -> {
+
+            //Boutton de retour de l'emprunt
+            Button returnButton = new Button();
+            returnButton.setText("Return");
+            //Appui sur le boutton de retour -> retour de l'emprunt
+            returnButton.setOnAction(event -> {
                 try {
-                    MainApplication.switchScene(event, "fxml/book-view.fxml", bookController);
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
+                    Date currentDate = new Date(System.currentTimeMillis());
+
+                    //Retour de l'emprunt
+                    Edition.getEditionFromEmprunt(id).onClickReturn(id);
+
+                    //Mise à jour de l'interface graphique
+                    returnButton.setVisible(false);
+                    empruntLabel.setText(", finished since : "+currentDate);
+
+                    //Notification spécifique si un administrateur a forcé le retour d'un emprunt
+                    if(MainApplication.header.getUser().categorie.equals(Categorie.Bibliothécaire)) {
+                        Notification.addNotification(userId, "F", currentDate, id);
+                    }
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
                 }
             });
 
+            //Ajout à l'interface graphique
             grid.add(empruntButton, 0, rowIdx);
             grid.add(empruntLabel, 1, rowIdx);
+            grid.add(returnButton, 2, rowIdx);
         }
 
+        //EMPRUNT TERMINE
         else {
+            //Récupération du livre relatif à l'emprunt
             Book empruntBook = null;
             try {
                 empruntBook = getBook();
@@ -222,12 +307,10 @@ public class Emprunt implements PageObject {
                 throw new RuntimeException(ex);
             }
 
+            //Boutton permettant d'accéder à la view du livre
             Button empruntButton = new Button();
             empruntButton.setText(empruntBook.getTitle()+" "+editionISBN);
             empruntButton.getStyleClass().add("emprunt_button");
-
-            Label empruntLabel = new Label();
-            empruntLabel.setText(", finished since : "+getStringRealEndDate());
 
             BookViewController bookController = new BookViewController(empruntBook);
             empruntButton.setOnAction(event -> {
@@ -238,6 +321,12 @@ public class Emprunt implements PageObject {
                 }
             });
 
+
+            //Label de statut de l'emprunt
+            Label empruntLabel = new Label();
+            empruntLabel.setText(", finished since : "+getStringRealEndDate());
+
+            //Mise à jour de l'interface graphique
             grid.add(empruntButton, 0, rowIdx);
             grid.add(empruntLabel, 1, rowIdx);
         }

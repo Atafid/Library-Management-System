@@ -1,0 +1,19 @@
+@startuml
+autonumber
+actor Utilisateur
+Utilisateur -> IHM: demande emprunts
+
+control Controller
+IHM -> Controller: callback
+
+database Bdd
+Controller -> Bdd: requête SQL
+
+create collections Emprunts
+Bdd -> Emprunts: instanciation de la liste
+Emprunts -> Controller: transmission de la liste
+Controller -> Controller: changement de view
+Controller -> IHM: mise à jour
+IHM -> Utilisateur: affiche emprunts
+
+@enduml

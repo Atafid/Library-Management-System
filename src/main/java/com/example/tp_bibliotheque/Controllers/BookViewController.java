@@ -18,55 +18,104 @@ import java.sql.Date;
 import java.sql.SQLException;
 import java.util.Vector;
 
+//CONTROLLER DE LA VIEW LIVRE
+
 public class BookViewController {
+    //*****************ATTRIBUTS*****************//
+
+    //AnchorPane : racine de la fenêtre
     @FXML private AnchorPane root;
+
+    //Label : titre du livre relatif à la fenêtre
     @FXML private Label titleLabel;
+
+    //TextFlow : genres du livre relatif à la fenêtre
     @FXML private TextFlow genreText;
+
+    //TextFlow : description du livre relatif à la fenêtre
     @FXML private TextFlow descriptionLabel;
+
+    //GridPane : auteurs du livre relatif à la fenêtre
     @FXML private GridPane creditsGrid;
+
+    //GridPane : éditions du livre relatif à la fenêtre
     @FXML private GridPane editionGrid;
+
+    //ImageView : couverture du livre relatif à la fenêtre
     @FXML private ImageView coverView;
+
+    //Slider : note du commentaire à envoyer
     @FXML private Slider noteBar;
+
+    //TextArea : description du commentaire à envoyer
     @FXML private TextArea commentArea;
+
+    //GridPane : commentaires déjà écrits
     @FXML private GridPane commentGrid;
+
+    //Elements relatifs au système de page d'éléments à afficher : les commentaires déjà écrits
     @FXML private Button prevButton;
     @FXML private Button nextButton;
     @FXML private Label pageLabel;
     private Page commentPage;
 
-    private Book book;
+    //Livre relatif à la fenêtre
+    private final Book book;
 
 
+    //*****************METHODES*****************//
+
+    //Contructeur de classe
     public BookViewController(Book _book) {
         book = _book;
     }
+
+    //Fonction se lançant à l'initialisation de javaFX juste après le constructeur
     public void initialize() throws SQLException {
+        //Ajout du header à la racine de la fenêtre
         root.getChildren().add(MainApplication.header.getHead());
 
+        //Initialisation du label du titre du livre
         titleLabel.setText(book.getTitle());
 
-        //GENRES
+
+
+        //***GENRES***//
+
+        //Tableau des genres du livre
         String[] bookGenres = book.getGenres();
+
+        //Ajout des genres à l'interface graphique
         Text genres = new Text(bookGenres[0]);
         for(int i=1; i<bookGenres.length; i++) {
             genres.setText(genres.getText()+", "+bookGenres[i]);
         }
         genreText.getChildren().add(genres);
 
-        //DESCRIPTION
+
+
+        //***DESCRIPTION***//
         Text description = new Text(book.getDescription());
         descriptionLabel.getChildren().add(description);
 
-        //CREDITS
+
+
+        //***CREDITS***//
         String creditsString = "";
+
+        //Tableau des crédits du livre
         Vector<HasWritten> creditsVector = book.getCredits();
+
+        //Ajout des crédits à l'interface graphique
         for(int i=0;i<creditsVector.size();i++) {
             HasWritten h = creditsVector.get(i);
 
+            //Boutton permettant d'accéder à l'auteur relaté dans les crédits
             Button creditButton = new Button();
             creditButton.setText(h.getAuthor().getName() + " " + h.getAuthor().getLastName() + " " + h.getRole()+", ");
             creditButton.getStyleClass().add("credit_button");
 
+            //Appui sur le boutton -> Changement de view
             AuthorViewController authorController = new AuthorViewController(h.getAuthor());
             creditButton.setOnAction(event -> {
                 try {
@@ -78,8 +127,14 @@ public class BookViewController {
             creditsGrid.add(creditButton, i, 0);
         }
 
-        //EDITIONS
+
+
+        //***EDITIONS***//
+
+        //Tableau des éditions du livre
         Vector<Edition> editionVector = book.getEditions();
+
+        //Ajout des éditions à l'interface graphique
         for(int i=0;i<editionVector.size();i++) {
             Edition e = editionVector.get(i);
             e.updateButtons();
@@ -92,7 +147,11 @@ public class BookViewController {
             editionGrid.add(e.reserveLabel, 2, i);
         }
 
-        //COMMENTS
+
+
+        //***COMMENTS***//
+
+        //Initialisation de la page des commentaires déjà écrits
         try {
             commentPage = new Page(prevButton, nextButton, Comment.getComment(book.getId()), commentGrid, pageLabel);
         } catch (SQLException e) {
@@ -102,17 +161,22 @@ public class BookViewController {
         coverView.setImage(book.getCoverImg());
     }
 
+    //Méthode de mis à jour des commentaires déjà écrits
     private void updateCommentSection() throws SQLException {
+        //Récupération des commentaires relatifs au livre
         commentPage.setObjects(Comment.getComment(book.getId()));
         commentPage.updateFXML();
     }
 
-
+    //Méthode d'envoi d'un nouveau commentaire
     @FXML
     private void onSendClick() throws SQLException {
+        //Ajout du commentaire à la BDD
         Comment.addComment(MainApplication.header.getUser().getId(), book.getId(), new Date(System.currentTimeMillis()), (int) noteBar.getValue(), commentArea.getText());
+        //Mise à jour de la section commentaire déjà écrits
         updateCommentSection();
 
+        //Réinitialisation de la section d'écriture d'un nouveau commentaire
         noteBar.setValue(1.0);
         commentArea.clear();
     }

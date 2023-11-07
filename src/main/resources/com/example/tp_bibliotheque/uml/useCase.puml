@@ -1,0 +1,76 @@
+@startuml
+
+left to right direction
+
+actor Utilisateur as User
+
+rectangle "Authentification" {
+    User--> (Login)
+    (Login)-->(Login): erreur
+    (Login)-->(Sign Up)
+    (Sign Up)-->(Sign Up): erreur
+    (Sign Up)-->(Login): inscription réussie
+    (Login)-->"Adhérent": Authentification adhérent
+    (Login)-->"Bibliothécaire": Authentification admin
+}
+
+rectangle "Système de la Bibliothèque" {
+    rectangle "Gestion des livres" {
+        "Adhérent" --> (Consulter la liste des livres disponibles)
+        "Bibliothécaire" --> (Consulter la liste des livres disponibles)
+
+        "Adhérent" --> (Rechercher un livre)
+        "Bibliothécaire" --> (Rechercher un livre)
+
+        "Adhérent" --> (Emprunter un livre)
+        "Bibliothécaire" --> (Emprunter un livre)
+
+        "Adhérent" --> (Retourner un livre)
+        "Bibliothécaire" --> (Retourner un livre)
+
+        "Adhérent" --> (Réserver un livre)
+        "Bibliothécaire" --> (Réserver un livre)
+
+        "Adhérent" --> (Commenter un livre)
+        "Bibliothécaire" --> (Commenter un livre)
+    }
+
+    rectangle "Gestion des notifications" {
+    "Adhérent" --> (Lire ses nouvelles notifications)
+    "Bibliothécaire" --> (Lire ses nouvelles notifications)
+
+        "Adhérent" --> (Consulter la liste des notifications)
+        "Bibliothécaire" --> (Consulter la liste des notifications)
+    }
+
+    rectangle "Gestion des auteurs" {
+        "Adhérent" --> (Consulter les livres d'un auteur)
+        "Bibliothécaire" --> (Consulter les livres d'un auteur)
+    }
+
+    rectangle "Gestion du compte" {
+        "Adhérent" --> (Déconnexion)
+        "Bibliothécaire" --> (Déconnexion)
+        (Déconnexion)--> Authentification
+
+        "Adhérent" --> (Consulter ses informations personnelles)
+        "Bibliothécaire" --> (Consulter ses informations personnelles)
+
+        "Adhérent" --> (Modifier ses informations personnelles)
+        "Bibliothécaire" --> (Modifier ses informations personnelles)
+
+        "Adhérent" --> (Consulter ses emprunts)
+        "Bibliothécaire" --> (Consulter ses emprunts)
+
+        "Adhérent" --> (Retourner ses emprunts)
+        "Bibliothécaire" --> (Retourner ses emprunts)
+    }
+
+    rectangle "Administration" {
+        "Bibliothécaire" --> (Lister les adhérents et voir leurs informations personnelles)
+        "Bibliothécaire" --> (Changer la catégorie des adhérents)
+        "Bibliothécaire" --> (Forcer le retour d'un livre)
+    }
+}
+
+@enduml

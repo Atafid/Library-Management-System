@@ -14,15 +14,32 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Vector;
 
+//CLASSE REPRESENTANT UN UTILISATEUR -> PERSONNE ET PAGEOBJECT
+
 public class User extends Personne implements PageObject {
+    //*****************ATTRIBUTS*****************//
+
+    //ID de l'utilisateur dans la BDD
     private final int id;
+
+    //Mail de l'utilisateur
     private String mail;
+
+    //Mot de passe hashé de l'utilisateur
     private String hashPassword;
+
+    //Salt de l'utilisateur
     private final String passwordSalt;
 
+    //Nombre d'emprunts en cours de l'utilisateur
     private int borrowCount;
+
+    //Catégorie de l'utilisateur
     public Categorie categorie;
 
+    //*****************METHODES*****************//
+
+    //Constructeur de classe
     public User(int _id, String _mail, String _name, String _last_name, String _hashPassword, String _passwordSalt, String catString) {
         super(_name, _last_name);
 
@@ -40,7 +57,9 @@ public class User extends Personne implements PageObject {
         categorie = Categorie.getCatFromString(catString);
     }
 
+    //Méthode static permettant d'ajouter un utilisateur à la BDD
     public static void addUser(String mail, String name, String lastName, String password, String passwordSalt, String catString) throws SQLException {
+        //Requête SQL permettant d'ajouter l'utilisateur
         String querry = "INSERT INTO User VALUES(0,?,?,?,?,?,?)";
         PreparedStatement stmt = MainApplication.bddConn.con.prepareStatement(querry);
 
@@ -56,9 +75,11 @@ public class User extends Personne implements PageObject {
         MainApplication.bddConn.con.commit();
     }
 
+    //Méthode static permettant de récupérer tous les utilisateurs
     public static Vector<PageObject> getAllUsers() throws SQLException {
         Vector<PageObject> res = new Vector<PageObject>();
 
+        //Requête SQL récupérant tous les utilisateurs
         String querry = "SELECT * FROM User";
         PreparedStatement dispStmt = MainApplication.bddConn.con.prepareStatement(querry);
 
@@ -71,7 +92,10 @@ public class User extends Personne implements PageObject {
 
         return(res);
     }
+
+    //Méthode static permettant de récupérer la variable d'un utilisateur à partir de son ID dans la BDD
     public static User getUserFromId(int id) throws SQLException {
+        //Requête SQL récupérant les informations de l'utilisateur
         String querry = "SELECT * FROM User WHERE id=?";
         PreparedStatement dispStmt = MainApplication.bddConn.con.prepareStatement(querry);
         dispStmt.setInt(1,id);
@@ -85,7 +109,10 @@ public class User extends Personne implements PageObject {
 
         return(null);
     }
+
+    //Méthode static permettant d'obtenir l'utilisateur à partir de son mail
     public static User getUserFromMail(String mail) throws SQLException {
+        //Requête SQL récupérant les informations de l'utilisateur
         String querry = "SELECT * FROM User WHERE mail=?";
         PreparedStatement dispStmt = MainApplication.bddConn.con.prepareStatement(querry);
         dispStmt.setString(1,mail);
@@ -99,9 +126,12 @@ public class User extends Personne implements PageObject {
 
         return(null);
     }
+
+    //Méthode permettant d'obtenir le tableau de tous les administrateurs
     public static Vector<User> getAdmin() throws SQLException {
         Vector<User> res = new Vector<User>();
 
+        //Requête SQL récupérant les administrateurs
         String querry = "SELECT * FROM User WHERE categorie='B'";
         PreparedStatement dispStmt = MainApplication.bddConn.con.prepareStatement(querry);
 
@@ -115,6 +145,22 @@ public class User extends Personne implements PageObject {
         return(res);
     }
 
+    //Méthode permettant de compter les emprunts en retard e l'utilisateur
+    public int countLateBorrow() throws SQLException {
+        //Tableau des emprunts en cours de l'utilisateur
+        Vector<Emprunt> currentEmprunts = Emprunt.getCurrentEmpruntsFromUser(id);
+        int res = 0;
+
+        for(Emprunt e:currentEmprunts) {
+            if(e.checkLateStatus()) {
+                res++;
+            }
+        }
+
+        return(res);
+    }
+
+    //GETTERS DE CLASSE
     public int getId() { return(id); }
     public String getMail() { return(mail); }
     public String getHashPassword() {
@@ -132,6 +178,9 @@ public class User extends Personne implements PageObject {
         return categorie.getMaxDaysBorrow();
     }
 
+    //SETTERS DE CLASSE
+
+    //Set un nouveau mail à l'utilisateur et dans la BDD
     public void setMail(String newMail) throws SQLException {
         String querry = "UPDATE User SET mail=? WHERE mail=?";
         PreparedStatement stmt = MainApplication.bddConn.con.prepareStatement(querry);
@@ -144,6 +193,8 @@ public class User extends Personne implements PageObject {
 
         mail = newMail;
     }
+
+    //Set un nouveau mot de passe à l'utilisateur et dans la BDD
     public void setPassword(String newPassword) throws SQLException {
         String querry = "UPDATE User SET password=? WHERE mail=?";
         PreparedStatement stmt = MainApplication.bddConn.con.prepareStatement(querry);
@@ -157,6 +208,8 @@ public class User extends Personne implements PageObject {
         hashPassword = newPassword;
     }
     public void setBorrowCount(int i) { borrowCount=i; }
+
+    //Set une nouvelle catégorie à l'utilisateur et dans la BDD
     public void setCategorie(Categorie cat) throws SQLException {
         String querry = "UPDATE User SET categorie=? WHERE mail=?";
         PreparedStatement stmt = MainApplication.bddConn.con.prepareStatement(querry);
@@ -178,25 +231,24 @@ public class User extends Personne implements PageObject {
         MainApplication.bddConn.con.commit();
     }
 
-    public int countLateBorrow() throws SQLException {
-        Vector<Emprunt> currentEmprunts = Emprunt.getCurrentEmpruntsFromUser(id);
-        int res = 0;
-
-        for(Emprunt e:currentEmprunts) {
-            if(e.checkLateStatus()) {
-                res++;
-            }
-        }
-
-        return(res);
-    }
-
+    //Méthode implémentant la méthode fillGrid du contrat PageObject pour remplir la grille d'une page d'utilisateur
     @Override
     public void fillGrid(GridPane grid, int rowIdx) {
+        //Boutton permettant d'accéder à la view de l'utilisateur
         Button userButton = new Button();
         userButton.setText(mail);
         userButton.getStyleClass().add("user_button");
 
+        UserViewController userController = new UserViewController(this);
+        userButton.setOnAction(event -> {
+            try {
+                MainApplication.switchScene(event, "fxml/user-view.fxml", userController);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        //Label du nombre d'emprunts de l'utilisateur
         Label empruntLabel = new Label();
         try {
             empruntLabel.setText(Emprunt.getCurrentEmpruntsFromUser(id).size()+" current borrows");
@@ -209,20 +261,14 @@ public class User extends Personne implements PageObject {
             throw new RuntimeException(e);
         }
 
-        UserViewController userController = new UserViewController(this);
-        userButton.setOnAction(event -> {
-            try {
-                MainApplication.switchScene(event, "fxml/user-view.fxml", userController);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
-
+        //Non administrateur -> ChoiceBox pour pouvoir changer la catégorie
         if(!categorie.equals(Categorie.Bibliothécaire)) {
+            //Initialisation des ChoiceBox
             ChoiceBox<Categorie> userCB = new ChoiceBox<Categorie>();
             userCB.getItems().addAll(Categorie.Cat1, Categorie.Cat2, Categorie.Cat3, Categorie.Forbidden);
             userCB.setValue(categorie);
 
+            //Changement de catégorie lors d'un choix dans la ChoiceBox
             userCB.setOnAction((event) -> {
                 try {
                     setCategorie(userCB.getSelectionModel().getSelectedItem());
@@ -233,15 +279,19 @@ public class User extends Personne implements PageObject {
                 }
             });
 
+            //Ajout à l'interface graphique
             grid.add(userCB, 2,rowIdx);
         }
 
+        //Administrateur -> Label de catégorie
         else {
             Label bibliothecaireLabel = new Label("Bibilothécaire");
 
+            //Ajout à l'interface graphique
             grid.add(bibliothecaireLabel, 2, rowIdx);
         }
 
+        //Ajout à l'interface graphique
         grid.add(userButton, 0, rowIdx);
         grid.add(empruntLabel, 1, rowIdx);
     }

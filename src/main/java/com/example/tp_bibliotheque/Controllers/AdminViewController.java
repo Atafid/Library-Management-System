@@ -4,32 +4,46 @@ import com.example.tp_bibliotheque.*;
 import com.example.tp_bibliotheque.Objects.*;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 
-import java.io.IOException;
-import java.sql.Date;
 import java.sql.SQLException;
-import java.util.Vector;
+
+//CONTROLLER DE LA VIEW ADMIN
 
 public class AdminViewController {
+    //*****************ATTRIBUTS*****************//
+
+    //AnchorPane : racine de la page
     @FXML private AnchorPane root;
+
+    //GridPane : utilisateurs à afficher dans la fenêtre
     @FXML private GridPane userGrid;
+
+    //Elements relatifs au système de pages d'élements à afficher : les utilisateurs
     @FXML private Button prevButton;
     @FXML private Button nextButton;
     @FXML private Label pageLabel;
     private Page userPage;
-    private User admin;
 
+    //L'administrateur actuellement connecté sur la page
+    private final User admin;
+
+
+    //*****************METHODES*****************//
+
+    //Constructeur de classe
     public AdminViewController(User _admin) {
         admin = _admin;
     }
 
+    //Fonction se lançant à l'initialisation de javaFX juste après le constructeur
     public void initialize() throws SQLException {
+        //Ajout du header à la racine de la fenêtre
         root.getChildren().add(MainApplication.header.getHead());
 
+        //Initialisation de la page d'utilisateurs à afficher
         userPage = new Page(prevButton, nextButton, User.getAllUsers(),userGrid, pageLabel);
     }
 
