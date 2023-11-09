@@ -48,6 +48,9 @@ public class Book implements PageObject {
         //Chargement de l'image de couverture à l'aide de l'url
         coverImg = new Image(coverImgUrl);
 
+        //Pour les tests
+        //coverImg = null;
+
         genres = cleanGenres(_genres);
         description = _description;
     }

@@ -9,25 +9,77 @@ state IHMSignUp {
 }
 
 state IHMAdmin {
-  state Initialisation : Initialisation de la bibliothèque
-  state CreerBibliotheque : Créer une nouvelle bibliothèque
-  state ImporterBibliotheque : Importer une bibliothèque du disque
-  state BibliothequeChargee : Bibliothèque chargée
-  state GererLivres : Gérer les livres
-  state GererUtilisateurs : Gérer les utilisateurs
-  state GererEmprunts : Gérer les emprunts
+  state ConsulterUser: Consulter les utilisateurs
+  state ChangerCategorie: Changer la catégorie d'un utilisateurs
+  state ConsulterInfosUser: Consulter les informations d'un utilisateur
+  state ForcerRetour: Forcer le retour d'un livre
 
-  [*] --> Initialisation
+  [*] --> IHMAdherent
+  [*] --> ConsulterUser: clique admin
+  ConsulterUser --> ChangerCategorie: clique catégorie
+  ConsulterUser --> ConsulterInfosUser: clique user
+  ConsulterInfosUser --> ForcerRetour: clique return
 }
 
 state IHMAdherent {
+  state RetourAccueil : Revenir à l'écran d'accueil
   state ChercherLivre : Chercher un livre
-  state DemanderEmprunt : Demander l'emprunt d'un livre
-  state GererInfos : Gérer ses informations
+  state ChangerPage : Changer la page de livres
 
-  [*] --> ChercherLivre
-  [*] --> DemanderEmprunt
-  [*] --> GererInfos
+  state ConsulterLivre : Consulter un livre
+  state DemanderEmprunt : Demander l'emprunt d'un livre
+  state RendreLivre : Rendre un livre emprunté
+  state ReserverLivre : Reserver un livre
+  state CommenterLivre : Commenter un livre
+
+  state ConsulterAuteur : Consulter l'auteur d'un livre
+
+  state LireNotifs: Lire ses notifications non lues
+  state ConsulterNotifs : Consulter ses notifications
+
+  state ConsulterInfos : Consulter ses informations
+  state ModifierInfos: Modifier ses informations
+  state ConsulterEmprunt: Consulter ses emprunts
+
+  [*] --> ChangerPage
+
+  [*] --> ChercherLivre: recherche
+  ChercherLivre --> RetourAccueil: clique accueil
+  ChercherLivre --> ConsulterNotifs: clique notifs
+  ChercherLivre --> ConsulterInfos: clique infos
+
+  [*] --> ConsulterLivre: clique livre
+  ConsulterLivre --> DemanderEmprunt: clique emprunt
+  ConsulterLivre --> RendreLivre
+  ConsulterLivre --> ReserverLivre: clique reservation
+  ConsulterLivre --> CommenterLivre: clique commentaire
+  ConsulterLivre --> RetourAccueil: clique accueil
+  ConsulterLivre --> ChercherLivre: clique recherche
+  ConsulterLivre --> ConsulterNotifs: clique notifs
+  ConsulterLivre --> ConsulterInfos: clique infos
+
+  ConsulterLivre --> ConsulterAuteur: clique auteur
+  ConsulterAuteur --> RetourAccueil: clique accueil
+  ConsulterAuteur --> ChercherLivre: clique recherche
+  ConsulterAuteur --> ConsulterNotifs: clique notifs
+  ConsulterAuteur --> ConsulterInfos: clique infos
+
+  [*] --> LireNotifs: clique notifs
+  [*] --> ConsulterNotifs: clique notifs
+  ConsulterNotifs --> RetourAccueil: clique accueil
+  ConsulterNotifs --> ChercherLivre: clique recherche
+  ConsulterNotifs --> ConsulterInfos: clique infos
+
+  [*] --> ConsulterInfos: clique infos
+  ConsulterInfos --> ModifierInfos: clique modif
+  ConsulterInfos --> ConsulterEmprunt
+  ConsulterInfos --> RetourAccueil: clique accueil
+  ConsulterInfos --> ChercherLivre: clique recherche
+  ConsulterInfos --> ConsulterNotifs: clique notifs
+
+  ConsulterEmprunt --> RendreLivre: clique return
+
+  [*] --> Login: déconnexion
 }
 
 [*] --> IHMLogin
@@ -38,14 +90,6 @@ SignUp --> SignUp : erreur
 SignUp --> Login : Inscription réussie
 Login --> IHMAdmin : Administrateur
 Login --> IHMAdherent : Adhérent
-
-
-Initialisation --> CreerBibliotheque : Créer une nouvelle bibliothèque
-Initialisation --> ImporterBibliotheque : Importer une bibliothèque du disque
-Initialisation --> BibliothequeChargee : Bibliothèque chargée
-BibliothequeChargee --> GererLivres : Gérer les livres
-BibliothequeChargee --> GererUtilisateurs : Gérer les utilisateurs
-BibliothequeChargee --> GererEmprunts : Gérer les emprunts
 
 
 @enduml

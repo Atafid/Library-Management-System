@@ -99,6 +99,7 @@ public class CatChange {
     }
 
     //GETTERS DE CLASSE
+    public Date getDate() { return date; }
     public Categorie getPrevCat() { return prevCat; }
     public Categorie getNewCat() { return newCat; }
 }

@@ -238,6 +238,9 @@ public class UserViewController {
     //Label : mot de passe de l'utilisateur
     @FXML private Label passwordLabel;
 
+    //Label : catégorie de l'utilisateur
+    @FXML private Label catLabel;
+
     //GridPane : informations de l'utilisateur
     @FXML private GridPane infoGrid;
 
@@ -270,6 +273,7 @@ public class UserViewController {
         mailLabel.setText(user.getMail());
         nameLabel.setText(user.getName());
         lastNameLabel.setText(user.getLastName());
+        catLabel.setText(user.getCategorie().getStringFromCat());
 
         //Initialisation des sections de modifications des informations de l'utilisateur
         new ModifSection(user, mailLabel, "mail", infoGrid, 0);

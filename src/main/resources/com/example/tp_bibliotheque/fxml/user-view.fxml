@@ -25,6 +25,7 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
             <Label text="Mail :" />
@@ -39,6 +40,8 @@
                   <Font name="System Bold" size="18.0" />
                </font>
             </Label>
+            <Label text="Categorie :" GridPane.rowIndex="4" />
+            <Label fx:id="catLabel" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="4" />
          </children>
       </GridPane>
       <Label layoutX="36.0" layoutY="253.0" text="Emprunts :" />

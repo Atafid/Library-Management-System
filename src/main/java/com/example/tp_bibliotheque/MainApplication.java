@@ -38,9 +38,8 @@ public class MainApplication extends Application {
 
     //*****************METHODES*****************//
 
-    //Méthode d'initialisation
-    @Override
-    public void start(Stage stage) throws IOException {
+    //Constructeur de classe
+    public MainApplication() {
         //Initialisation des attributs
         pepper = "azerty";
         hashIncrementation = 5;
@@ -49,7 +48,11 @@ public class MainApplication extends Application {
 
         fstPageHome = Book.getPage(1);
         sndPageHome = Book.getPage(2);
+    }
 
+    //Méthode d'initialisation
+    @Override
+    public void start(Stage stage) throws IOException {
         //Chargement de la view de connexion
         FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("fxml/login-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
