@@ -4,10 +4,7 @@ import com.example.tp_bibliotheque.LoginUtils;
 import com.example.tp_bibliotheque.Objects.*;
 import com.example.tp_bibliotheque.MainApplication;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 
@@ -241,6 +238,9 @@ public class UserViewController {
     //Label : catégorie de l'utilisateur
     @FXML private Label catLabel;
 
+    //Label : bibliothèque de l'utilisateur
+    @FXML private Label libraryLabel;
+
     //GridPane : informations de l'utilisateur
     @FXML private GridPane infoGrid;
 
@@ -273,11 +273,27 @@ public class UserViewController {
         mailLabel.setText(user.getMail());
         nameLabel.setText(user.getName());
         lastNameLabel.setText(user.getLastName());
-        catLabel.setText(user.getCategorie().getStringFromCat());
+        catLabel.setText(user.getCategorie().toString());
+        libraryLabel.setText(Library.getLibraryFromId(user.getLibraryId()).getName());
 
-        //Initialisation des sections de modifications des informations de l'utilisateur
-        new ModifSection(user, mailLabel, "mail", infoGrid, 0);
-        new ModifSection(user, passwordLabel, "password", infoGrid, 3);
+        //L'utilisateur connecté est celui sur la page -> Possibilité de modifier ses informations
+        if(user.getId() == MainApplication.header.getUser().getId()) {
+            //Initialisation des sections de modifications des informations de l'utilisateur
+            new ModifSection(user, mailLabel, "mail", infoGrid, 0);
+            new ModifSection(user, passwordLabel, "password", infoGrid, 3);
+        }
+
+        //L'utilisateur est un administrateur -> Possibilité de changer la bibliothèque
+        if(user.getCategorie().equals(Categorie.Bibliothécaire)) {
+            //Label de bibliothèque remplacé par une ChoiceBox
+            libraryLabel.setVisible(false);
+
+            ChoiceBox<Library> chooseLibrary = new ChoiceBox<Library>();
+            chooseLibrary.getItems().addAll(Library.getLibraryFromId(1), Library.getLibraryFromId(2), Library.getLibraryFromId(3));
+            chooseLibrary.setValue(Library.getLibraryFromId(1));
+
+            infoGrid.add(chooseLibrary, 1, 5);
+        }
 
         //Initialisation de la page d'emprunts à afficher
         empruntsPage = new Page(prevButton, nextButton, Emprunt.getAllEmpruntsFromUser(user.getId()), empruntGrid, pageLabel);

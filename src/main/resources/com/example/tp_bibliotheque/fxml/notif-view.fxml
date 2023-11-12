@@ -8,9 +8,11 @@
     <children>
         <Rectangle fill="WHITE" height="516.0" layoutX="25.0" layoutY="90.0" stroke="TRANSPARENT" strokeType="INSIDE" width="850.0" />
       <Label layoutX="47.0" layoutY="115.0" text="Notifs : " />
-      <GridPane fx:id="notifGrid" gridLinesVisible="true" layoutX="102.0" layoutY="115.0" prefHeight="210.0" prefWidth="434.0">
+      <GridPane fx:id="notifGrid" gridLinesVisible="true" layoutX="102.0" layoutY="115.0" prefHeight="210.0" prefWidth="536.0">
         <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="435.19996948242186" minWidth="10.0" prefWidth="435.19996948242186" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="210.0" minWidth="10.0" prefWidth="51.19999999999999" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="210.0" minWidth="10.0" prefWidth="49.200000000000045" />
         </columnConstraints>
         <rowConstraints>
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />

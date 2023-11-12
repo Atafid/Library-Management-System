@@ -12,7 +12,7 @@ import java.sql.SQLException;
 
 //CONTROLLER DE LA VIEW ADMIN
 
-public class AdminViewController {
+public class AdminUserViewController {
     //*****************ATTRIBUTS*****************//
 
     //AnchorPane : racine de la page
@@ -34,7 +34,7 @@ public class AdminViewController {
     //*****************METHODES*****************//
 
     //Constructeur de classe
-    public AdminViewController(User _admin) {
+    public AdminUserViewController(User _admin) {
         admin = _admin;
     }
 

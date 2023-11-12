@@ -21,8 +21,8 @@ public class Emprunt implements PageObject {
     //ID de l'emprunt dans la BDD
     private final int id;
 
-    //ISBN de l'édition relative à l'emprunt
-    private final String editionISBN;
+    //ID de l'oeuvre imprimée relative à l'emprunt, dans la BDD
+    private final int printedWorkId;
 
     //ID de l'utilisateur relatif à l'emprunt, dans la BDD
     private final int userId;
@@ -43,9 +43,9 @@ public class Emprunt implements PageObject {
     //*****************METHODES*****************//
 
     //Constructeur de classe
-    public Emprunt(int _id, String _editionISBN, int _userId, Date _beginDate, Date _endDate, boolean _isFinished) {
+    public Emprunt(int _id, int _printedWorkId, int _userId, Date _beginDate, Date _endDate, boolean _isFinished) {
         id = _id;
-        editionISBN = _editionISBN;
+        printedWorkId = _printedWorkId;
         userId = _userId;
         beginDate = _beginDate;
         hypEndDate = _endDate;
@@ -53,9 +53,9 @@ public class Emprunt implements PageObject {
     }
 
     //Constructeur de classe surchargé, pour construire un emprunt dont la date de fin réelle est connue
-    public Emprunt(int _id, String _editionISBN, int _userId, Date _beginDate, Date _endDate, Date _realEndDate, boolean _isFinished) {
+    public Emprunt(int _id, int _printedWorkId, int _userId, Date _beginDate, Date _endDate, Date _realEndDate, boolean _isFinished) {
         id = _id;
-        editionISBN = _editionISBN;
+        printedWorkId = _printedWorkId;
         userId = _userId;
         beginDate = _beginDate;
         hypEndDate = _endDate;
@@ -64,12 +64,12 @@ public class Emprunt implements PageObject {
     }
 
     //Méthode static permettant d'ajouter un emprunt à la BDD
-    public static void addEmprunt(String editionIsbn, int userId, Date beginDate, Date endDate) throws SQLException {
+    public static void addEmprunt(int printedWorkId, int userId, Date beginDate, Date endDate) throws SQLException {
         //Requête SQL ajoutant l'emprunt à la BDD
         String querry = "INSERT INTO Emprunt VALUES(0,?,?,?,?,NULL,?)";
         PreparedStatement stmt = MainApplication.bddConn.con.prepareStatement(querry);
 
-        stmt.setString(1, editionIsbn);
+        stmt.setInt(1, printedWorkId);
         stmt.setInt(2, userId);
         stmt.setDate(3, beginDate);
         stmt.setDate(4, endDate);
@@ -81,17 +81,17 @@ public class Emprunt implements PageObject {
     }
 
     //Méthode static permettant de récupérer l'emprunt en cours d'un utilisateur et d'une édition donnée, renvoie null si pas d'emprunt en cours
-    public static Emprunt getCurrentEmprunt(String isbn, int userId) throws SQLException {
+    public static Emprunt getCurrentEmprunt(int printedWorkId, int userId) throws SQLException {
         //Requête SQL récupérant l'emprunt
-        String querry = "SELECT * FROM Emprunt WHERE userId=? AND editionISBN=? AND isFinished=false";
+        String querry = "SELECT * FROM Emprunt WHERE userId=? AND printedWorkID=? AND isFinished=false";
         PreparedStatement dispStmt = MainApplication.bddConn.con.prepareStatement(querry);
         dispStmt.setInt(1, userId);
-        dispStmt.setString(2,isbn);
+        dispStmt.setInt(2, printedWorkId);
 
         ResultSet rs = dispStmt.executeQuery();
 
         while(rs.next()) {
-            Emprunt emprunt = new Emprunt(rs.getInt(1), rs.getString(2), rs.getInt(3), rs.getDate(4), rs.getDate(5), rs.getDate(6), rs.getBoolean(7));
+            Emprunt emprunt = new Emprunt(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getDate(4), rs.getDate(5), rs.getDate(6), rs.getBoolean(7));
             return(emprunt);
         }
 
@@ -99,18 +99,18 @@ public class Emprunt implements PageObject {
     }
 
     //Méthode static permettant de récupérer tous les emprunts en cours d'une édition donnée
-    public static Vector<Emprunt> getCurrentEmpruntsFromEdition(String editionISBN) throws SQLException {
+    public static Vector<Emprunt> getCurrentEmpruntsFromPrintedWork(int printedWorkId) throws SQLException {
         Vector<Emprunt> res = new Vector<Emprunt>();
 
         //Requête SQL récupérant les emprunts
-        String querry = "SELECT * FROM Emprunt WHERE editionISBN=? AND isFinished=false";
+        String querry = "SELECT * FROM Emprunt WHERE printedWorkID=? AND isFinished=false";
         PreparedStatement dispStmt = MainApplication.bddConn.con.prepareStatement(querry);
-        dispStmt.setString(1, editionISBN);
+        dispStmt.setInt(1, printedWorkId);
 
         ResultSet rs = dispStmt.executeQuery();
 
         while(rs.next()) {
-            Emprunt emprunt = new Emprunt(rs.getInt(1), rs.getString(2), rs.getInt(3), rs.getDate(4), rs.getDate(5), rs.getBoolean(6));
+            Emprunt emprunt = new Emprunt(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getDate(4), rs.getDate(5), rs.getBoolean(6));
             res.add(emprunt);
         }
 
@@ -129,7 +129,7 @@ public class Emprunt implements PageObject {
         ResultSet rs = dispStmt.executeQuery();
 
         while(rs.next()) {
-            Emprunt emprunt = new Emprunt(rs.getInt(1), rs.getString(2), rs.getInt(3), rs.getDate(4), rs.getDate(5), rs.getDate(6), rs.getBoolean(7));
+            Emprunt emprunt = new Emprunt(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getDate(4), rs.getDate(5), rs.getDate(6), rs.getBoolean(7));
             res.add(emprunt);
         }
 
@@ -148,7 +148,7 @@ public class Emprunt implements PageObject {
         ResultSet rs = dispStmt.executeQuery();
 
         while(rs.next()) {
-            Emprunt emprunt = new Emprunt(rs.getInt(1), rs.getString(2), rs.getInt(3), rs.getDate(4), rs.getDate(5), rs.getBoolean(6));
+            Emprunt emprunt = new Emprunt(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getDate(4), rs.getDate(5), rs.getBoolean(6));
             res.add(emprunt);
         }
 
@@ -171,9 +171,9 @@ public class Emprunt implements PageObject {
     //Méthode permettant de récupérer la variable du livre relatif à l'emprunt considéré
     public Book getBook() throws SQLException {
         //Requête SQL récupérant les informations du livre
-        String querry = "SELECT * FROM Books b JOIN Edition e ON e.bookID=b.id WHERE e.isbn=?";
+        String querry = "SELECT * FROM Books b JOIN Edition e ON e.bookID=b.id JOIN PrintedWork p ON p.editionIsbn=e.isbn WHERE p.id=?";
         PreparedStatement dispStmt = MainApplication.bddConn.con.prepareStatement(querry);
-        dispStmt.setString(1, editionISBN);
+        dispStmt.setInt(1, printedWorkId);
 
         ResultSet rs = dispStmt.executeQuery();
 
@@ -245,7 +245,7 @@ public class Emprunt implements PageObject {
 
             //Boutton permettant d'accéder à la view du livre
             Button empruntButton = new Button();
-            empruntButton.setText(empruntBook.getTitle()+" "+editionISBN);
+            empruntButton.setText(empruntBook.getTitle());
             empruntButton.getStyleClass().add("emprunt_button");
 
             BookViewController bookController = new BookViewController(empruntBook);
@@ -276,7 +276,7 @@ public class Emprunt implements PageObject {
                     Date currentDate = new Date(System.currentTimeMillis());
 
                     //Retour de l'emprunt
-                    Edition.getEditionFromEmprunt(id).onClickReturn(id);
+                    PrintedWork.getPrintedWorkFromEmprunt(id).onClickReturn(id);
 
                     //Mise à jour de l'interface graphique
                     returnButton.setVisible(false);
@@ -309,7 +309,7 @@ public class Emprunt implements PageObject {
 
             //Boutton permettant d'accéder à la view du livre
             Button empruntButton = new Button();
-            empruntButton.setText(empruntBook.getTitle()+" "+editionISBN);
+            empruntButton.setText(empruntBook.getTitle());
             empruntButton.getStyleClass().add("emprunt_button");
 
             BookViewController bookController = new BookViewController(empruntBook);

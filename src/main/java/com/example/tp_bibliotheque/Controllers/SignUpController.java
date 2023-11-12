@@ -2,15 +2,15 @@ package com.example.tp_bibliotheque.Controllers;
 
 import com.example.tp_bibliotheque.MainApplication;
 import com.example.tp_bibliotheque.LoginUtils;
+import com.example.tp_bibliotheque.Objects.Categorie;
+import com.example.tp_bibliotheque.Objects.Library;
 import com.example.tp_bibliotheque.Objects.User;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 //CONTROLLER DE LA VIEW INSCRIPTION
 
@@ -32,6 +32,9 @@ public class SignUpController {
     //PasswordField : champ de confirmation du mot de passe
     @FXML private PasswordField confirmPassSignUp;
 
+    //ChoiceBox : choix de la bibliothèque
+    @FXML private ChoiceBox<Library> chooseLibrary;
+
     //Button : redirige vers la page de connexion
     @FXML private Button goToLogin;
 
@@ -43,7 +46,16 @@ public class SignUpController {
 
     //Fonction se lançant à l'initialisation de javaFX juste après le constructeur
     @FXML
-    public void initialize() {
+    public void initialize() throws SQLException {
+        try {
+            for(int i = 0;i<Library.countLibrary();i++) {
+                chooseLibrary.getItems().addAll(Library.getLibraryFromId(i+1));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        chooseLibrary.setValue(Library.getLibraryFromId(1));
+
         //Changement de view lors de la redirection vers la page de connexion
         goToLogin.setOnAction(event -> {
             try {
@@ -65,6 +77,7 @@ public class SignUpController {
         String lastName = lastNameSignUp.getText();
         String password = passSignUp.getText();
         String confirmPassword = confirmPassSignUp.getText();
+        Library library = chooseLibrary.getValue();
 
         //Un champ vide -> ERREUR
         if(mail.isEmpty() || name.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
@@ -94,7 +107,7 @@ public class SignUpController {
         //Nouveau mail -> INSCRIPTION
         try {
             //Ajout de l'utilisateur à la BDD
-            User.addUser(mail, name, lastName, hashPassword, userSalt,"1");
+            User.addUser(mail, name, lastName, hashPassword, userSalt,"1", library.getId());
 
             //Redirection vers la page de connexion
             MainApplication.switchScene(event, "fxml/login-view.fxml");

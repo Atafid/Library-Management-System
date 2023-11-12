@@ -1,9 +1,6 @@
 package com.example.tp_bibliotheque;
 
-import com.example.tp_bibliotheque.Controllers.AdminViewController;
-import com.example.tp_bibliotheque.Controllers.HomeController;
-import com.example.tp_bibliotheque.Controllers.NotifViewController;
-import com.example.tp_bibliotheque.Controllers.UserViewController;
+import com.example.tp_bibliotheque.Controllers.*;
 import com.example.tp_bibliotheque.Objects.Categorie;
 import com.example.tp_bibliotheque.Objects.Emprunt;
 import com.example.tp_bibliotheque.Objects.Notification;
@@ -14,6 +11,7 @@ import javafx.scene.control.*;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
@@ -37,14 +35,41 @@ public class Header {
     //TextField : barre de recherche
     @FXML private TextField searchBar;
 
+    //Button : recherche avancée
+    @FXML private Button advancedSearch;
+
+    //GridPane : conteneur de la recherche avancée
+    @FXML private GridPane advancedSearchContain;
+
+    //Label : recherche par titre du livre
+    @FXML private Label titleLabel;
+
+    //TextField : champ du titre du livre
+    @FXML private TextField titleField;
+
+    //Label : recherche par auteur du livre
+    @FXML private Label authorLabel;
+
+    //TextField : champ de l'auteur du livre
+    @FXML private TextField authorField;
+
+    //Label : recherche par mots clés du livre
+    @FXML private Label keywordsLabel;
+
+    //TextField : champ des mots clés du livre
+    @FXML private TextField keywordsField;
+
+    //Button : faire une recherche avancée
+    @FXML private Button advancedSearchButton;
+
     //MenuBar : menu de l'utilisateur
     @FXML private MenuBar userMenuBar;
 
     //MenuBar : menu des notifications
     @FXML private MenuBar notifBar;
 
-    //Button : boutton de l'administrateur
-    @FXML private Button adminButton;
+    //MenuBar : menu de l'administrateur
+    @FXML private MenuBar adminMenuBar;
 
     //Utilisateur actuellement connecté
     private final User user;
@@ -59,6 +84,7 @@ public class Header {
         //Initialisation de la HBox avec son style css
         head = new HBox();
         head.setEffect(new DropShadow(10, Color.BLACK));
+        head.setPrefHeight(70);
         head.getStyleClass().add("header");
 
         //ACCUEIL
@@ -87,6 +113,40 @@ public class Header {
         searchBar.setOnAction(event -> {
             try {
                 onSearch(event);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        //Recherche avancée
+        advancedSearch = new Button("+");
+        advancedSearchContain = new GridPane();
+        titleLabel = new Label("Title : ");
+        titleField = new TextField();
+        authorLabel = new Label("Author : ");
+        authorField = new TextField();
+        keywordsLabel = new Label("Keywords :");
+        keywordsField = new TextField();
+        advancedSearchButton = new Button("Search");
+
+        advancedSearchContain.addColumn(0, titleLabel, authorLabel, keywordsLabel);
+        advancedSearchContain.addColumn(1, titleField, authorField, keywordsField, advancedSearchButton);
+        advancedSearchContain.setVisible(false);
+
+        advancedSearch.setOnAction(event -> {
+            //On affiche la recherche avancée ou on la fait disparaître
+            advancedSearchContain.setVisible(!advancedSearchContain.isVisible());
+            if(advancedSearchContain.isVisible()) { advancedSearch.setText("-");
+                head.setPrefHeight(120);}
+            else { advancedSearch.setText("+");
+                head.setPrefHeight(70);}
+        });
+
+        advancedSearchButton.setOnAction(event -> {
+            try {
+                onAdvancedSearch(event);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             } catch (SQLException e) {
@@ -163,7 +223,7 @@ public class Header {
             try {
                 onNotifClick(event);
                 notifMenu.setText("Notifs : 0");
-                notifMenu.getItems().remove(0,notifMenu.getItems().size()-2);
+                notifMenu.getItems().remove(0,notifMenu.getItems().size()-1);
                 searchBar.setText("");
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -174,21 +234,37 @@ public class Header {
 
 
         //ADMINISTRATEUR
-        adminButton = new Button();
+        adminMenuBar = new MenuBar();
+        Menu adminMenu = new Menu();
         ImageView adminView = new ImageView(new Image(getClass().getResourceAsStream("img/key.png")));
         adminView.setFitHeight(50);
         adminView.setFitWidth(50);
-        adminButton.setGraphic(adminView);
-        adminButton.setVisible(user.categorie.equals(Categorie.Bibliothécaire));
+        adminMenu.setGraphic(adminView);
+        adminMenu.getStyleClass().add("menu");
+        MenuItem adminUserButton = new MenuItem("Users");
+        MenuItem adminBookButton = new MenuItem("Books");
+        adminMenu.getItems().addAll(adminUserButton, adminBookButton);
+        adminMenuBar.getMenus().add(adminMenu);
+        adminMenuBar.setVisible(user.categorie.equals(Categorie.Bibliothécaire));
 
-        adminButton.setOnAction(event -> {
+        adminUserButton.setOnAction(event -> {
             try {
-                onAdminClick(event);
+                onAdminUserClick(event);
                 searchBar.setText("");
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         });
+
+        adminBookButton.setOnAction(event -> {
+            try {
+                onAdminBookClick(event);
+                searchBar.setText("");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
 
         //DECONNEXION
         signOutButton.setOnAction(event -> {
@@ -199,7 +275,7 @@ public class Header {
             }
         });
 
-        head.getChildren().addAll(homeButton, searchView, searchBar, new Region(), adminButton, notifBar, userMenuBar);
+        head.getChildren().addAll(homeButton, searchView, searchBar, advancedSearch, advancedSearchContain, new Region(), adminMenuBar, notifBar, userMenuBar);
     }
 
     //Méthode appelée lors d'une recherche de livres
@@ -207,6 +283,13 @@ public class Header {
         HomeController homeController = new HomeController(MainApplication.fstPageHome, MainApplication.sndPageHome);
         MainApplication.switchScene(e, "fxml/home-view.fxml", homeController);
         homeController.onSearch(searchBar.getText());
+    }
+
+    //Méthode appelée lors d'une recherche avancée de livres
+    @FXML private void onAdvancedSearch(ActionEvent e) throws IOException, SQLException {
+        HomeController homeController = new HomeController(MainApplication.fstPageHome, MainApplication.sndPageHome);
+        MainApplication.switchScene(e, "fxml/home-view.fxml", homeController);
+        homeController.onSearch(titleField.getText(), authorField.getText(), keywordsField.getText());
     }
 
     //Méthode appelée lors du retour à l'écran d'accueil
@@ -245,11 +328,18 @@ public class Header {
         MainApplication.switchScene(e.copyFor(notifBar, null), "fxml/notif-view.fxml", notifController);
     }
 
-    //Méthode appelée lors de l'accès à la partie administrateur
+    //Méthode appelée lors de l'accès à la partie administrateur utilisateur
     @FXML
-    private void onAdminClick(ActionEvent e) throws IOException {
-        AdminViewController adminViewController = new AdminViewController(user);
-        MainApplication.switchScene(e, "fxml/admin-view.fxml", adminViewController);
+    private void onAdminUserClick(ActionEvent e) throws IOException {
+        AdminUserViewController adminUserViewController = new AdminUserViewController(user);
+        MainApplication.switchScene(e.copyFor(adminMenuBar, null), "fxml/admin-user-view.fxml", adminUserViewController);
+    }
+
+    //Méthode appelée lors de l'accès à la partie administrateur livres
+    @FXML
+    private void onAdminBookClick(ActionEvent e) throws IOException {
+        AdminBookViewController adminBookViewController = new AdminBookViewController(user);
+        MainApplication.switchScene(e.copyFor(adminMenuBar, null), "fxml/admin-book-view.fxml", adminBookViewController);
     }
 
     //GETTERS DE CLASSE

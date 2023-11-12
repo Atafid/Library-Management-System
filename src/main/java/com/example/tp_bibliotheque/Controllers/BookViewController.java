@@ -39,7 +39,7 @@ public class BookViewController {
     @FXML private GridPane creditsGrid;
 
     //GridPane : éditions du livre relatif à la fenêtre
-    @FXML private GridPane editionGrid;
+    @FXML private GridPane printedWorkGrid;
 
     //ImageView : couverture du livre relatif à la fenêtre
     @FXML private ImageView coverView;
@@ -129,22 +129,25 @@ public class BookViewController {
 
 
 
-        //***EDITIONS***//
+        //***EMPRUNTS***//
 
-        //Tableau des éditions du livre
-        Vector<Edition> editionVector = book.getEditions();
+        //Tableau des exemplaires du livre
+        Vector<PrintedWork> printedWorkVector = book.getPrintedWork();
 
         //Ajout des éditions à l'interface graphique
-        for(int i=0;i<editionVector.size();i++) {
-            Edition e = editionVector.get(i);
-            e.updateButtons();
+        for(int i=0;i<printedWorkVector.size();i++) {
+            PrintedWork p = printedWorkVector.get(i);
+            p.updateButtons();
 
-            editionGrid.add(e.editionLabel, 0, i);
-            editionGrid.add(e.borrowButton, 1, i);
-            editionGrid.add(e.borrowedLabel, 1, i);
-            editionGrid.add(e.returnButton, 2, i);
-            editionGrid.add(e.reserveButton, 2, i);
-            editionGrid.add(e.reserveLabel, 2, i);
+            printedWorkGrid.add(p.editionLabel, 0, i);
+            printedWorkGrid.add(p.libraryLabel, 1, i);
+            printedWorkGrid.add(p.borrowButton, 2, i);
+            printedWorkGrid.add(p.borrowedLabel, 2, i);
+            printedWorkGrid.add(p.askChangeButton, 3, i);
+            printedWorkGrid.add(p.askChangeLabel, 3, i);
+            printedWorkGrid.add(p.returnButton, 3, i);
+            printedWorkGrid.add(p.reserveButton, 3, i);
+            printedWorkGrid.add(p.reserveLabel, 3, i);
         }
 
 

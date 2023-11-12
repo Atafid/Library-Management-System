@@ -21,6 +21,7 @@
                   <RowConstraints maxHeight="52.0" minHeight="0.0" prefHeight="20.400000000000006" valignment="CENTER" vgrow="SOMETIMES" />
                <RowConstraints maxHeight="52.0" minHeight="0.0" prefHeight="20.400000000000006" valignment="CENTER" vgrow="SOMETIMES" />
                <RowConstraints />
+               <RowConstraints minHeight="10.0" prefHeight="30.0" />
               </rowConstraints>
               <children>
                   <TextField fx:id="mailSignUp" promptText="Email" styleClass="textBox" stylesheets="@../css/login.css" GridPane.rowIndex="1">
@@ -43,7 +44,8 @@
                   <font>
                      <Font size="15.0" />
                   </font></PasswordField>
-                  <Button contentDisplay="CENTER" onAction="#onSignUp" prefHeight="38.0" prefWidth="158.0" styleClass="boutton" stylesheets="@../css/login.css" text="Sign In" textAlignment="CENTER" textFill="WHITE" GridPane.rowIndex="6">
+                  <ChoiceBox fx:id="chooseLibrary" GridPane.rowIndex="6"></ChoiceBox>
+                  <Button contentDisplay="CENTER" onAction="#onSignUp" prefHeight="38.0" prefWidth="158.0" styleClass="boutton" stylesheets="@../css/login.css" text="Sign In" textAlignment="CENTER" textFill="WHITE" GridPane.rowIndex="7">
                       <font>
                           <Font name="Segoe UI Bold" size="18.0" />
                       </font>
@@ -54,7 +56,7 @@
               </children>
           </GridPane>
 
-            <Button fx:id="goToLogin" contentDisplay="CENTER" layoutX="279.0" layoutY="349.0" prefHeight="23.0" prefWidth="62.0" styleClass="link" stylesheets="@../css/login.css" text="Sign Up ?" textAlignment="CENTER" textFill="#487aa1">
+            <Button fx:id="goToLogin" contentDisplay="CENTER" layoutX="279.0" layoutY="373.0" prefHeight="23.0" prefWidth="62.0" styleClass="link" stylesheets="@../css/login.css" text="Sign Up ?" textAlignment="CENTER" textFill="#487aa1">
                 <font>
                     <Font name="Times New Roman Bold" size="11.0" />
                 </font>

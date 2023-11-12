@@ -122,9 +122,48 @@ public class HomeController {
         return(res);
     }
 
-    //Méthode permettant la recherche de livres
+    //Méthode permettant la recherche de livres avancée
     @FXML
-    public void onSearch(String research) throws SQLException {
+    public void onSearch(String titleSearch, String authorSearch, String keywords) throws SQLException {
+        //Recherche vide -> retour à l'écran d'accueil
+        if(titleSearch.isEmpty() && authorSearch.isEmpty() && keywords.isEmpty()) {
+            //Reinitialisation de la grille de livres et libération de la mémoire
+            bookGrid.getChildren().clear();
+            System.gc();
+
+            //Affichage de l'écran d'accueil
+            for (int i = 0; i < 5; i++) {
+                dispBook(currentPage.get(i), bookGrid, i, 0);
+                dispBook(currentPage.get(5 + i), bookGrid, i, 2);
+            }
+
+            nextButton.setVisible(true);
+            previousButton.setVisible(true);
+            pageLabel.setVisible(true);
+        }
+
+        //Recherche non vide
+        else {
+            //Récupération des livres correspondants à la recherche
+            Vector<Book> searchedBooks = Book.getBookFromSearch(titleSearch, authorSearch, keywords);
+
+            //Réinitialisation de la grille de livres
+            bookGrid.getChildren().clear();
+
+            //Affichage des livres recherchés
+            for (int i = 0; i < searchedBooks.size()/2; i++) {
+                dispBook(searchedBooks.get(i), bookGrid, i, 0);
+                dispBook(searchedBooks.get(searchedBooks.size()/2 + i), bookGrid, i, 2);
+            }
+
+            nextButton.setVisible(false);
+            previousButton.setVisible(false);
+            pageLabel.setVisible(false);
+        }
+    }
+
+    //Méthode surchargée permettant de faire une recherche simple -> recherche avancée avec le même champ
+    @FXML public void onSearch(String research) throws SQLException {
         //Recherche vide -> retour à l'écran d'accueil
         if(research.isEmpty()) {
             //Reinitialisation de la grille de livres et libération de la mémoire

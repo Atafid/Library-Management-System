@@ -28,6 +28,7 @@ public class BDDConnector {
             Class.forName("com.mysql.cj.jdbc.Driver");
             con = DriverManager.getConnection("jdbc:mysql://localhost:3308/bdd", "root", "05116173");
             con.setAutoCommit(false);
+            //fillBDD();
         } catch(Exception e) {
             e.printStackTrace();
         }
@@ -47,14 +48,16 @@ public class BDDConnector {
     public void fillBDD() throws SQLException, IOException {
         //Requête SQL pour remplir les livres, éditions, auteurs et aEcrit
         String querBooks = "INSERT INTO Books VALUES(?,?,?,?,?)";
-        String querEdition = "INSERT INTO Edition VALUES(?,?,?,?,?)";
+        String querEdition = "INSERT INTO Edition VALUES(?,?,?,?)";
         String querAuthors = "INSERT INTO Authors VALUES(0,?,?,?)";
         String querHasWritten = "INSERT INTO aEcrit VALUES(?,?,?)";
+        String querPrintedWork = "INSERT INTO PrintedWork VALUES(0,?,?,?)";
 
         PreparedStatement stmtBooks = con.prepareStatement(querBooks);
         PreparedStatement stmtEdition = con.prepareStatement(querEdition);
         PreparedStatement stmtAuthors = con.prepareStatement(querAuthors);
         PreparedStatement stmtHasWritten = con.prepareStatement(querHasWritten);
+        PreparedStatement stmtPrintedWork = con.prepareStatement(querPrintedWork);
 
         String csvFilePath = "books.csv";
 
@@ -110,8 +113,10 @@ public class BDDConnector {
                 stmtEdition.setInt(2, count);
                 stmtEdition.setString(3, editorName);
                 stmtEdition.setDate(4, publishDate);
-                stmtEdition.setInt(5, new Random().nextInt(3)+1);
 
+                stmtPrintedWork.setString(1, isbn);
+                stmtPrintedWork.setInt(2, new Random().nextInt(3)+1);
+                stmtPrintedWork.setInt(3, new Random().nextInt(3)+1);
 
                 //Récupération des attributs des auteurs
                 String roles = "";
@@ -155,6 +160,7 @@ public class BDDConnector {
 
                 stmtBooks.addBatch();
                 stmtEdition.addBatch();
+                stmtPrintedWork.addBatch();
 
                 //Commit des changements
                 if (count % BatchSize == 0) {
@@ -162,6 +168,7 @@ public class BDDConnector {
                     stmtEdition.executeBatch();
                     stmtAuthors.executeBatch();
                     stmtHasWritten.executeBatch();
+                    stmtPrintedWork.executeBatch();
                 }
 
                 count++;
@@ -175,6 +182,7 @@ public class BDDConnector {
         stmtEdition.executeBatch();
         stmtAuthors.executeBatch();
         stmtHasWritten.executeBatch();
+        stmtPrintedWork.executeBatch();
 
         con.commit();
     }

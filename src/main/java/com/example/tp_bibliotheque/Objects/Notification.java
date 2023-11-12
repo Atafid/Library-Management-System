@@ -1,6 +1,7 @@
 package com.example.tp_bibliotheque.Objects;
 
 import com.example.tp_bibliotheque.MainApplication;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 
@@ -18,7 +19,9 @@ enum NotifType {
     CatChange,
     AdminNotif,
     ReservationArrived,
-    ForcedBookReturn;
+    ForcedBookReturn,
+    MoveChangeAsk,
+    MoveChangeAnswer;
 
 
     //*****************METHODES*****************//
@@ -32,11 +35,17 @@ enum NotifType {
                     com.example.tp_bibliotheque.Objects.CatChange.getCatChange(_infoId).getPrevCat().getName()+" to "+
                     com.example.tp_bibliotheque.Objects.CatChange.getCatChange(_infoId).getNewCat().getName());
         } else if (this.equals(NotifType.AdminNotif)) {
-            return ("The user "+User.getUserFromId(_infoId).getMail()+"has a book late");
+            return ("The user "+User.getUserFromId(_infoId).getMail()+" has a book late");
         } else if (this.equals(NotifType.ReservationArrived)) {
             return ("Your reservation arrived for the book : "+Book.getBook(_infoId).getTitle());
         } else if (this.equals(NotifType.ForcedBookReturn)) {
             return ("An admin return your borrow for the book : "+Book.getBookFromEmprunt(_infoId).getTitle());
+        } else if (this.equals(NotifType.MoveChangeAsk)) {
+            return (User.getUserFromMoveAsk(_infoId).getMail()+" has asked to move : "+Edition.getEditionFromMoveAsk(_infoId).getEditorName()+
+                    "of "+Book.getBookFromMoveAsk(_infoId).getTitle()+" to "+Library.getLibraryFromId(User.getUserFromMoveAsk(_infoId).getLibraryId()).getName());
+        } else if (this.equals(NotifType.MoveChangeAnswer)) {
+            return("Your asking to move "+Edition.getEditionFromMoveAsk(_infoId).getIsbn()+
+                    "of "+Book.getBookFromMoveAsk(_infoId).getTitle()+" has been "+MoveAsk.getAnswer(_infoId));
         }
         return null;
     }
@@ -162,6 +171,10 @@ public class Notification implements PageObject {
                 return(NotifType.ReservationArrived);
             case "F":
                 return(NotifType.ForcedBookReturn);
+            case "M":
+                return(NotifType.MoveChangeAsk);
+            case "W":
+                return(NotifType.MoveChangeAnswer);
             default:
                 return(NotifType.LateBook);
         }
@@ -188,6 +201,46 @@ public class Notification implements PageObject {
             notifLabel.setText(this.getString());
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }
+
+        //Si la notification est une demande de mouvement d'exemplaire -> possibilité de réponse
+        if(type==NotifType.MoveChangeAsk) {
+            try {
+
+                //Si la demande n'a pas déja été traitée -> possibilité de la traiter
+                if(!MoveAsk.getRead(infoId)) {
+                    Button acceptButton = new Button("Accept");
+                    Button refuseButton = new Button("Refuse");
+
+                    acceptButton.setOnAction(event -> {
+                        try {
+                            MoveAsk.answerMoveAsk(infoId, true);
+                            Notification.addNotification(User.getUserFromMoveAsk(infoId).getId(), "W", new Date(System.currentTimeMillis()), infoId);
+                            acceptButton.setVisible(false);
+                            refuseButton.setVisible(false);
+                        } catch (SQLException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
+
+                    refuseButton.setOnAction(event -> {
+                        try {
+                            MoveAsk.answerMoveAsk(infoId, false);
+                            Notification.addNotification(User.getUserFromMoveAsk(infoId).getId(), "W", new Date(System.currentTimeMillis()), infoId);
+                            acceptButton.setVisible(false);
+                            refuseButton.setVisible(false);
+                        } catch (SQLException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
+
+                    //Ajout à l'interface graphique
+                    grid.add(acceptButton, 1, rowIdx);
+                    grid.add(refuseButton, 2, rowIdx);
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         //Ajout à l'interface graphique

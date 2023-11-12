@@ -66,6 +66,9 @@ public enum Categorie {
         }
     }
 
+    //toString méthode
+    public String toString() { return(name); }
+
     //GETTERS
     public int getMaxBorrowNumber() {
         return maxBorrowNumber;

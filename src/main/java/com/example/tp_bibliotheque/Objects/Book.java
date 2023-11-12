@@ -89,13 +89,40 @@ public class Book implements PageObject {
         return(res);
     }
 
-    //Méthode static permettant de récupérer les livres depuis une recherche
+    //Méthode static permettant de récupérer les livres depuis une recherche avancée
+    public static Vector<Book> getBookFromSearch(String titleSearch, String authorSearch, String keywords) throws SQLException {
+        Vector<Book> res = new Vector<Book>();
+
+        //Requête SQL récupérant les livres
+        String quer = "SELECT DISTINCT b.id FROM Books b JOIN aEcrit h ON h.bookID=b.id JOIN Authors a ON h.authorID = a.id" +
+                " WHERE b.title LIKE ? AND b.description LIKE ? AND (a.name LIKE ? OR a.last_name LIKE ?) LIMIT 10";
+        PreparedStatement stmt = MainApplication.bddConn.con.prepareStatement(quer);
+
+        //Permet de regarder si la recherche entrée est contenue dans l'une des colonnes SQL
+        titleSearch = "%"+titleSearch+"%";
+        authorSearch = "%"+authorSearch+"%";
+        keywords = "%"+keywords+"%";
+        stmt.setString(1,titleSearch);
+        stmt.setString(2,keywords);
+        stmt.setString(3,authorSearch);
+        stmt.setString(4,authorSearch);
+
+        ResultSet rs = stmt.executeQuery();
+
+        while(rs.next()) {
+            res.add(getBook(rs.getInt(1)));
+        }
+
+        return(res);
+    }
+
+    //Méthode static surchargée permettant de récupérer les livres depuis une recherche simple
     public static Vector<Book> getBookFromSearch(String search) throws SQLException {
         Vector<Book> res = new Vector<Book>();
 
         //Requête SQL récupérant les livres
         String quer = "SELECT DISTINCT b.id FROM Books b JOIN aEcrit h ON h.bookID=b.id JOIN Authors a ON h.authorID = a.id" +
-                " WHERE b.title LIKE ? OR b.description LIKE ? OR a.name LIKE ? OR a.last_name LIKE ? LIMIT 10";
+                " WHERE b.title LIKE ? OR b.description LIKE ? OR (a.name LIKE ? OR a.last_name LIKE ?) LIMIT 10";
         PreparedStatement stmt = MainApplication.bddConn.con.prepareStatement(quer);
 
         //Permet de regarder si la recherche entrée est contenue dans l'une des colonnes SQL
@@ -117,10 +144,27 @@ public class Book implements PageObject {
     //Méthode static permettant de récupérer un variable livre depuis l'ID d'un emprunt dans la BDD
     public static Book getBookFromEmprunt(int empruntId) throws SQLException {
         //Requête SQL récupérant l'ID du livre
-        String quer = "SELECT bookId FROM Edition ed JOIN Emprunt e ON ed.isbn = e.editionISBN WHERE e.id=?";
+        String quer = "SELECT bookId FROM Edition ed JOIN PrintedWork p ON ed.isbn = p.editionIsbn JOIN Emprunt e ON p.id=e.printedWorkID WHERE e.id=?";
         PreparedStatement stmt = MainApplication.bddConn.con.prepareStatement(quer);
 
         stmt.setInt(1,empruntId);
+
+        ResultSet rs = stmt.executeQuery();
+
+        while(rs.next()) {
+            return(getBook(rs.getInt(1)));
+        }
+
+        return(null);
+    }
+
+    //Méthode static permettant de récupérer une variable livre depuis l'ID d'un exemplaire
+    public static Book getBookFromMoveAsk(int moveAskId) throws SQLException {
+        //Requête SQL récupérant l'ID du livre
+        String quer = "SELECT bookId FROM Edition ed JOIN PrintedWork p ON ed.isbn = p.editionIsbn JOIN MoveAsk m ON p.id=m.printedWorkId WHERE m.id=?";
+        PreparedStatement stmt = MainApplication.bddConn.con.prepareStatement(quer);
+
+        stmt.setInt(1, moveAskId);
 
         ResultSet rs = stmt.executeQuery();
 
@@ -172,20 +216,20 @@ public class Book implements PageObject {
         return(res);
     }
 
-    //Méthode récupérant les éditions du livre
-    public Vector<Edition> getEditions() throws SQLException {
-        Vector<Edition> res = new Vector<Edition>();
+    //Méthode récupérant les exemplaires d'un livre
+    public Vector<PrintedWork> getPrintedWork() throws SQLException {
+        Vector<PrintedWork> res = new Vector<PrintedWork>();
 
         //Requête SQL récupérant les éditions
-        String quer = "SELECT * FROM Edition e JOIN Books b ON b.id = e.bookID WHERE e.bookID=?";
+        String quer = "SELECT * FROM PrintedWork p JOIN Edition e ON e.isbn = p.editionIsbn JOIN Books b ON b.id=e.bookID WHERE e.bookID=?";
         PreparedStatement dispStmt = MainApplication.bddConn.con.prepareStatement(quer);
         dispStmt.setInt(1,this.getId());
 
         ResultSet rs = dispStmt.executeQuery();
 
         while(rs.next()) {
-            Edition newEdition = new Edition(rs.getString(1), rs.getInt(2), rs.getString(3), rs.getDate(4), rs.getInt(5));
-            res.add(newEdition);
+            PrintedWork printedWork = new PrintedWork(rs.getInt(1), rs.getString(2), rs.getInt(3), rs.getInt(4));
+            res.add(printedWork);
         }
 
         return(res);

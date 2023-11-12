@@ -37,10 +37,13 @@ public class User extends Personne implements PageObject {
     //Catégorie de l'utilisateur
     public Categorie categorie;
 
+    //ID de la bilbliothèque de l'utilisateur
+    public int libraryId;
+
     //*****************METHODES*****************//
 
     //Constructeur de classe
-    public User(int _id, String _mail, String _name, String _last_name, String _hashPassword, String _passwordSalt, String catString) {
+    public User(int _id, String _mail, String _name, String _last_name, String _hashPassword, String _passwordSalt, String catString, int _libraryId) {
         super(_name, _last_name);
 
         id = _id;
@@ -55,12 +58,13 @@ public class User extends Personne implements PageObject {
         }
 
         categorie = Categorie.getCatFromString(catString);
+        libraryId = _libraryId;
     }
 
     //Méthode static permettant d'ajouter un utilisateur à la BDD
-    public static void addUser(String mail, String name, String lastName, String password, String passwordSalt, String catString) throws SQLException {
+    public static void addUser(String mail, String name, String lastName, String password, String passwordSalt, String catString, int libraryId) throws SQLException {
         //Requête SQL permettant d'ajouter l'utilisateur
-        String querry = "INSERT INTO User VALUES(0,?,?,?,?,?,?)";
+        String querry = "INSERT INTO User VALUES(0,?,?,?,?,?,?,?)";
         PreparedStatement stmt = MainApplication.bddConn.con.prepareStatement(querry);
 
         stmt.setString(1, mail);
@@ -69,6 +73,7 @@ public class User extends Personne implements PageObject {
         stmt.setString(4, password);
         stmt.setString(5, passwordSalt);
         stmt.setString(6, catString);
+        stmt.setInt(7, libraryId);
 
         stmt.addBatch();
         stmt.executeBatch();
@@ -86,7 +91,7 @@ public class User extends Personne implements PageObject {
         ResultSet rs = dispStmt.executeQuery();
 
         while(rs.next()) {
-            User user = new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5),rs.getString(6),rs.getString(7));
+            User user = new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5),rs.getString(6),rs.getString(7), rs.getInt(8));
             res.add(user);
         }
 
@@ -103,7 +108,7 @@ public class User extends Personne implements PageObject {
         ResultSet rs = dispStmt.executeQuery();
 
         while(rs.next()) {
-            User user = new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5),rs.getString(6),rs.getString(7));
+            User user = new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5),rs.getString(6),rs.getString(7), rs.getInt(8));
             return(user);
         }
 
@@ -120,7 +125,24 @@ public class User extends Personne implements PageObject {
         ResultSet rs = dispStmt.executeQuery();
 
         while(rs.next()) {
-            User user = new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5),rs.getString(6),rs.getString(7));
+            User user = new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5),rs.getString(6),rs.getString(7), rs.getInt(8));
+            return(user);
+        }
+
+        return(null);
+    }
+
+    //Méthode static permettant d'obtenir l'utilisateur à partir d'une demande de mouvement d'exemplaire
+    public static User getUserFromMoveAsk(int _moveAskId) throws SQLException {
+        //Requête SQL récupérant les informations de l'utilisateur
+        String querry = "SELECT * FROM User u JOIN MoveASK m ON u.id=m.userId WHERE m.id=?";
+        PreparedStatement dispStmt = MainApplication.bddConn.con.prepareStatement(querry);
+        dispStmt.setInt(1, _moveAskId);
+
+        ResultSet rs = dispStmt.executeQuery();
+
+        while(rs.next()) {
+            User user = new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5),rs.getString(6),rs.getString(7), rs.getInt(8));
             return(user);
         }
 
@@ -138,7 +160,7 @@ public class User extends Personne implements PageObject {
         ResultSet rs = dispStmt.executeQuery();
 
         while(rs.next()) {
-            User user = new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5),rs.getString(6),rs.getString(7));
+            User user = new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5),rs.getString(6),rs.getString(7), rs.getInt(8));
             res.add(user);
         }
 
@@ -177,6 +199,7 @@ public class User extends Personne implements PageObject {
     public int getBorrowDays() {
         return categorie.getMaxDaysBorrow();
     }
+    public int getLibraryId() { return libraryId; }
 
     //SETTERS DE CLASSE
 
@@ -236,7 +259,11 @@ public class User extends Personne implements PageObject {
     public void fillGrid(GridPane grid, int rowIdx) {
         //Boutton permettant d'accéder à la view de l'utilisateur
         Button userButton = new Button();
-        userButton.setText(mail);
+        try {
+            userButton.setText(mail+", "+Library.getLibraryFromId(libraryId).getName());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         userButton.getStyleClass().add("user_button");
 
         UserViewController userController = new UserViewController(this);
