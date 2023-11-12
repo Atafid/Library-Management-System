@@ -56,7 +56,7 @@ public class HomeController extends ApplicationController {
         //Ajout des livres à afficher à l'interface graphique
         for(int i=0;i<5;i++) {
             dispBook(currentPage.get(i), bookGrid, i, 0);
-            dispBook(currentPage.get(5+i), bookGrid, i, 2);
+            dispBook(currentPage.get(5+i), bookGrid, i, 3);
         }
 
         //Initialisation des éléments de changement de page
@@ -83,7 +83,10 @@ public class HomeController extends ApplicationController {
             //Condition vérifiant que le livre ait au moins été noté une fois
             if(avgNote>-1) {
                 DecimalFormat df = new DecimalFormat("#0.0");
-                titleButton.setText(titleButton.getText()+", "+df.format(avgNote));
+
+                Label noteLabel = new Label(df.format(avgNote)+"/5");
+                noteLabel.getStyleClass().add("noteLabel");
+                parent.add(noteLabel, column, row+2);
             }
         } catch(SQLException e) {
             e.printStackTrace();
@@ -127,7 +130,7 @@ public class HomeController extends ApplicationController {
             //Affichage de l'écran d'accueil
             for (int i = 0; i < 5; i++) {
                 dispBook(currentPage.get(i), bookGrid, i, 0);
-                dispBook(currentPage.get(5 + i), bookGrid, i, 2);
+                dispBook(currentPage.get(5 + i), bookGrid, i, 3);
             }
 
             nextButton.setVisible(true);
@@ -146,7 +149,7 @@ public class HomeController extends ApplicationController {
             //Affichage des livres recherchés
             for (int i = 0; i < searchedBooks.size()/2; i++) {
                 dispBook(searchedBooks.get(i), bookGrid, i, 0);
-                dispBook(searchedBooks.get(searchedBooks.size()/2 + i), bookGrid, i, 2);
+                dispBook(searchedBooks.get(searchedBooks.size()/2 + i), bookGrid, i, 3);
             }
 
             nextButton.setVisible(false);
@@ -166,7 +169,7 @@ public class HomeController extends ApplicationController {
             //Affichage de l'écran d'accueil
             for (int i = 0; i < 5; i++) {
                 dispBook(currentPage.get(i), bookGrid, i, 0);
-                dispBook(currentPage.get(5 + i), bookGrid, i, 2);
+                dispBook(currentPage.get(5 + i), bookGrid, i, 3);
             }
 
             nextButton.setVisible(true);
@@ -185,7 +188,7 @@ public class HomeController extends ApplicationController {
             //Affichage des livres recherchés
             for (int i = 0; i < searchedBooks.size()/2; i++) {
                 dispBook(searchedBooks.get(i), bookGrid, i, 0);
-                dispBook(searchedBooks.get(searchedBooks.size()/2 + i), bookGrid, i, 2);
+                dispBook(searchedBooks.get(searchedBooks.size()/2 + i), bookGrid, i, 3);
             }
 
             nextButton.setVisible(false);
@@ -209,7 +212,7 @@ public class HomeController extends ApplicationController {
             //Affichage de la nouvelle page
             for (int i = 0; i < 5; i++) {
                 dispBook(nextPage.get(i), bookGrid, i, 0);
-                dispBook(nextPage.get(5 + i), bookGrid, i, 2);
+                dispBook(nextPage.get(5 + i), bookGrid, i, 3);
             }
 
             //Mise à jour des informations relatives à la page
@@ -254,7 +257,7 @@ public class HomeController extends ApplicationController {
             //Affichage de la nouvelle page
             for (int i = 0; i < 5; i++) {
                 dispBook(previousPage.get(i), bookGrid, i, 0);
-                dispBook(previousPage.get(5 + i), bookGrid, i, 2);
+                dispBook(previousPage.get(5 + i), bookGrid, i, 3);
             }
 
             //Mise à jour des informations relatives à la page

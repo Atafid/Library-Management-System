@@ -1,45 +1,10 @@
-.emprunt_button {
-    -fx-font-size: 12px;
-    -fx-background-color: transparent;
-    -fx-text-fill: #191cb1;
+.text-field {
+    -fx-border-color: black;
+    -fx-background-color: white;
+    -fx-border-radius: 5px;
 }
 
-.emprunt_button:hover {
-    -fx-text-fill: #1961b1;
-    -fx-underline: true;
-    -fx-cursor: hand;
-}
-
-.buttonModif {
-    -fx-background-color: #1961b1;
-    -fx-text-fill: white;
-}
-
-.buttonModif:hover {
-    -fx-background-color: #191cb1;
-    -fx-cursor: hand;
-}
-
-.returnButton {
-    -fx-background-color: #1961b1;
-    -fx-text-fill: white;
-}
-
-.returnButton:hover {
-    -fx-background-color: #191cb1;
-    -fx-cursor: hand;
-}
-
-.errorMess {
-    -fx-text-fill: #e75a5a;
-    -fx-font-size: 10px;
-}
-
-.late {
-    -fx-text-fill: #e75a5a;
-}
-
-.textField {
+.text-area {
     -fx-border-color: black;
     -fx-background-color: white;
     -fx-border-radius: 5px;
@@ -50,8 +15,7 @@ ChoiceBox {
     -fx-border-radius: 100px;
     -fx-background-radius: 100px;
 
-    -fx-pref-width: 76px;
-    -fx-pref-height: 20px;
+    -fx-pref-width: 173px;
 }
 
 ChoiceBox > .label {
@@ -66,7 +30,7 @@ ChoiceBox > .label {
 .choice-box .context-menu {
     -fx-background-color: white;
 
-    -fx-pref-width: 76px;
+    -fx-pref-width: 173px;
 }
 
 .choice-box .menu-item:focused {
@@ -89,4 +53,27 @@ ChoiceBox:hover {
 ChoiceBox:hover > .label {
     -fx-background-color: #191cb1;
     -fx-cursor: hand;
+}
+
+.moveButton {
+    -fx-background-color: #1961b1;
+    -fx-text-fill: white;
+}
+
+.moveButton:hover {
+    -fx-background-color: #191cb1;
+    -fx-cursor: hand;
+}
+.addButton {
+    -fx-background-color: #1961b1;
+    -fx-text-fill: white;
+}
+
+.addButton:hover {
+    -fx-background-color: #191cb1;
+    -fx-cursor: hand;
+}
+
+.errorMess {
+    -fx-text-fill: #e75a5a;
 }

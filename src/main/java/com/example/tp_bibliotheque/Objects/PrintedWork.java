@@ -79,7 +79,7 @@ public class PrintedWork {
         //Initialisation de l'interface graphique
         editionLabel = new Label();
         try {
-            editionLabel.setText(getEdition().getEditorName()+", "+getEdition().getIsbn()+", qty : "+quantity);
+            editionLabel.setText("- "+getEdition().getEditorName()+", "+getEdition().getIsbn()+", qty : "+quantity);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -93,24 +93,31 @@ public class PrintedWork {
 
         borrowButton = new Button();
         borrowButton.setText("Borrow");
+        borrowButton.getStyleClass().add("pwButton");
 
         borrowedLabel = new Label();
         borrowedLabel.setText("Book borrowed until : ");
+        borrowedLabel.getStyleClass().add("pwLabel");
 
         returnButton = new Button();
         returnButton.setText("Return");
+        returnButton.getStyleClass().add("pwButton");
 
         reserveButton = new Button();
         reserveButton.setText("Reserve");
+        reserveButton.getStyleClass().add("pwButton");
 
         reserveLabel = new Label();
         reserveLabel.setText("Book reserved, you are : ");
+        reserveLabel.getStyleClass().add("pwLabel");
 
         askChangeButton = new Button();
         askChangeButton.setText("Ask To Move");
+        askChangeButton.getStyleClass().add("pwButton");
 
         askChangeLabel = new Label();
         askChangeLabel.setText("Your asking have been send");
+        askChangeLabel.getStyleClass().add("pwLabel");
     }
 
     //Méthode static permettant d'ajouter un exemplaire à la BDD
@@ -200,7 +207,7 @@ public class PrintedWork {
         User user = MainApplication.header.getUser();
         Emprunt currentEmprunt = Emprunt.getCurrentEmprunt(id, user.getId());
 
-        editionLabel.setText(getEdition().getEditorName()+", "+getEdition().getPublishDate().toString()+", qty : "+availableQty);
+        editionLabel.setText("- "+getEdition().getEditorName()+", "+getEdition().getIsbn()+", qty : "+availableQty);
 
         //BONNE BIBLIOTHEQUE
         if(libraryId==user.getLibraryId()) {

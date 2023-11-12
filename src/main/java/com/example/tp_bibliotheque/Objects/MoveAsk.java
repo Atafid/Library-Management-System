@@ -114,7 +114,7 @@ public class MoveAsk {
     //Méthode static permettant d'obtenir le statut de lecture d'une demande
     public static Boolean getRead(int _id) throws SQLException {
         //Requête SQL récupérant le statut de lecture
-        String querry = "SELECT isAccepted FROM MoveAsk WHERE id=?";
+        String querry = "SELECT isRead FROM MoveAsk WHERE id=?";
         PreparedStatement dispStmt = MainApplication.bddConn.con.prepareStatement(querry);
 
         dispStmt.setInt(1, _id);

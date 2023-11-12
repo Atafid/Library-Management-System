@@ -10,8 +10,10 @@
 .book_title {
     -fx-background-color: transparent;
     -fx-text-fill: black;
-    -fx-font-size: 10px;
-    -fx-text-alignment: center;
+    -fx-font-size: 12px;
+    -fx-text-alignment: left;
+
+    -fx-alignment: center-left;
 }
 
 .book_title:hover {
@@ -19,14 +21,10 @@
     -fx-cursor: hand;
 }
 
-.arrow_button {
-    -fx-background-color: transparent;
-    -fx-text-fill: black;
-    -fx-font-size: 20px;
-    -fx-text-alignment: center;
-}
+.noteLabel {
+    -fx-text-fill: dimgray;
+    -fx-font-size: 10px;
+    -fx-text-alignment: left;
 
-.arrow_button:hover {
-    -fx-cursor: hand;
-    -fx-font-weight: bold;
+    -fx-alignment: top-left;
 }

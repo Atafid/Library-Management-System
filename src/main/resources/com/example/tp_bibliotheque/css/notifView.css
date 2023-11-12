@@ -1,0 +1,13 @@
+.acceptButtons {
+    -fx-background-color: #1961b1;
+    -fx-text-fill: white;
+}
+
+.acceptButtons:hover {
+    -fx-background-color: #191cb1;
+    -fx-cursor: hand;
+}
+
+.notifLabel {
+    -fx-font-size: 12px;
+}

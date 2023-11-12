@@ -1,35 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.net.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane fx:id="root" prefHeight="555.0" prefWidth="900.0" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="root" prefHeight="555.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
     <Rectangle fill="WHITE" height="479.0" layoutX="25.0" layoutY="90.0" stroke="TRANSPARENT" strokeType="INSIDE" width="850.0" />
    <Label layoutX="36.0" layoutY="111.0" text="Move : ">
       <font>
          <Font name="System Bold" size="14.0" />
       </font>
    </Label>
-   <Label fx:id="moveMess" layoutX="103.0" layoutY="92.0" text="Label" />
-   <GridPane fx:id="moveGrid" layoutX="103.0" layoutY="109.0" prefHeight="30.0" prefWidth="724.0">
+   <Label fx:id="moveMess" layoutX="100.0" layoutY="91.0" styleClass="errorMess" text="Label">
+      <font>
+         <Font name="System Bold" size="14.0" />
+      </font></Label>
+   <GridPane fx:id="moveGrid" layoutX="97.0" layoutY="109.0" prefHeight="30.0" prefWidth="740.0">
      <columnConstraints>
-       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-         <ColumnConstraints hgrow="SOMETIMES" maxWidth="180.0" minWidth="10.0" prefWidth="180.0" />
-         <ColumnConstraints hgrow="SOMETIMES" maxWidth="126.0" minWidth="10.0" prefWidth="82.0" />
+       <ColumnConstraints hgrow="SOMETIMES" maxWidth="130.0" minWidth="10.0" prefWidth="130.0" />
+       <ColumnConstraints hgrow="SOMETIMES" maxWidth="195.39999999999998" minWidth="10.0" prefWidth="188.39999999999998" />
+         <ColumnConstraints hgrow="SOMETIMES" maxWidth="323.2" minWidth="10.0" prefWidth="186.0" />
+         <ColumnConstraints hgrow="SOMETIMES" maxWidth="284.0" minWidth="0.0" prefWidth="117.79999999999995" />
+         <ColumnConstraints hgrow="SOMETIMES" maxWidth="165.0" minWidth="10.0" prefWidth="119.39999999999998" />
      </columnConstraints>
      <rowConstraints>
        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
      </rowConstraints>
       <children>
-         <TextField fx:id="moveIsbnField" promptText="ISBN" />
-         <ChoiceBox fx:id="fromLibrary" prefWidth="150.0" GridPane.columnIndex="1" />
-         <ChoiceBox fx:id="toLibrary" prefWidth="150.0" GridPane.columnIndex="2" />
-         <Button fx:id="moveButton" mnemonicParsing="false" onAction="#onMoveClick" prefHeight="26.0" prefWidth="53.0" text="Move" GridPane.columnIndex="4" />
-         <TextField fx:id="moveQtyField" promptText="Quantity" GridPane.columnIndex="3" />
+         <TextField fx:id="moveIsbnField" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="26.0" prefWidth="114.0" promptText="ISBN" />
+         <ChoiceBox fx:id="fromLibrary" prefHeight="26.0" prefWidth="173.0" GridPane.columnIndex="1" />
+         <ChoiceBox fx:id="toLibrary" prefHeight="26.0" prefWidth="173.0" GridPane.columnIndex="2" />
+         <Button fx:id="moveButton" mnemonicParsing="false" onAction="#onMoveClick" prefHeight="26.0" prefWidth="116.0" styleClass="moveButton" text="Move" GridPane.columnIndex="4" />
+         <TextField fx:id="moveQtyField" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="26.0" prefWidth="104.0" promptText="Quantity" GridPane.columnIndex="3" />
       </children>
    </GridPane>
    <Label layoutX="43.0" layoutY="153.0" text="Add :">
@@ -77,7 +81,7 @@
                <DatePicker promptText="Birth Date" GridPane.columnIndex="0" GridPane.rowIndex="2" />
             </children>
          </GridPane>
-         <GridPane fx:id="addRemAuthorButtons" GridPane.columnIndex="1" GridPane.rowIndex="1">
+         <GridPane fx:id="addRemAuthorButtons" prefHeight="122.0" prefWidth="161.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
            <columnConstraints>
              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
            </columnConstraints>
@@ -86,11 +90,11 @@
              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
            </rowConstraints>
             <children>
-               <Button fx:id="addAuthorButton" mnemonicParsing="false" onAction="#onAddAuthor" text="+" />
-               <Button fx:id="removeAuthorButton" mnemonicParsing="false" onAction="#onRemoveAuthor" prefHeight="26.0" prefWidth="25.0" text="-" GridPane.rowIndex="1" />
+               <Button fx:id="addAuthorButton" mnemonicParsing="false" onAction="#onAddAuthor" styleClass="addButton" text="+" />
+               <Button fx:id="removeAuthorButton" mnemonicParsing="false" onAction="#onRemoveAuthor" prefHeight="26.0" prefWidth="25.0" styleClass="addButton" text="-" GridPane.rowIndex="1" />
             </children>
          </GridPane>
-         <GridPane GridPane.columnIndex="0" GridPane.rowIndex="2">
+         <GridPane prefHeight="169.0" prefWidth="174.0" GridPane.columnIndex="0" GridPane.rowIndex="2">
            <columnConstraints>
              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
            </columnConstraints>
@@ -118,12 +122,22 @@
              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
            </rowConstraints>
             <children>
-               <Button fx:id="addEdiButton" mnemonicParsing="false" onAction="#onAddEdi" text="+" />
-               <Button fx:id="removeEdiButton" mnemonicParsing="false" onAction="#onRemoveEdi" prefHeight="26.0" prefWidth="25.0" text="-" GridPane.rowIndex="1" />
+               <Button fx:id="addEdiButton" mnemonicParsing="false" onAction="#onAddEdi" styleClass="addButton" text="+" />
+               <Button fx:id="removeEdiButton" mnemonicParsing="false" onAction="#onRemoveEdi" prefHeight="26.0" prefWidth="25.0" styleClass="addButton" text="-" GridPane.rowIndex="1" />
             </children>
          </GridPane>
       </children>
    </GridPane>
-   <Button layoutX="97.0" layoutY="540.0" mnemonicParsing="false" onAction="#onAddBook" text="Add" />
+   <Button layoutX="97.0" layoutY="540.0" mnemonicParsing="false" onAction="#onAddBook" prefHeight="26.0" prefWidth="174.0" styleClass="moveButton" text="Add" />
+   <Line endX="815.0" endY="-2.5" layoutX="61.0" layoutY="143.0" startX="-36.00000762939453" startY="-2.5" />
+   <Label fx:id="addMess" layoutX="39.0" layoutY="543.0" styleClass="errorMess" text="Label">
+      <font>
+         <Font name="System Bold" size="14.0" />
+      </font>
+   </Label>
+   <stylesheets>
+      <URL value="@../css/style.css" />
+      <URL value="@../css/adminBookView.css" />
+   </stylesheets>
 
 </AnchorPane>

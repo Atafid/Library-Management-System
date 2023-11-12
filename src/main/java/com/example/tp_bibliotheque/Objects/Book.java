@@ -310,7 +310,7 @@ public class Book implements PageObject {
     public void fillGrid(GridPane grid, int rowIdx) {
         //Boutton du titre du livre qui renvoie vers sa view
         Button bookButton = new Button();
-        bookButton.setText(title);
+        bookButton.setText("- "+title);
         bookButton.getStyleClass().add("book_button");
 
         BookViewController bookController = new BookViewController(this);

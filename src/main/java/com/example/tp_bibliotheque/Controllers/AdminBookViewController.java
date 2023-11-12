@@ -91,6 +91,10 @@ public class AdminBookViewController extends ApplicationController {
     @FXML
     private ChoiceBox<Library> libraryChoiceBox;
 
+    //Label : erreur lors de l'ajout
+    @FXML
+    private Label addMess;
+
     //L'administrateur actuellement connecté sur la page
     private final User admin;
 
@@ -124,6 +128,7 @@ public class AdminBookViewController extends ApplicationController {
 
         //Message d'erreur et boutons de suppression non visibles
         moveMess.setVisible(false);
+        addMess.setVisible(false);
 
         removeAuthorButton.setVisible(false);
         removeEdiButton.setVisible(false);
@@ -189,6 +194,7 @@ public class AdminBookViewController extends ApplicationController {
 
         //Message de succès
         moveMess.setText("Book(s) moved");
+        moveMess.getStyleClass().add("success");
         moveMess.setVisible(true);
     }
 
@@ -203,7 +209,8 @@ public class AdminBookViewController extends ApplicationController {
 
         //Information(s) manquante(s) -> ERREUR
         if(title.isEmpty() || genres.length==0 || description.isEmpty() || coverImg.isEmpty()) {
-            System.out.println("error");
+            addMess.setText("Invalid Informations for book");
+            addMess.setVisible(true);
             return;
         }
 
@@ -250,7 +257,8 @@ public class AdminBookViewController extends ApplicationController {
 
                //Information(s) manquante(s) -> ERREUR
                if(name.isEmpty() || lastName.isEmpty() || role.isEmpty() || birthDate.toString().isEmpty()) {
-                   System.out.println("error");
+                   addMess.setText("Invalid Informations for author");
+                   addMess.setVisible(true);
                    return;
                }
 
@@ -266,7 +274,8 @@ public class AdminBookViewController extends ApplicationController {
 
                //Information(s) manquante(s) -> ERREUR
                if(idText.isEmpty()) {
-                   System.out.println("error");
+                   addMess.setText("Invalid Informations for author");
+                   addMess.setVisible(true);
                    return;
                }
 
@@ -299,7 +308,8 @@ public class AdminBookViewController extends ApplicationController {
 
             //Information(s) manquante(s) -> ERREUR
             if(isbn.isEmpty() || editor.isEmpty() || publishDate.toString().isEmpty()) {
-                System.out.println("error");
+                addMess.setText("Invalid Informations for edition");
+                addMess.setVisible(true);
                 return;
             }
 
@@ -307,6 +317,11 @@ public class AdminBookViewController extends ApplicationController {
             Edition.addEdition(isbn, bookId, editor, publishDate);
             PrintedWork.addPrintedWork(isbn, library.getId(), qty);
         }
+
+        addMess.setText("Book successfully added");
+        addMess.getStyleClass().add("success");
+        addMess.setVisible(true);
+        return;
     }
 
     //Méthode permettant de remplir la grille des informations d'un nouvel auteur
@@ -381,6 +396,7 @@ public class AdminBookViewController extends ApplicationController {
 
         //Méthode spécifique
         GridPane newAuthorFields = new GridPane();
+        newAuthorFields.getStyleClass().add("gridAuthor");
         addAuthorFieldGrid(newAuthorFields);
 
         //Ajout à l'interface graphique
@@ -430,6 +446,7 @@ public class AdminBookViewController extends ApplicationController {
 
         //Champs à ajouter
         GridPane newEdiFields = new GridPane();
+        newEdiFields.getStyleClass().add("gridEdition");
 
         TextField isbnField = new TextField();
         isbnField.setPromptText("ISBN");

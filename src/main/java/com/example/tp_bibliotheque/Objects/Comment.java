@@ -96,18 +96,16 @@ public class Comment implements PageObject {
         //Label du commentaire avec le mail de l'utilisateur, la note et la date
         Label noteLabel = new Label();
         try {
-            noteLabel.setText(String.valueOf(note+" "+ User.getUserFromId(userId).getMail()+" "+date));
+            noteLabel.setText(String.valueOf("- "+note+"/5, "+ User.getUserFromId(userId).getMail()+" : "));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
 
         //TextFlow du contenu du commentaire
-        Text contentText = new Text(content);
-        TextFlow contentFlow = new TextFlow();
-        contentFlow.getChildren().add(contentText);
+        Label contentLabel = new Label(content);
 
         //Ajout à l'interface graphique
         grid.add(noteLabel, 0, rowIdx);
-        grid.add(contentFlow, 1, rowIdx);
+        grid.add(contentLabel, 1, rowIdx);
     }
 }

@@ -90,6 +90,13 @@ class ModifSection {
             onChangeClick();
         });
 
+        error.getStyleClass().add("errorMess");
+        checkPassword.getStyleClass().add("textField");
+        textField.getStyleClass().add("textField");
+        confirmTextField.getStyleClass().add("textField");
+        modifButton.getStyleClass().add("buttonModif");
+        changeButton.getStyleClass().add("buttonModif");
+
         //Ajout de l'interface graphique au parent correspondant
         parent.add(error, 2, rowIdx);
         parent.add(modifButton, 3, rowIdx);

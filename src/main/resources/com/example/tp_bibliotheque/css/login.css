@@ -4,23 +4,69 @@
 
 .link {
     -fx-background-color: transparent;
-    -fx-text-fill: blue;
+    -fx-text-fill: #1961b1;
 }
 
 .link:hover {
-    -fx-text-fill: darkblue;
+    -fx-text-fill: #1944b1;
     -fx-underline: true;
     -fx-cursor: hand;
 }
 
 .boutton {
-    -fx-background-color: skyblue;
+    -fx-background-color: #1961b1;
     -fx-border-radius: 100px;
     -fx-background-radius: 100px;
 }
 
 .boutton:hover {
-    -fx-background-color: blue;
+    -fx-background-color: #191cb1;
+    -fx-cursor: hand;
+}
+
+ChoiceBox {
+    -fx-background-color: #1961b1;
+    -fx-border-radius: 100px;
+    -fx-background-radius: 100px;
+
+    -fx-pref-width: 423px;
+    -fx-pref-height: 20px;
+}
+
+ChoiceBox > .label {
+    -fx-text-alignment: center;
+    -fx-text-fill: white;
+
+    -fx-background-color: #1961b1;
+    -fx-border-radius: 100px;
+    -fx-background-radius: 100px;
+}
+
+.choice-box .context-menu {
+    -fx-background-color: white;
+
+    -fx-pref-width: 423px;
+}
+
+.choice-box .menu-item:focused {
+    -fx-background-color: #1961b1;
+}
+
+.choice-box .menu-item > .label {
+    -fx-text-fill: black;
+}
+
+.choice-box .menu-item:focused > .label {
+    -fx-text-fill: white;
+}
+
+ChoiceBox:hover {
+    -fx-background-color: #191cb1;
+    -fx-cursor: hand;
+}
+
+ChoiceBox:hover > .label {
+    -fx-background-color: #191cb1;
     -fx-cursor: hand;
 }
 
@@ -28,8 +74,24 @@
     -fx-background-radius: 10px;
     -fx-border-radius: 10px;
     -fx-border-color: black;
+
+    -fx-pref-width: 340px;
+    -fx-pref-height: 50px;
 }
 
 .textBox:focused {
-    -fx-border-color: skyblue;
+    -fx-border-color: #1961b1;
+}
+
+.textBoxSignUp {
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
+    -fx-border-color: black;
+
+    -fx-pref-width: 340px;
+    -fx-pref-height: 25px;
+}
+
+.textBoxSignUp:focused {
+    -fx-border-color: #1961b1;
 }

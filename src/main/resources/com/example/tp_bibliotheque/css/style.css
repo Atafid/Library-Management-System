@@ -6,7 +6,7 @@
     -fx-alignment: center-left;
 }
 
-.header > *{
+.header > * {
     -fx-background-color: transparent;
 
     -fx-pref-height: 50px;
@@ -16,11 +16,12 @@
 }
 
 .header TextField {
-    -fx-pref-width: 200px;
+    -fx-pref-width: 150px;
     -fx-pref-height: 20px;
 
     -fx-border-color: black;
-    -fx-border-radius: 20px;
+    -fx-background-color: white;
+    -fx-border-radius: 5px;
 
     -fx-padding: 0px 0px 0px 5px;
     -fx-border-insets: 5px;
@@ -32,27 +33,84 @@
     -fx-min-height: 70px;
 }
 
-.header Region {
+.plusButton {
+    -fx-background-color: #1961b1;
+    -fx-text-fill: white;
+
+    -fx-pref-height: 15px;
+    -fx-pref-width: 15px;
+
+    -fx-font-weight: bold;
+    -fx-font-size: 10px;
+}
+
+.plusButton:hover {
+    -fx-background-color: #1944b1;
+    -fx-cursor: hand;
+}
+
+.advancedSearchLabel {
+    -fx-underline: true;
+}
+
+.advancedSearchButton {
+    -fx-background-color: #1961b1;
+    -fx-text-fill: white;
+}
+
+.advancedSearchButton:hover {
+    -fx-background-color: #1944b1;
+    -fx-cursor: hand;
+}
+
+.homeSearchRegion {
     -fx-pref-height: 50px;
-    -fx-pref-width: 50px;
+    -fx-pref-width: 20px;
+}
+
+.searchAdvancedRegion {
+    -fx-pref-height: 50px;
+    -fx-pref-width: 20px;
+}
+
+.searchAdminRegion {
+    -fx-pref-height: 50px;
+    -fx-pref-width: 150px;
 }
 
 .header Button:hover {
-    -fx-background-color: rgb(200,200,200,0.5);
+    -fx-background-color: #191cb1;
     -fx-cursor: hand;
 }
 
 .menu {
-    -fx-min-height: 70px;
-    -fx-min-width: 70px;
+    -fx-min-height: 50px;
+    -fx-min-width: 50px;
 }
 
 .menu:hover, .menu:showing {
-    -fx-background-color: rgb(200,200,200,0.5);
+    -fx-background-color: rgb(215, 215, 215);
     -fx-cursor: hand;
+}
+
+.menuImage {
+    -fx-pref-width: 20px;
+    -fx-pref-height: 20px;
 }
 
 AnchorPane {
     -fx-background-color: #1961b1;
+}
+
+.arrow_button {
+    -fx-background-color: transparent;
+    -fx-text-fill: black;
+    -fx-font-size: 20px;
+    -fx-text-alignment: center;
+}
+
+.arrow_button:hover {
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
 }
 

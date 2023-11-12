@@ -107,7 +107,7 @@ public class BookViewController extends ApplicationController {
 
             //Boutton permettant d'accéder à l'auteur relaté dans les crédits
             Button creditButton = new Button();
-            creditButton.setText(h.getAuthor().getName() + " " + h.getAuthor().getLastName() + " " + h.getRole()+", ");
+            creditButton.setText("- "+h.getAuthor().getName() + " " + h.getAuthor().getLastName() + " " + h.getRole());
             creditButton.getStyleClass().add("credit_button");
 
             //Appui sur le boutton -> Changement de view

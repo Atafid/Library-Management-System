@@ -245,7 +245,7 @@ public class Emprunt implements PageObject {
 
             //Boutton permettant d'accéder à la view du livre
             Button empruntButton = new Button();
-            empruntButton.setText(empruntBook.getTitle());
+            empruntButton.setText("- "+empruntBook.getTitle());
             empruntButton.getStyleClass().add("emprunt_button");
 
             BookViewController bookController = new BookViewController(empruntBook);
@@ -264,12 +264,14 @@ public class Emprunt implements PageObject {
 
             if(checkLateStatus()) {
                 empruntLabel.setText(empruntLabel.getText()+" LATE!");
+                empruntLabel.getStyleClass().add("late");
             }
 
 
             //Boutton de retour de l'emprunt
             Button returnButton = new Button();
             returnButton.setText("Return");
+            returnButton.getStyleClass().add("returnButton");
             //Appui sur le boutton de retour -> retour de l'emprunt
             returnButton.setOnAction(event -> {
                 try {

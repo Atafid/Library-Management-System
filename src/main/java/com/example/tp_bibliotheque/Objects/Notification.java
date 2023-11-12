@@ -198,7 +198,8 @@ public class Notification implements PageObject {
         //Label de la notification
         Label notifLabel = new Label();
         try {
-            notifLabel.setText(this.getString());
+            notifLabel.setText("- "+this.getString());
+            notifLabel.getStyleClass().add("notifLabel");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -211,6 +212,8 @@ public class Notification implements PageObject {
                 if(!MoveAsk.getRead(infoId)) {
                     Button acceptButton = new Button("Accept");
                     Button refuseButton = new Button("Refuse");
+                    acceptButton.getStyleClass().add("acceptButtons");
+                    refuseButton.getStyleClass().add("acceptButtons");
 
                     acceptButton.setOnAction(event -> {
                         try {

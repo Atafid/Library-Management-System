@@ -10,46 +10,46 @@
 <AnchorPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="555.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
    <children>
        <Rectangle fill="WHITE" height="500.0" layoutX="25.0" layoutY="90.0" stroke="TRANSPARENT" strokeType="INSIDE" width="850.0" />
-      <Label fx:id="titleLabel" layoutX="39.0" layoutY="96.0" prefHeight="53.0" prefWidth="156.0" text="Label">
+      <Label fx:id="titleLabel" layoutX="39.0" layoutY="79.0" prefHeight="53.0" prefWidth="156.0" text="Label">
          <font>
-            <Font name="System Bold" size="12.0" />
+            <Font name="System Bold" size="13.0" />
          </font></Label>
-      <ImageView fx:id="coverView" fitHeight="210.0" fitWidth="156.0" layoutX="39.0" layoutY="145.0" pickOnBounds="true" preserveRatio="true" styleClass="coverImage" />
-      <Label layoutX="210.0" layoutY="123.0" prefHeight="18.0" prefWidth="91.0" text="Description :">
+      <ImageView fx:id="coverView" fitHeight="214.0" fitWidth="156.0" layoutX="39.0" layoutY="120.0" pickOnBounds="true" preserveRatio="true" styleClass="coverImage" />
+      <Label layoutX="210.0" layoutY="123.0" prefHeight="18.0" prefWidth="91.0" text="- Description :">
          <font>
-            <Font size="15.0" />
+            <Font name="System Bold" size="13.0" />
          </font>
       </Label>
-      <TextFlow fx:id="descriptionLabel" layoutX="210.0" layoutY="145.0" prefHeight="153.0" prefWidth="650.0" />
-      <Label layoutX="211.0" layoutY="96.0" text="Genres : " />
-      <TextFlow fx:id="genreText" layoutX="259.0" layoutY="93.0" prefHeight="26.0" prefWidth="600.0" />
-      <Label layoutX="213.0" layoutY="317.0" text="Credits :">
+      <TextFlow fx:id="descriptionLabel" layoutX="210.0" layoutY="146.0" lineSpacing="0.5" prefHeight="153.0" prefWidth="650.0" textAlignment="JUSTIFY" />
+      <Label layoutX="211.0" layoutY="96.0" text="- Genres : ">
          <font>
             <Font name="System Bold" size="12.0" />
          </font></Label>
-      <GridPane fx:id="creditsGrid" gridLinesVisible="true" layoutX="269.0" layoutY="310.0" prefHeight="30.0" prefWidth="584.0">
+      <TextFlow fx:id="genreText" layoutX="274.0" layoutY="97.0" prefHeight="26.0" prefWidth="600.0" />
+      <Label layoutX="213.0" layoutY="317.0" text="- Credits :">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font></Label>
+      <GridPane fx:id="creditsGrid" layoutX="275.0" layoutY="312.0" prefHeight="30.0" prefWidth="584.0">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
         </columnConstraints>
         <rowConstraints>
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
       </GridPane>
-      <Label layoutX="176.0" layoutY="361.0" text="Printed Work :">
+      <Label layoutX="42.0" layoutY="361.0" text="Printed Work :">
          <font>
             <Font name="System Bold" size="12.0" />
          </font></Label>
-      <GridPane fx:id="printedWorkGrid" gridLinesVisible="true" layoutX="267.0" layoutY="361.0" prefHeight="76.0" prefWidth="584.0">
+      <GridPane fx:id="printedWorkGrid" layoutX="136.0" layoutY="358.0" prefHeight="76.0" prefWidth="730.0">
         <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="198.2" minWidth="10.0" prefWidth="194.2" />
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="210.19996948242186" minWidth="10.0" prefWidth="48.79999999999998" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="277.19999999999993" minWidth="10.0" prefWidth="219.59999999999997" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="130.0" minWidth="10.0" prefWidth="123.60000000000002" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="234.4" minWidth="10.0" prefWidth="234.4" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="210.19996948242186" minWidth="10.0" prefWidth="57.99999999999997" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="277.19999999999993" minWidth="10.0" prefWidth="259.6" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="178.39999999999998" minWidth="10.0" prefWidth="178.39999999999998" />
         </columnConstraints>
         <rowConstraints>
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -57,13 +57,13 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
       </GridPane>
-      <TextArea fx:id="commentArea" layoutX="482.0" layoutY="501.0" prefHeight="60.0" prefWidth="300.0" />
-      <Slider fx:id="noteBar" blockIncrement="1.0" cache="true" layoutX="482.0" layoutY="463.0" majorTickUnit="1.0" max="5.0" min="1.0" minorTickCount="0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="1.0" />
-      <Button fx:id="commentButton" layoutX="809.0" layoutY="531.0" mnemonicParsing="false" onAction="#onSendClick" text="Send" />
-      <GridPane fx:id="commentGrid" alignment="CENTER" gridLinesVisible="true" layoutX="42.0" layoutY="454.0" prefHeight="106.0" prefWidth="426.0">
+      <TextArea fx:id="commentArea" layoutX="482.0" layoutY="501.0" prefHeight="60.0" prefWidth="312.0" />
+      <Slider fx:id="noteBar" blockIncrement="1.0" cache="true" layoutX="482.0" layoutY="463.0" majorTickUnit="1.0" max="5.0" min="1.0" minorTickCount="0" prefHeight="38.0" prefWidth="312.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="1.0" />
+      <Button fx:id="commentButton" layoutX="809.0" layoutY="531.0" mnemonicParsing="false" onAction="#onSendClick" styleClass="sendButton" text="Send" />
+      <GridPane fx:id="commentGrid" gridLinesVisible="true" layoutX="42.0" layoutY="454.0" prefHeight="106.0" prefWidth="426.0">
         <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="227.2" minWidth="10.0" prefWidth="152.2" />
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="273.6" minWidth="0.0" prefWidth="273.6" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="227.2" minWidth="10.0" prefWidth="210.4" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="280.6" minWidth="0.0" prefWidth="216.80000000000004" />
         </columnConstraints>
         <rowConstraints>
           <RowConstraints maxHeight="35.4" minHeight="0.0" prefHeight="33.6" vgrow="SOMETIMES" />
@@ -72,8 +72,8 @@
         </rowConstraints>
       </GridPane>
       <Label fx:id="pageLabel" layoutX="419.0" layoutY="569.0" text="Label" />
-      <Button fx:id="nextButton" layoutX="448.0" layoutY="564.0" mnemonicParsing="false" text="&gt;" />
-      <Button fx:id="prevButton" layoutX="395.0" layoutY="564.0" mnemonicParsing="false" text="&lt;" />
+      <Button fx:id="nextButton" layoutX="448.0" layoutY="564.0" mnemonicParsing="false" styleClass="arrow_button" text="&gt;" />
+      <Button fx:id="prevButton" layoutX="395.0" layoutY="564.0" mnemonicParsing="false" styleClass="arrow_button" text="&lt;" />
    </children>
    <stylesheets>
       <URL value="@../css/bookView.css" />

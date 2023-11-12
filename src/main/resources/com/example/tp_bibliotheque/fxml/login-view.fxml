@@ -2,13 +2,14 @@
 
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="580.0" prefWidth="900.0" spacing="20.0" style="-fx-background-color: lightskyblue;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.tp_bibliotheque.Login.LoginController">
-   <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="383.0" prefWidth="586.0" styleClass="anchorPane" stylesheets="@../css/login.css">
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="580.0" prefWidth="900.0" spacing="20.0" style="-fx-background-color: #1961b1;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.tp_bibliotheque.Login.LoginController">
+   <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="385.0" prefWidth="580.0" styleClass="anchorPane" stylesheets="@../css/login.css">
       <children>
-         <GridPane alignment="CENTER" layoutX="62.0" layoutY="104.0" maxWidth="-Infinity" prefHeight="190.0" prefWidth="462.0">
+         <GridPane alignment="CENTER" layoutX="62.0" layoutY="80.0" maxWidth="-Infinity" prefHeight="242.0" prefWidth="462.0">
             <columnConstraints>
                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="463.80001525878913" minWidth="10.0" prefWidth="458.80001525878913" />
                <ColumnConstraints />
@@ -19,14 +20,14 @@
                <RowConstraints maxHeight="68.6" minHeight="0.0" prefHeight="61.0" valignment="CENTER" vgrow="SOMETIMES" />
             </rowConstraints>
             <children>
-               <TextField fx:id="usernameText" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="34.0" prefWidth="343.0" promptText="Email" styleClass="textBox" stylesheets="@../css/login.css">
+               <TextField fx:id="usernameText" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="50.0" prefWidth="340.0" promptText="Mail" styleClass="textBox" stylesheets="@../css/login.css">
                   <font>
                      <Font size="15.0" />
                   </font></TextField>
-               <PasswordField fx:id="passText" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="34.0" prefWidth="343.0" promptText="Mot de passe" styleClass="textBox" stylesheets="@../css/login.css" GridPane.rowIndex="1">
+               <PasswordField fx:id="passText" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="50.0" prefWidth="340.0" promptText="Password" styleClass="textBox" stylesheets="@../css/login.css" GridPane.rowIndex="1">
                   <font>
                      <Font size="15.0" />
-                  </font></PasswordField>         <Button contentDisplay="CENTER" onAction="#onLoginClick" prefHeight="38.0" prefWidth="158.0" styleClass="boutton" stylesheets="@../css/login.css" text="Se connecter" textAlignment="CENTER" textFill="WHITE" GridPane.rowIndex="2">
+                  </font></PasswordField>         <Button contentDisplay="CENTER" onAction="#onLoginClick" prefHeight="50.0" prefWidth="231.0" styleClass="boutton" stylesheets="@../css/login.css" text="Login" textAlignment="CENTER" textFill="WHITE" GridPane.rowIndex="2">
                   <font>
                      <Font name="Segoe UI Bold" size="18.0" />
                   </font>
@@ -37,26 +38,31 @@
             </children>
          </GridPane>
 
-         <Button fx:id="goToSignUp" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="301.0" layoutY="291.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="22.0" prefWidth="62.0" styleClass="link" stylesheets="@../css/login.css" text="S'inscrire" textAlignment="CENTER" textFill="#4b8ba6">
+         <Button fx:id="goToSignUp" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="291.0" layoutY="320.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="26.0" prefWidth="74.0" styleClass="link" stylesheets="@../css/login.css" text="Sign Up" textAlignment="CENTER" textFill="#4b8ba6">
             <font>
-               <Font name="Times New Roman Bold" size="11.0" />
+               <Font name="Times New Roman Bold" size="14.0" />
             </font>
          </Button>
-         <Label layoutX="208.0" layoutY="55.0" prefHeight="38.0" prefWidth="169.0" text="Se Connecter">
+         <Label layoutX="247.0" layoutY="21.0" prefHeight="50.0" prefWidth="92.0" text="Login">
             <font>
-               <Font name="System Bold" size="26.0" />
+               <Font name="System Bold" size="34.0" />
             </font>
          </Label>
-         <Label layoutX="227.0" layoutY="293.0" prefHeight="18.0" prefWidth="74.0" text="Pas de compte ?">
+         <Label layoutX="213.0" layoutY="325.0" prefHeight="18.0" prefWidth="74.0" text="No account ?">
             <font>
-               <Font name="Times New Roman" size="11.0" />
+               <Font name="Times New Roman" size="14.0" />
             </font>
          </Label>
-         <Label fx:id="errorLabel" layoutX="125.0" layoutY="96.0" text="Label" textFill="#df1e1e">
+         <Label fx:id="errorLabel" layoutX="125.0" layoutY="62.0" text="Label" textFill="#e75a5a">
             <font>
-               <Font size="13.0" />
+               <Font size="18.0" />
             </font>
          </Label>
+         <ImageView fitHeight="66.0" fitWidth="61.0" layoutX="16.0" layoutY="12.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+               <Image url="@../img/logo.png" />
+            </image>
+         </ImageView>
       </children>
    </AnchorPane>
 </VBox>

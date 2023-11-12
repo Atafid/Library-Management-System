@@ -15,9 +15,9 @@
          </font></Label>
       <GridPane fx:id="userGrid" gridLinesVisible="true" layoutX="110.0" layoutY="137.0" prefHeight="381.0" prefWidth="709.0">
         <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="189.2" minWidth="10.0" prefWidth="178.2" />
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="416.79999999999995" minWidth="10.0" prefWidth="280.6" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="260.79999999999995" minWidth="10.0" prefWidth="234.79999999999995" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="268.4" minWidth="10.0" prefWidth="268.4" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="416.79999999999995" minWidth="10.0" prefWidth="252.39999999999998" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="260.79999999999995" minWidth="10.0" prefWidth="188.19999999999993" />
         </columnConstraints>
         <rowConstraints>
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -29,9 +29,9 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
       </GridPane>
-       <Label fx:id="pageLabel" layoutX="805.0" layoutY="533.0" text="Label" />
-       <Button fx:id="nextButton" layoutX="821.0" layoutY="529.0" mnemonicParsing="false" text="&gt;" />
-       <Button fx:id="prevButton" layoutX="780.0" layoutY="529.0" mnemonicParsing="false" text="&lt;" />
+       <Label fx:id="pageLabel" layoutX="811.0" layoutY="533.0" text="Label" />
+       <Button fx:id="nextButton" layoutX="814.0" layoutY="520.0" mnemonicParsing="false" styleClass="arrow_button" text="&gt;" />
+       <Button fx:id="prevButton" layoutX="782.0" layoutY="520.0" mnemonicParsing="false" styleClass="arrow_button" text="&lt;" />
    </children>
    <stylesheets>
       <URL value="@../css/adminView.css" />

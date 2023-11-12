@@ -260,7 +260,7 @@ public class User extends Personne implements PageObject {
         //Boutton permettant d'accéder à la view de l'utilisateur
         Button userButton = new Button();
         try {
-            userButton.setText(mail+", "+Library.getLibraryFromId(libraryId).getName());
+            userButton.setText("- "+mail+", "+Library.getLibraryFromId(libraryId).getName());
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -282,6 +282,7 @@ public class User extends Personne implements PageObject {
 
             if(countLateBorrow()>0) {
                 empruntLabel.setText(empruntLabel.getText()+" "+countLateBorrow()+" Late");
+                empruntLabel.getStyleClass().add("late");
             }
 
         } catch (SQLException e) {
@@ -312,7 +313,7 @@ public class User extends Personne implements PageObject {
 
         //Administrateur -> Label de catégorie
         else {
-            Label bibliothecaireLabel = new Label("Bibilothécaire");
+            Label bibliothecaireLabel = new Label("Librarian");
 
             //Ajout à l'interface graphique
             grid.add(bibliothecaireLabel, 2, rowIdx);

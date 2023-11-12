@@ -83,7 +83,6 @@ public class Header {
 
         //Initialisation de la HBox avec son style css
         head = new HBox();
-        head.setEffect(new DropShadow(10, Color.BLACK));
         head.setPrefHeight(70);
         head.getStyleClass().add("header");
 
@@ -109,6 +108,7 @@ public class Header {
         searchView.setFitHeight(20);
         searchBar = new TextField();
         searchBar.setPromptText("Search");
+        searchBar.getStyleClass().add("searchBar");
 
         searchBar.setOnAction(event -> {
             try {
@@ -123,13 +123,25 @@ public class Header {
         //Recherche avancée
         advancedSearch = new Button("+");
         advancedSearchContain = new GridPane();
+        advancedSearch.getStyleClass().add("plusButton");
+
         titleLabel = new Label("Title : ");
         titleField = new TextField();
+        titleLabel.getStyleClass().add("advancedSearchLabel");
+        titleField.setPromptText("Title");
+
         authorLabel = new Label("Author : ");
         authorField = new TextField();
+        authorLabel.getStyleClass().add("advancedSearchLabel");
+        authorField.setPromptText("Author");
+
         keywordsLabel = new Label("Keywords :");
         keywordsField = new TextField();
+        keywordsLabel.getStyleClass().add("advancedSearchLabel");
+        keywordsField.setPromptText("Keywords");
+
         advancedSearchButton = new Button("Search");
+        advancedSearchButton.getStyleClass().add("advancedSearchButton");
 
         advancedSearchContain.addColumn(0, titleLabel, authorLabel, keywordsLabel);
         advancedSearchContain.addColumn(1, titleField, authorField, keywordsField, advancedSearchButton);
@@ -158,8 +170,8 @@ public class Header {
         userMenuBar = new MenuBar();
         Menu userMenu = new Menu();
         ImageView userView = new ImageView(new Image(getClass().getResourceAsStream("img/account.png")));
-        userView.setFitHeight(50);
-        userView.setFitWidth(50);
+        userView.setFitHeight(40);
+        userView.setFitWidth(40);
         userMenu.setGraphic(userView);
         userMenu.getStyleClass().add("menu");
         MenuItem userButton = new MenuItem("Account");
@@ -196,6 +208,19 @@ public class Header {
             //Notifications non lues de l'utilisateur
             Vector<Notification> notifs = Notification.getUnreadNotification(user.getId());
             int unreadNotif = notifs.size();
+            if(unreadNotif>0) {
+                ImageView notifView = new ImageView(new Image(getClass().getResourceAsStream("img/activeBell.png")));
+                notifView.setFitHeight(40);
+                notifView.setFitWidth(40);
+                notifMenu.setGraphic(notifView);
+            }
+
+            else {
+                ImageView notifView = new ImageView(new Image(getClass().getResourceAsStream("img/bell.png")));
+                notifView.setFitHeight(40);
+                notifView.setFitWidth(40);
+                notifMenu.setGraphic(notifView);
+            }
 
             for(Notification n:notifs) {
                 MenuItem newNotif= new MenuItem(n.getString()+", "+n.getDate());
@@ -204,8 +229,11 @@ public class Header {
                 newNotif.setOnAction(event -> {
                     try {
                         Notification.readNotification(n.getId());
-                        newNotif.setText("read");
-                        notifMenu.setText(notifMenu.getText().substring(0, notifMenu.getText().length()-1)+(Integer.parseInt(notifMenu.getText().substring(notifMenu.getText().length()-1))-1));
+                        ImageView notifView = new ImageView(new Image(getClass().getResourceAsStream("img/bell.png")));
+                        notifView.setFitHeight(40);
+                        notifView.setFitWidth(40);
+                        notifMenu.setGraphic(notifView);
+                        newNotif.setText("Read");
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }
@@ -222,7 +250,10 @@ public class Header {
         showNotif.setOnAction(event -> {
             try {
                 onNotifClick(event);
-                notifMenu.setText("Notifs : 0");
+                ImageView notifView = new ImageView(new Image(getClass().getResourceAsStream("img/bell.png")));
+                notifView.setFitHeight(40);
+                notifView.setFitWidth(40);
+                notifMenu.setGraphic(notifView);
                 notifMenu.getItems().remove(0,notifMenu.getItems().size()-1);
                 searchBar.setText("");
             } catch (IOException e) {
@@ -237,8 +268,9 @@ public class Header {
         adminMenuBar = new MenuBar();
         Menu adminMenu = new Menu();
         ImageView adminView = new ImageView(new Image(getClass().getResourceAsStream("img/key.png")));
-        adminView.setFitHeight(50);
-        adminView.setFitWidth(50);
+        adminView.setFitHeight(40);
+        adminView.setFitWidth(40);
+        adminView.getStyleClass().add("menuImage");
         adminMenu.setGraphic(adminView);
         adminMenu.getStyleClass().add("menu");
         MenuItem adminUserButton = new MenuItem("Users");
@@ -275,7 +307,17 @@ public class Header {
             }
         });
 
-        head.getChildren().addAll(homeButton, searchView, searchBar, advancedSearch, advancedSearchContain, new Region(), adminMenuBar, notifBar, userMenuBar);
+        //SPACES
+        Region homeSearchRegion = new Region();
+        homeSearchRegion.getStyleClass().add("homeSearchRegion");
+
+        Region searchAdvancedRegion = new Region();
+        searchAdvancedRegion.getStyleClass().add("searchAdvancedRegion");
+
+        Region searchAdminRegion = new Region();
+        searchAdminRegion.getStyleClass().add("searchAdminRegion");
+
+        head.getChildren().addAll(homeButton, homeSearchRegion, searchView, searchBar, advancedSearch, searchAdvancedRegion, advancedSearchContain, searchAdminRegion, adminMenuBar, notifBar, userMenuBar);
     }
 
     //Méthode appelée lors d'une recherche de livres

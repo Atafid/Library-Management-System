@@ -7,7 +7,7 @@ public enum Categorie {
     Cat1(1, 15, "Cat1"),
     Cat2(5, 20, "Cat2"),
     Cat3(10,30, "Cat3"),
-    Bibliothécaire(100, 100, "Bibliothécaire"),
+    Bibliothécaire(100, 100, "Librarian"),
     Forbidden(0,0, "Forbidden");
 
 
@@ -57,7 +57,7 @@ public enum Categorie {
                 return("2");
             case("Cat3"):
                 return("3");
-            case("Bibliothécaire"):
+            case("Librarian"):
                 return("B");
             case("Forbidden"):
                 return("F");

@@ -1,11 +1,11 @@
 .book_button {
-    -fx-font-size: 8px;
+    -fx-font-size: 12px;
     -fx-background-color: transparent;
-    -fx-text-fill: blue;
+    -fx-text-fill: #191cb1;
 }
 
 .book_button:hover {
-    -fx-text-fill: darkblue;
+    -fx-text-fill: #1961b1;
     -fx-underline: true;
     -fx-cursor: hand;
 }
