@@ -18,4 +18,6 @@ module com.example.tp_bibliotheque {
     opens com.example.tp_bibliotheque.Objects to javafx.fxml;
     exports com.example.tp_bibliotheque.Tests;
     opens com.example.tp_bibliotheque.Tests to javafx.fxml;
+    exports com.example.tp_bibliotheque.Login;
+    opens com.example.tp_bibliotheque.Login to javafx.fxml;
 }

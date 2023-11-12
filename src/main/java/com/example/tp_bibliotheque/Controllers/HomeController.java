@@ -8,7 +8,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 
 import java.io.IOException;
@@ -18,11 +17,8 @@ import java.util.Vector;
 
 //CONTROLLER DE LA VIEW ACCUEIL
 
-public class HomeController {
+public class HomeController extends ApplicationController {
     //*****************ATTRIBUTS*****************//
-
-    //AnchorPane : racine de la fenêtre
-    @FXML private AnchorPane root;
 
     //GridPane : livres à afficher
     @FXML private GridPane bookGrid;
@@ -43,8 +39,6 @@ public class HomeController {
 
     //Constructeur de classe
     public HomeController(Vector<Book> fstPage, Vector<Book> sndPage) {
-        //MainApplication.bddConn.fillBDD();
-
         //On fournit les premières pages de livres déjà chargées en amont pour gagner en fluidité
         currentPage = fstPage;
         nextPage = sndPage;
@@ -56,9 +50,8 @@ public class HomeController {
     }
 
     //Fonction se lançant à l'initialisation de javaFX juste après le constructeur
-    public void initialize() {
-        //Ajout du header à la racine de la fenêtre
-        root.getChildren().add(MainApplication.header.getHead());
+    public void initialize() throws SQLException {
+        HomeController.super.initialize();
 
         //Ajout des livres à afficher à l'interface graphique
         for(int i=0;i<5;i++) {

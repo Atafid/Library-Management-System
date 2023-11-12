@@ -1,15 +1,11 @@
 package com.example.tp_bibliotheque.Objects;
 
 import com.example.tp_bibliotheque.MainApplication;
-import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Vector;
 
 //CLASSE REPRESENTANT UNE EDITION
 
@@ -37,6 +33,22 @@ public class Edition {
         bookId = _bookId;
         editorName = _editorName;
         publishDate = _publishDate;
+    }
+
+    //Méthode static permettant d'ajouter une édtion à la BDD
+    public static void addEdition(String isbn, int bookId, String editorName, Date publishDate) throws SQLException {
+        //Requête SQL ajoutant l'édition à la BDD
+        String querry = "INSERT INTO Edition VALUES(?,?,?,?)";
+        PreparedStatement stmt = MainApplication.bddConn.con.prepareStatement(querry);
+
+        stmt.setString(1, isbn);
+        stmt.setInt(2, bookId);
+        stmt.setString(3, editorName);
+        stmt.setDate(4, publishDate);
+
+        stmt.addBatch();
+        stmt.executeBatch();
+        MainApplication.bddConn.con.commit();
     }
 
     //Méthode static permettant d'obtenir l'édition à partir de son isbn

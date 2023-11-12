@@ -47,7 +47,7 @@ public class BDDConnector {
     //Méthode utilisée pour remplir la BDD
     public void fillBDD() throws SQLException, IOException {
         //Requête SQL pour remplir les livres, éditions, auteurs et aEcrit
-        String querBooks = "INSERT INTO Books VALUES(?,?,?,?,?)";
+        String querBooks = "INSERT INTO Books VALUES(0,?,?,?,?)";
         String querEdition = "INSERT INTO Edition VALUES(?,?,?,?)";
         String querAuthors = "INSERT INTO Authors VALUES(0,?,?,?)";
         String querHasWritten = "INSERT INTO aEcrit VALUES(?,?,?)";
@@ -103,11 +103,10 @@ public class BDDConnector {
                 }
 
 
-                stmtBooks.setInt(1, count);
-                stmtBooks.setString(2, title);
-                stmtBooks.setString(3, description);
-                stmtBooks.setString(4, genre);
-                stmtBooks.setString(5, coverImg);
+                stmtBooks.setString(1, title);
+                stmtBooks.setString(2, description);
+                stmtBooks.setString(3, genre);
+                stmtBooks.setString(4, coverImg);
 
                 stmtEdition.setString(1, isbn);
                 stmtEdition.setInt(2, count);
@@ -129,20 +128,47 @@ public class BDDConnector {
                     Pattern pattern = Pattern.compile(regex);
                     Matcher matcher = pattern.matcher(authors[i]);
 
+                    String firstName = "";
+                    String lastName = "";
+
                     if (matcher.find()) {
                         String names = matcher.group(1).trim();
                         roles = matcher.group(2).trim();
 
                         String[] nameParts = names.split(" ");
-                        String firstName = nameParts.length > 0 ? nameParts[0] : "";
-                        String lastName = nameParts.length > 1 ? nameParts[nameParts.length - 1] : "";
-
-                        stmtAuthors.setString(1, firstName);
-                        stmtAuthors.setString(2, lastName);
+                        firstName = nameParts.length > 0 ? nameParts[0] : "";
+                        lastName = nameParts.length > 1 ? nameParts[nameParts.length - 1] : "";
                     }
 
-                    stmtAuthors.setDate(3, new Date(System.currentTimeMillis()));
-                    stmtAuthors.addBatch();
+                    //Récupération de l'auteur s'il existe
+                    int authorId = -1;
+
+                    String querry = "SELECT id FROM Authors WHERE name=? AND last_name=? AND birth=?";
+                    PreparedStatement dispStmt = this.con.prepareStatement(querry);
+
+                    dispStmt.setString(1, firstName);
+                    dispStmt.setString(2, lastName);
+                    dispStmt.setDate(3, new Date(System.currentTimeMillis()));
+
+                    ResultSet rs = dispStmt.executeQuery();
+                    while(rs.next()) {
+                        authorId = rs.getInt(1);
+                    }
+
+                    //Auteur non déjà présent dans la BDD
+                    if(authorId==-1) {
+                        stmtAuthors.setString(1, firstName);
+                        stmtAuthors.setString(2, lastName);
+                        stmtAuthors.setDate(3, new Date(System.currentTimeMillis()));
+                        stmtHasWritten.setInt(2, countAuthors);
+                        stmtAuthors.addBatch();
+
+                        countAuthors++;
+                    }
+
+                    else {
+                        stmtHasWritten.setInt(2, authorId);
+                    }
 
                     //Si rôle non précisé, on le place en "Author"
                     if (roles.equals("")) {
@@ -150,12 +176,9 @@ public class BDDConnector {
                     }
 
                     stmtHasWritten.setInt(1, count);
-                    stmtHasWritten.setInt(2, countAuthors);
                     stmtHasWritten.setString(3, roles);
 
                     stmtHasWritten.addBatch();
-
-                    countAuthors++;
                 }
 
                 stmtBooks.addBatch();

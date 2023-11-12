@@ -11,7 +11,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Vector;
 
+//CLASSE REPRESENTANT UN EXEMPLAIRE DE LIVRE
+
 public class PrintedWork {
+    //*****************ATTRIBUTS*****************//
+
     //Label : nom de l'édition
     @FXML
     public Label editionLabel;
@@ -34,12 +38,19 @@ public class PrintedWork {
     //Label : lorsque l'édition est réservée
     @FXML public Label reserveLabel;
 
+    //Button : demande de mouvement de l'exemplaire
     @FXML public Button askChangeButton;
 
+    //Label : statut de la demande de mouvement
     @FXML public Label askChangeLabel;
 
+    //ID de l'exemplaire dans la BDD
     private final int id;
+
+    //ISBN de l'édition relative à l'exemplaire
     private final String editionIsbn;
+
+    //ID de la bibliothèque de l'exemplaire dans la BDD
     private final int libraryId;
 
     //Quantité
@@ -48,6 +59,10 @@ public class PrintedWork {
     //Quantité disponible
     private int availableQty;
 
+
+    //*****************METHODES*****************//
+
+    //Constructeur de classe
     public PrintedWork(int _id, String _editionIsbn, int _libraryId, int _quantity) {
         id = _id;
         editionIsbn = _editionIsbn;
@@ -98,7 +113,9 @@ public class PrintedWork {
         askChangeLabel.setText("Your asking have been send");
     }
 
+    //Méthode static permettant d'ajouter un exemplaire à la BDD
     public static void addPrintedWork(String isbn, int _libraryId, int _qty) throws SQLException {
+        //Requête SQL ajoutant l'exemplaire
         String querry = "INSERT INTO PrintedWork VALUES(0,?,?,?)";
         PreparedStatement stmt = MainApplication.bddConn.con.prepareStatement(querry);
 
@@ -111,9 +128,11 @@ public class PrintedWork {
         MainApplication.bddConn.con.commit();
     }
 
+    //Méthode permettant de retirer une quantité donnée d'exemplaire
     public void removeQtyPrintedWork(int qtyToRemove) throws SQLException {
         quantity -= qtyToRemove;
 
+        //Requête SQL retirant la quantité voulue
         String querry = "UPDATE PrintedWork SET quantity=? WHERE id=?";
         PreparedStatement stmt = MainApplication.bddConn.con.prepareStatement(querry);
 
@@ -124,9 +143,11 @@ public class PrintedWork {
         MainApplication.bddConn.con.commit();
     }
 
+    //Méthode permettant d'ajouter une quantité donnée d'exemplaire
     public void addQtyPrintedWork(int qtyToAdd) throws SQLException {
         quantity += qtyToAdd;
 
+        //Requête SQL ajoutant la quantité voulue
         String querry = "UPDATE PrintedWork SET quantity=? WHERE id=?";
         PreparedStatement stmt = MainApplication.bddConn.con.prepareStatement(querry);
 
@@ -154,7 +175,9 @@ public class PrintedWork {
         return(null);
     }
 
+    //Méthode static permettant d'obtenir un exemplaire à partir de son ISBN et de sa bibliothèque
     public static PrintedWork getPrintedWorkFromIsbnAndLibrary(String isbn, int libraryId) throws SQLException {
+        //Requête SQL récupérant l'exemplaire
         String querry = "SELECT * FROM PrintedWork WHERE editionIsbn=? AND libraryID=?";
         PreparedStatement dispStmt = MainApplication.bddConn.con.prepareStatement(querry);
         dispStmt.setString(1, isbn);
@@ -416,21 +439,26 @@ public class PrintedWork {
         updateButtons();
     }
 
+    //Méthode appelée lors de la demande de mouvement
     @FXML
     private void onClickAsk() throws SQLException {
+        //Mise à jour de l'interface graphique
         askChangeButton.setVisible(false);
         askChangeLabel.setVisible(true);
 
         Date currentDate = new Date(System.currentTimeMillis());
 
+        //Ajout de la demande à la BDD
         MoveAsk.addMoveAsk(MainApplication.header.getUser().getId(), id, currentDate);
 
+        //Ajout de la notification aux différents admins
         Vector<User> adminVector = User.getAdmin();
         for(User a: adminVector) {
             Notification.addNotification(a.getId(), "M", currentDate, MoveAsk.getIdFromBDD(MainApplication.header.getUser().getId(), id, currentDate));
         }
     }
 
+    //GETTERS DE CLASSE
     public Edition getEdition() throws SQLException {
         return(Edition.getEditionFromIsbn(editionIsbn));
     }

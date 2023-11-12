@@ -13,9 +13,11 @@ state IHMAdmin {
   state ChangerCategorie: Changer la catégorie d'un utilisateurs
   state ConsulterInfosUser: Consulter les informations d'un utilisateur
   state ForcerRetour: Forcer le retour d'un livre
+  state AdminLivre: Ajouter ou faire bouger un livre
 
   [*] --> IHMAdherent
-  [*] --> ConsulterUser: clique admin
+  [*] --> ConsulterUser: clique admin user
+  [*] --> AdminLivre: clique admin livre
   ConsulterUser --> ChangerCategorie: clique catégorie
   ConsulterUser --> ConsulterInfosUser: clique user
   ConsulterInfosUser --> ForcerRetour: clique return
@@ -31,6 +33,7 @@ state IHMAdherent {
   state RendreLivre : Rendre un livre emprunté
   state ReserverLivre : Reserver un livre
   state CommenterLivre : Commenter un livre
+  state DemanderMouvementLivre: Demander le mouvement d'un livre
 
   state ConsulterAuteur : Consulter l'auteur d'un livre
 
@@ -53,6 +56,7 @@ state IHMAdherent {
   ConsulterLivre --> RendreLivre
   ConsulterLivre --> ReserverLivre: clique reservation
   ConsulterLivre --> CommenterLivre: clique commentaire
+  ConsulterLivre --> DemanderMouvementLivre: clique demande
   ConsulterLivre --> RetourAccueil: clique accueil
   ConsulterLivre --> ChercherLivre: clique recherche
   ConsulterLivre --> ConsulterNotifs: clique notifs

@@ -1,8 +1,8 @@
-package com.example.tp_bibliotheque.Controllers;
+package com.example.tp_bibliotheque.Login;
 
+import com.example.tp_bibliotheque.Controllers.HomeController;
 import com.example.tp_bibliotheque.Header;
 import com.example.tp_bibliotheque.MainApplication;
-import com.example.tp_bibliotheque.LoginUtils;
 import com.example.tp_bibliotheque.Objects.User;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -17,7 +17,7 @@ import java.util.Objects;
 
 //CONTROLLER DE LA VIEW CONNEXION
 
-public class LoginController {
+public class LoginController{
     //*****************ATTRIBUTS*****************//
 
     //TextField : champ du mail

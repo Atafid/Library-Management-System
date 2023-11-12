@@ -1,8 +1,6 @@
-package com.example.tp_bibliotheque.Controllers;
+package com.example.tp_bibliotheque.Login;
 
 import com.example.tp_bibliotheque.MainApplication;
-import com.example.tp_bibliotheque.LoginUtils;
-import com.example.tp_bibliotheque.Objects.Categorie;
 import com.example.tp_bibliotheque.Objects.Library;
 import com.example.tp_bibliotheque.Objects.User;
 import javafx.event.ActionEvent;

@@ -4,11 +4,15 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
 
 <AnchorPane fx:id="root" prefHeight="555.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
    <children>
        <Rectangle fill="WHITE" height="479.0" layoutX="25.0" layoutY="90.0" stroke="TRANSPARENT" strokeType="INSIDE" width="850.0" />
-      <Label fx:id="authorName" layoutX="51.0" layoutY="130.0" text="Label" />
+      <Label fx:id="authorName" layoutX="51.0" layoutY="130.0" text="Label">
+         <font>
+            <Font name="System Bold" size="24.0" />
+         </font></Label>
       <GridPane fx:id="booksGrid" gridLinesVisible="true" layoutX="118.0" layoutY="202.0" prefHeight="234.0" prefWidth="348.0">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -26,6 +30,7 @@
        <Label fx:id="pageLabel" layoutX="425.0" layoutY="459.0" text="Label" />
        <Button fx:id="nextButton" layoutX="444.0" layoutY="455.0" mnemonicParsing="false" text="&gt;" />
        <Button fx:id="prevButton" layoutX="400.0" layoutY="455.0" mnemonicParsing="false" text="&lt;" />
+      <Label fx:id="idLabel" layoutX="814.0" layoutY="139.0" text="Label" />
    </children>
    <stylesheets>
       <URL value="@../css/authorView.css" />

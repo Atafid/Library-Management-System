@@ -55,6 +55,38 @@ public class Book implements PageObject {
         description = _description;
     }
 
+    //Méthode static permettant d'ajouter un livre à la BDD
+    public static void addBook(String title, String description, String genres, String coverImg) throws SQLException {
+        //Requête SQL ajoutant le livre à la BDD
+        String querry = "INSERT INTO BOOKS VALUES(0,?,?,?,?)";
+        PreparedStatement stmt = MainApplication.bddConn.con.prepareStatement(querry);
+
+        stmt.setString(1, title);
+        stmt.setString(2, description);
+        stmt.setString(3, genres);
+        stmt.setString(4, coverImg);
+
+        stmt.addBatch();
+        stmt.executeBatch();
+        MainApplication.bddConn.con.commit();
+    }
+
+    //Méthode static permettant de récupérer l'id du dernier livre inséré
+    public static int getLastId() throws SQLException {
+        //Requête SQL récupérant l'id
+        String querry = "SELECT id FROM Books ORDER BY id DESC LIMIT 1";
+        PreparedStatement dispStmt = MainApplication.bddConn.con.prepareStatement(querry);
+
+        ResultSet rs = dispStmt.executeQuery();
+
+        while(rs.next()) {
+            int lastId = rs.getInt(1);
+            return(lastId);
+        }
+
+        return(-1);
+    }
+
     //Méthode static permettant de créer une variable livre à partir de son ID dans la BDD
     public static Book getBook(int id) throws SQLException {
         //Requête SQL récupérant le livre
@@ -221,7 +253,7 @@ public class Book implements PageObject {
         Vector<PrintedWork> res = new Vector<PrintedWork>();
 
         //Requête SQL récupérant les éditions
-        String quer = "SELECT * FROM PrintedWork p JOIN Edition e ON e.isbn = p.editionIsbn JOIN Books b ON b.id=e.bookID WHERE e.bookID=?";
+        String quer = "SELECT * FROM PrintedWork p JOIN Edition e ON e.isbn = p.editionIsbn JOIN Books b ON b.id=e.bookID WHERE e.bookID=? AND p.quantity>0";
         PreparedStatement dispStmt = MainApplication.bddConn.con.prepareStatement(quer);
         dispStmt.setInt(1,this.getId());
 

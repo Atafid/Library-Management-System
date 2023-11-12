@@ -8,7 +8,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
@@ -20,11 +19,8 @@ import java.util.Vector;
 
 //CONTROLLER DE LA VIEW LIVRE
 
-public class BookViewController {
+public class BookViewController extends ApplicationController {
     //*****************ATTRIBUTS*****************//
-
-    //AnchorPane : racine de la fenêtre
-    @FXML private AnchorPane root;
 
     //Label : titre du livre relatif à la fenêtre
     @FXML private Label titleLabel;
@@ -72,8 +68,7 @@ public class BookViewController {
 
     //Fonction se lançant à l'initialisation de javaFX juste après le constructeur
     public void initialize() throws SQLException {
-        //Ajout du header à la racine de la fenêtre
-        root.getChildren().add(MainApplication.header.getHead());
+        BookViewController.super.initialize();
 
         //Initialisation du label du titre du livre
         titleLabel.setText(book.getTitle());
@@ -137,6 +132,7 @@ public class BookViewController {
         //Ajout des éditions à l'interface graphique
         for(int i=0;i<printedWorkVector.size();i++) {
             PrintedWork p = printedWorkVector.get(i);
+
             p.updateButtons();
 
             printedWorkGrid.add(p.editionLabel, 0, i);

@@ -33,6 +33,8 @@ rectangle "Système de la Bibliothèque" {
 
         "Adhérent" --> (Commenter un livre)
         "Bibliothécaire" --> (Commenter un livre)
+
+        "Adhérent" --> (Demander mouvement d'un livre)
     }
 
     rectangle "Gestion des notifications" {
@@ -70,6 +72,8 @@ rectangle "Système de la Bibliothèque" {
         "Bibliothécaire" --> (Lister les adhérents et voir leurs informations personnelles)
         "Bibliothécaire" --> (Changer la catégorie des adhérents)
         "Bibliothécaire" --> (Forcer le retour d'un livre)
+        "Bibliothécaire" --> (Changer le livre de bibliothèque)
+        "Bibliothécaire" --> (Ajouter un livre)
     }
 }
 

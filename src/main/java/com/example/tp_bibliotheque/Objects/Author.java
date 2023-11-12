@@ -28,6 +28,37 @@ public class Author extends Personne {
         birth_date = _birth;
     }
 
+    //Méthode static permettant d'ajouter un auteur à la BDD
+    public static void addAuthor(String name, String last_name, Date birthDate) throws SQLException {
+        //Requête SQL ajoutant l'auteur à la BDD
+        String querry = "INSERT INTO AUTHORS VALUES(0,?,?,?)";
+        PreparedStatement stmt = MainApplication.bddConn.con.prepareStatement(querry);
+
+        stmt.setString(1, name);
+        stmt.setString(2, last_name);
+        stmt.setDate(3, birthDate);
+
+        stmt.addBatch();
+        stmt.executeBatch();
+        MainApplication.bddConn.con.commit();
+    }
+
+    //Méthode static permettant de récupérer l'id du dernier auteur inséré
+    public static int getLastId() throws SQLException {
+        //Requête SQL récupérant l'id
+        String querry = "SELECT id FROM Authors ORDER BY id DESC LIMIT 1";
+        PreparedStatement dispStmt = MainApplication.bddConn.con.prepareStatement(querry);
+
+        ResultSet rs = dispStmt.executeQuery();
+
+        while(rs.next()) {
+            int lastId = rs.getInt(1);
+            return(lastId);
+        }
+
+        return(-1);
+    }
+
     //Méthode renvoyant tous les livres écrits par l'auteur
     public Vector<PageObject> getBooks() throws SQLException {
         Vector<PageObject> res = new Vector<PageObject>();

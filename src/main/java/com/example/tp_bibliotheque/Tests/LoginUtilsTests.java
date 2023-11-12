@@ -1,6 +1,6 @@
 package com.example.tp_bibliotheque.Tests;
 
-import com.example.tp_bibliotheque.LoginUtils;
+import com.example.tp_bibliotheque.Login.LoginUtils;
 import static org.junit.jupiter.api.Assertions.*;
 import java.sql.SQLException;
 

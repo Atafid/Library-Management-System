@@ -1,11 +1,10 @@
 package com.example.tp_bibliotheque.Controllers;
 
-import com.example.tp_bibliotheque.LoginUtils;
+import com.example.tp_bibliotheque.Login.LoginUtils;
 import com.example.tp_bibliotheque.Objects.*;
 import com.example.tp_bibliotheque.MainApplication;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 
 import java.sql.SQLException;
@@ -217,11 +216,8 @@ class ModifSection {
     }
 }
 
-public class UserViewController {
+public class UserViewController extends ApplicationController {
     //*****************ATTRIBUTS*****************//
-
-    //AnchorPane : racine de la fenêtre
-    @FXML private AnchorPane root;
 
     //Label : mail de l'utilisateur
     @FXML private Label mailLabel;
@@ -266,8 +262,7 @@ public class UserViewController {
 
     //Fonction se lançant à l'initialisation de javaFX juste après le constructeur
     public void initialize() throws SQLException {
-        //Ajout du header à la racine de la fenêtre
-        root.getChildren().add(MainApplication.header.getHead());
+        UserViewController.super.initialize();
 
         //Initialisation de l'interface graphique
         mailLabel.setText(user.getMail());
@@ -289,7 +284,10 @@ public class UserViewController {
             libraryLabel.setVisible(false);
 
             ChoiceBox<Library> chooseLibrary = new ChoiceBox<Library>();
-            chooseLibrary.getItems().addAll(Library.getLibraryFromId(1), Library.getLibraryFromId(2), Library.getLibraryFromId(3));
+
+            for(int i = 0;i<Library.countLibrary();i++) {
+                chooseLibrary.getItems().addAll(Library.getLibraryFromId(i+1));
+            }
             chooseLibrary.setValue(Library.getLibraryFromId(1));
 
             infoGrid.add(chooseLibrary, 1, 5);

@@ -2,25 +2,25 @@ package com.example.tp_bibliotheque.Controllers;
 
 import com.example.tp_bibliotheque.Objects.Author;
 import com.example.tp_bibliotheque.MainApplication;
+import com.example.tp_bibliotheque.Objects.Categorie;
 import com.example.tp_bibliotheque.Objects.Page;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 
 import java.sql.SQLException;
 
 //CONTROLLER DE LA VIEW AUTEUR
 
-public class AuthorViewController {
+public class AuthorViewController extends ApplicationController {
     //*****************ATTRIBUTS*****************//
-
-    //AnchorPane : racine de la page
-    @FXML private AnchorPane root;
 
     //Label : nom de l'auteur relatif à la fenêtre
     @FXML private Label authorName;
+
+    //Label : id de l'auteur dans la BDD
+    @FXML private Label idLabel;
 
     //GridPane : livres à afficher dans la fenêtre
     @FXML private GridPane booksGrid;
@@ -43,9 +43,8 @@ public class AuthorViewController {
     }
 
     //Fonction se lançant à l'initialisation de javaFX juste après le constructeur
-    public void initialize() {
-        //Ajout du header à la racine de la fenêtre
-        root.getChildren().add(MainApplication.header.getHead());
+    public void initialize() throws SQLException {
+        AuthorViewController.super.initialize();
 
         //Initialisation du label relatif au nom de l'auteur
         authorName.setText(author.getName()+" "+author.getLastName());
@@ -55,6 +54,14 @@ public class AuthorViewController {
             booksPage = new Page(prevButton, nextButton, author.getBooks(), booksGrid, pageLabel);
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }
+
+        idLabel.setVisible(false);
+
+        //Si l'utilisateur est administrateur -> possibilité de voir l'id de l'auteur
+        if(MainApplication.header.getUser().getCategorie().equals(Categorie.Bibliothécaire)) {
+            idLabel.setText("Id : "+author.getId());
+            idLabel.setVisible(true);
         }
     }
 }

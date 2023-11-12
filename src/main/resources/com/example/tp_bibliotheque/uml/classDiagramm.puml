@@ -1,80 +1,254 @@
 @startuml
 
-interface Personne {
-    String nom
-    String prenom
+package com.example.tp_bibliotheque {
+    class BDDConnector {
+        Connection con
+        fillBDD()
+    }
+
+    class Header {
+        Button homeButton
+        TextField searchBar
+        Button advancedSearch
+        MenuBar userMenuBar
+        MenuBar adminMenuBar
+        MenuBar notifMenuBar
+
+        User user
+    }
+
+    class MainApplication {
+        static String pepper
+        static int hashIncrementation
+        static BDDConnector bddConn
+        static Header header
+
+        static Vector<Book> fstPageHome
+        static Vecotr<Book> sndPageHome
+
+        static void switchScene(ActionEvent e, String url, Object Controller)
+        static void start(Stage stage)
+    }
+
+
+    package Objects {
+        abstract class Personne {
+            String name
+            String lastName
+        }
+
+        class Author extends Personne {
+            int id
+            Date birthDate
+        }
+
+        class Book implements PageObject {
+            int id
+            String title
+            Image coverImage
+            String[] genres
+            String description
+        }
+
+        class CatChange {
+            int id
+            int userId
+            int adminId
+            Date date
+            Categorie prevCat
+            Categorie nextCat
+        }
+
+        enum Categorie {
+            Cat1(1, 15),
+            Cat2(5, 20),
+            Cat3(10, 30),
+            Bibliothécaire(100, 100),
+            Forbidden(0, 0)
+
+            int maxBorrowCount
+            int maxBorrowDays
+        }
+
+        class Comment implements PageObject {
+            int id
+            int userId
+            int bookId
+            Date date
+            int note
+            String content
+        }
+
+        class Edition {
+            String isbn
+            int bookId
+            String editorName
+            Date publishDate
+        }
+
+        class Emprunt extends PageObject {
+            int id
+            int printedWorkId
+            int userId
+            Date beginDate
+            Date hypEndDate
+            Date realEndDate
+            boolean isFinished
+        }
+
+        class HasWritten {
+            int bookId
+            int authorId
+            String role
+        }
+
+        class Library {
+            int id
+            String name
+        }
+
+        class MoveAsk {
+            int id
+            int userId
+            int printedWorkId
+            Date date
+            boolean isRead
+            Boolean isAccepted
+        }
+
+        enum NotifType {
+            LateBook(),
+            CatChange(),
+            AdminNotif(),
+            ReservationArrived(),
+            ForcedBookReturn(),
+            MoveChangeAsk(),
+            MoveChangeAnswer()
+        }
+
+        class Notification implements PageObject {
+            int id
+            int userId
+            NotifType type
+            Date date
+            Boolean read
+            int infoId
+        }
+
+        class Page {
+            Button prevButton
+            Button nextButton
+            int pageCount
+            Vector<PageObject> objects
+        }
+
+        interface PageObject {
+            fillGrid(GridPane grid, int rowIdx)
+        }
+
+        class PrintedWork {
+            int id
+            String editionIsbn
+            int libraryId
+            int quantity
+            int availableQuantity
+        }
+
+        class Reservation {
+            int id
+            int userId
+            int printedWorkId
+            Date date
+            int place
+        }
+
+        class User extends Personne implements PageObject {
+            int id
+            String mail
+            String hashPassword
+            String passwordSalt
+            int borrowCount
+            Categorie categorie
+        }
+    }
+
+
+
+    package Controller {
+        abstract class ApplicationController {
+            AnchorPane root
+        }
+
+        class AdminBookViewController extends ApplicationController {
+            User admin
+        }
+
+        class AdminUserViewController extends ApplicationController {
+            User admin
+        }
+
+        class AuthorViewController extends ApplicationController {
+            Author author
+        }
+
+        class BookViewController extends ApplicationController {
+            Book book
+        }
+
+        class HomeViewController extends ApplicationController {}
+        class NotifViewController extends ApplicationController {}
+        class UserViewController extends ApplicationController {
+            class ModifSection {}
+        }
+    }
+
+    package Login {
+        class LoginUtils {
+            static void Salt()
+            static String hashFunction(String password, String salt, String pepper, int incrementation)
+            static boolean isValidMail(String mail)
+        }
+
+        class LoginViewController {}
+        class SignUpController {}
+    }
+
+    package Tests {
+        class BookTests {}
+        class BDDConnectorTests {}
+        class CatChangeTests {}
+        class LoginUtilsTests {}
+    }
 }
-abstract class Utilisateur {
-    String mail
-    int id
-    userCat categorie
 
-    void emprunteLivre()
-    void retourneLivre()
-    String[] voirInfos()
-    Livre[] voirEmprunts()
-}
+Book "1 ... n" -- "1 ... 1" Edition : edition of
+Book "1 ... n" -- "1 ... 1" HasWritten: is written by
+Book "1 ... n" -- "1 ... 1" Comment: comment of
 
-class Categorie {
-    String nom
-    int empruntMax
-    int dureeMax
-}
+Edition "1...n" -- "1...1" PrintedWork: printed work of
 
-class Auteur {
-    int naissance
-}
+PrintedWork "1...n" -- "1...1" Emprunt : is borrowed
+PrintedWork "1...n" -- "1...1" MoveAsk: asked to move
+PrintedWork "1...n" -- "1...1" Reservation: is reserved by
 
-class Bibliothecaire {
-    void ajouterLivre()
-    void supprimerLivre()
-    void ajouterAdherent()
-    void supprimerAdherent()
-    Adherent[] voirAdherents()
-    String[] voirInfosAdherents(Adherent a)
-}
+Author "1...n" -- "1...1" HasWritten: has written
 
-Personne <|-- Utilisateur
-Personne <|-- Auteur
+User "1...n" -- "1...1" Notification: is notified
+User "1...n" -- "1...1" Emprunt: borrowed by
+User "1...n" -- "1...1" Comment: commented by
+User "1...n" -- "1...1" CatChange: categorie changed
+User "1...n" -- "1...1" CatChange: changed categorie
+User "1...n" -- "1...1" MoveAsk: ask to move
+User "1...n" -- "1...1" Reservation: has reserved
 
-Utilisateur <|-- Adherent
-Utilisateur <|-- Bibliothecaire
+Categorie "1...n" -- "1...1" User: categorie of
+NotifType "1...n" -- "1...1" Notification: type of
 
-class Emprunt {
-    String date
-    Livre livre
-    Utilisateur user
-}
+Page "1...n" -- "1...1" PageObject: paged of
 
-class Interdiction {
-    String date
-    Utilisateur user
-}
+Header "1...1" -- User: main user
+MainApplication "1...1" -- BDDConnector: main BDD connector
 
-class Livre {
-    Edition[] edition
-    String titre
-    Auteur[] auteur
-    int annee
-    String[] mots-clés
-}
-
-class Edition {
-    String editeur
-    int annee
-    int isbn
-}
-
-class bibliController {
-    Buttons[] bouttons
-}
-
-Livre "1 ... n" o--o "1 ... 1" Edition : est édité
-Livre "1 ... n" o--o "1 ... n" Auteur : a écrit
-Livre "0 ... n" o--o "1 ... 1" Emprunt : emprunté
-
-Emprunt "1 ... 1" o--o "0 ... n" Utilisateur : a emprunté
-Categorie "0 ... n" o--o "1 ... 1" Utilisateur : est catégorisé
-Interdiction "1 ... 1" o--o "0 ... 1" Utilisateur : est interdit
+Library "1...n" -- "1...1" PrintedWork: is in
 
 @enduml
