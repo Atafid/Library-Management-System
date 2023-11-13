@@ -1,33 +1,56 @@
 @startuml
 
+[*] --> IHMLogin: Lancement
+
 state IHMLogin {
   state Login : écran de connexion
+
+  [*] --> Login: connexion
+  Login --> Login: erreur
 }
 
 state IHMSignUp {
   state SignUp : écran d'inscription
+
+  [*] --> IHMLogin: connexion
+  [*] --> SignUp: inscription
+  Login --> IHMSignUp: pas de compte
+  SignUp --> SignUp : erreur
+  SignUp --> IHMLogin : inscription réussie
 }
 
-state IHMAdmin {
-  state ConsulterUser: Consulter les utilisateurs
-  state ChangerCategorie: Changer la catégorie d'un utilisateurs
-  state ConsulterInfosUser: Consulter les informations d'un utilisateur
-  state ForcerRetour: Forcer le retour d'un livre
-  state AdminLivre: Ajouter ou faire bouger un livre
-
-  [*] --> IHMAdherent
-  [*] --> ConsulterUser: clique admin user
-  [*] --> AdminLivre: clique admin livre
-  ConsulterUser --> ChangerCategorie: clique catégorie
-  ConsulterUser --> ConsulterInfosUser: clique user
-  ConsulterInfosUser --> ForcerRetour: clique return
-}
-
-state IHMAdherent {
+state IHMAppli {
   state RetourAccueil : Revenir à l'écran d'accueil
   state ChercherLivre : Chercher un livre
-  state ChangerPage : Changer la page de livres
+  state RechercheAvancée : Recherche avancée d'un livre
 
+  state MenuAdmin : Menu de l'adminstrateur
+  state LireNotifs: Lire ses notifications non lues
+  state MenuUser : Menu de l'utilisateur
+
+  RetourAccueil --> IHMAccueil: retour à l'accueil
+  ChercherLivre --> RechercheAvancée: faire une recherche avancée
+  ChercherLivre --> IHMLivre: consulter livre recherché
+  RechercheAvancée --> IHMLivre: consulter livre recherché
+
+  MenuAdmin --> IHMAdminUser: consulter les utilisateurs
+  MenuAdmin --> IHMAdminLivre: gérer les livres
+
+  LireNotifs --> IHMNotifs: consulter ses notifications
+
+  MenuUser --> IHMUser: consulter son profil
+  MenuUser --> IHMLogin: déconnexion
+}
+
+state IHMAccueil {
+  state ChangerPage: Changer la page de livres
+
+  [*] --> IHMLivre: consulter livre
+  [*] --> ChangerPage: changer de page
+  Login --> IHMAccueil: connexion réussie
+}
+
+state IHMLivre {
   state ConsulterLivre : Consulter un livre
   state DemanderEmprunt : Demander l'emprunt d'un livre
   state RendreLivre : Rendre un livre emprunté
@@ -35,65 +58,60 @@ state IHMAdherent {
   state CommenterLivre : Commenter un livre
   state DemanderMouvementLivre: Demander le mouvement d'un livre
 
-  state ConsulterAuteur : Consulter l'auteur d'un livre
-
-  state LireNotifs: Lire ses notifications non lues
-  state ConsulterNotifs : Consulter ses notifications
-
-  state ConsulterInfos : Consulter ses informations
-  state ModifierInfos: Modifier ses informations
-  state ConsulterEmprunt: Consulter ses emprunts
-
-  [*] --> ChangerPage
-
-  [*] --> ChercherLivre: recherche
-  ChercherLivre --> RetourAccueil: clique accueil
-  ChercherLivre --> ConsulterNotifs: clique notifs
-  ChercherLivre --> ConsulterInfos: clique infos
-
-  [*] --> ConsulterLivre: clique livre
+  [*] --> ConsulterLivre
   ConsulterLivre --> DemanderEmprunt: clique emprunt
   ConsulterLivre --> RendreLivre
   ConsulterLivre --> ReserverLivre: clique reservation
   ConsulterLivre --> CommenterLivre: clique commentaire
   ConsulterLivre --> DemanderMouvementLivre: clique demande
-  ConsulterLivre --> RetourAccueil: clique accueil
-  ConsulterLivre --> ChercherLivre: clique recherche
-  ConsulterLivre --> ConsulterNotifs: clique notifs
-  ConsulterLivre --> ConsulterInfos: clique infos
 
-  ConsulterLivre --> ConsulterAuteur: clique auteur
-  ConsulterAuteur --> RetourAccueil: clique accueil
-  ConsulterAuteur --> ChercherLivre: clique recherche
-  ConsulterAuteur --> ConsulterNotifs: clique notifs
-  ConsulterAuteur --> ConsulterInfos: clique infos
-
-  [*] --> LireNotifs: clique notifs
-  [*] --> ConsulterNotifs: clique notifs
-  ConsulterNotifs --> RetourAccueil: clique accueil
-  ConsulterNotifs --> ChercherLivre: clique recherche
-  ConsulterNotifs --> ConsulterInfos: clique infos
-
-  [*] --> ConsulterInfos: clique infos
-  ConsulterInfos --> ModifierInfos: clique modif
-  ConsulterInfos --> ConsulterEmprunt
-  ConsulterInfos --> RetourAccueil: clique accueil
-  ConsulterInfos --> ChercherLivre: clique recherche
-  ConsulterInfos --> ConsulterNotifs: clique notifs
-
-  ConsulterEmprunt --> RendreLivre: clique return
-
-  [*] --> Login: déconnexion
+  ConsulterLivre --> IHMAuteur: consulter auteur
 }
 
-[*] --> IHMLogin
-IHMLogin --> Login: Connexion
-Login --> Login : erreur
-Login --> SignUp : Pas de compte
-SignUp --> SignUp : erreur
-SignUp --> Login : Inscription réussie
-Login --> IHMAdmin : Administrateur
-Login --> IHMAdherent : Adhérent
+state IHMAuteur {
+  state ConsulterAuteur : Consulter l'auteur d'un livre
+
+  [*] --> ConsulterAuteur
+  ConsulterAuteur --> IHMLivre: consulter livre auteur
+}
+
+state IHMUser {
+  state ConsulterInfos: Consulter ses informations
+  state ModifierInfos: Modifier ses informations
+  state ConsulterEmprunt: Consulter ses emprunts
+
+  [*] --> ConsulterInfos
+  ConsulterInfos --> ModifierInfos: clique modif
+
+  [*] --> ConsulterEmprunt
+  ConsulterEmprunt --> RendreLivre: clique return
+}
+
+state IHMAdminUser {
+  state ConsulterUser: Consulter les utilisateurs
+  state ChangerCategorie: Changer la catégorie d'un utilisateurs
+  state ForcerRetour: Forcer le retour d'un livre
+
+  [*] --> ChangerCategorie: clique catégorie
+  [*] --> ConsulterUser: clique admin user
+  ConsulterUser --> IHMUser: consulter user
+  ConsulterUser --> ForcerRetour: clique return
+  ForcerRetour --> RendreLivre: clique return
+}
+
+state IHMAdminLivre {
+  state DeplacerLivre: déplacer un livre
+  state AjouterLivre: ajouter un livre
+
+  [*] --> DeplacerLivre: clique déplacer
+  [*] --> AjouterLivre: clique ajouter
+}
+
+state IHMNotifs {
+  state ConsulterNotifs : Consulter ses notifications
+
+  [*] --> ConsulterNotifs: consulter ses notifications
+}
 
 
 @enduml
