@@ -26,7 +26,7 @@ public class BDDConnector {
         try {
             //Initialisation de la connexion
             Class.forName("com.mysql.cj.jdbc.Driver");
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3308/bdd", "root", "05116173");
+            con = DriverManager.getConnection("", "", "");
             con.setAutoCommit(false);
             //fillBDD();
         } catch(Exception e) {
